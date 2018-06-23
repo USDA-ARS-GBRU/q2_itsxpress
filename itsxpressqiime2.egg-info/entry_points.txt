@@ -1,3 +1,0 @@
-[qiime2.plugins]
-itsxpress-qiime2 = itsxpressqiime2.plugin_setup:plugin
-
