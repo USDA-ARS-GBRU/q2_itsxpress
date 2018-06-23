@@ -1,18 +1,20 @@
 from setuptools import setup
 
 setup(
-    name='itsxpressqiime2',
+    name='ITSxpress-qiime2',
     version='1.00',
-    packages=['itsxpressqiime2'],
+    packages=['ITSxpress-qiime2'],
     author=['Adam R. Rivers','Kyle Weber'],
     author_email=['adam.rivers@ars.usda.gov','kweber1@ufl.edu'],
     description="itsxpress qiime2 plugin",
-    url='http://github.com/usda-ars-gbru/itsxpress',
+    url='https://github.com/kweber1/ITSxpress-qiime2',
     install_requires=[
         'itsxpress',
+        'hmmer',
+        'bbmap'
     ],
     entry_points={
-        'qiime2.plugins':['itsxpress-qiime2=itsxpressqiime2.plugin_setup:plugin']
+        'qiime2.plugins':['Itsxpress-qiime2=itsxpressqiime2.plugin_setup:plugin']
     },
     zip_safe=False
 )
