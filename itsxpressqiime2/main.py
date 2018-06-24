@@ -219,6 +219,29 @@ def _set_fastq_files(artifactType, qzapath, per_sample_sequences):
 
 # The ITSxpress handling
 
+def _taxa_prefix_to_taxa(taxa_prefix):
+    """Trun the taxa prefix letter into the taxa
+
+        Args:
+            taxa_prefix (str): The taxa prefix that will be converted to taxa.
+
+
+
+        Returns:
+
+            (str): The Taxa
+    """
+    taxa_dict = {"A": "Alveolata", "B": "Bryophyta", "C": "Bacillariophyta", "D": "Amoebozoa", "E": "Euglenozoa",
+                 "F": "Fungi",
+                 "G": "Chlorophyta", "H": "Rhodophyta", "I": "Phaeophyceae", "L": "Marchantiophyta", "M": "Metazoa",
+                 "N": "Microsporidia",
+                 "O": "Oomycota", "P": "Haptophyceae", "Q": "Raphidophyceae", "R": "Rhizaria", "S": "Synurophyceae",
+                 "T": "Tracheophyta", "U": "Eustigmatophyceae", "X": "Apusozoa", "Y": "Parabasalia"}
+
+    taxa_choice = taxa_dict[taxa_prefix]
+
+    return taxa_choice
+
 def main(fastq, fastq2, singleEnd, threads, taxa, region):
     """The main communtion between the pluin and the ITSxpress program.
 
@@ -341,6 +364,8 @@ def trimSingle(per_sample_sequences: SingleLanePerSampleSingleEndFastqDirFmt,
     artifactType = _view_artifact_type(qzaPath)
     # Setting the fastq files and if singleEnd is used.
     fastq, fastq2, singleEnd =_set_fastq_files(artifactType, qzaPath, per_sample_sequences)
+    # setting the taxa
+    taxa = _taxa_prefix_to_taxa(taxa)
 
     # Running the main ITSxpress program.
     results = main(fastq, fastq2, singleEnd, threads, taxa, region)
@@ -361,6 +386,8 @@ def trimPair(per_sample_sequences: SingleLanePerSamplePairedEndFastqDirFmt,
     artifactType = _view_artifact_type(qzaPath)
     # Setting the fastq files and if singleEnd is used.
     fastq, fastq2, singleEnd = _set_fastq_files(artifactType, qzaPath, per_sample_sequences)
+    # setting the taxa
+    taxa = _taxa_prefix_to_taxa(taxa)
 
     # Running the main ITSxpress program.
     results = main(fastq, fastq2, singleEnd, threads, taxa, region)
