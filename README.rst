@@ -146,6 +146,16 @@ The main command being:
 |       --o-trimmed                | - The resulting trimmed sequences from ITSxpress in a qza format.                     |
 +----------------------------------+---------------------------------------------------------------------------------------+
 
+Example
+-------
+Use case: Trimming the ITS1 region from a fungal amplicon sequencing dataset with a PairedSequencesWithQuailty qza using two cpu threads.
+
+.. code:: bash
+
+	qiime itsxpress trimPair --i-per-sample-sequences /home/kweber/Desktop/in.qza --p-region ITS1 
+	--p-taxa O --p-threads 2 --o-trimmed /home/kweber/Desktop/out.qza
+
+
 License information
 -------------------
 
