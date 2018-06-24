@@ -246,7 +246,7 @@ def main(fastq, fastq2, singleEnd, threads, taxa, region):
         ValueError3: hmmsearch error.
 
     """
-
+    dir = "/tmp"
     try:
         itsx._check_fastqs(fastq, fastq2)
         # Parse input types
@@ -262,19 +262,19 @@ def main(fastq, fastq2, singleEnd, threads, taxa, region):
     try:
         if paired_end and interleaved:
 
-            sobj = itsx.SeqSamplePairedInterleaved(fastq=fastq, tempdir="/tmp")
+            sobj = itsx.SeqSamplePairedInterleaved(fastq=fastq, tempdir=dir)
 
             sobj._merge_reads(threads=threads)
 
         elif paired_end and not interleaved:
 
-            sobj = itsx.SeqSamplePairedNotInterleaved(fastq=fastq, fastq2=fastq2, tempdir="/tmp")
+            sobj = itsx.SeqSamplePairedNotInterleaved(fastq=fastq, fastq2=fastq2, tempdir=dir)
 
             sobj._merge_reads(threads=threads)
 
         elif not paired_end and not interleaved:
 
-            sobj = itsx.SeqSampleNotPaired(fastq=fastq, tempdir="/tmp")
+            sobj = itsx.SeqSampleNotPaired(fastq=fastq, tempdir=dir)
     except:
 
         raise ValueError("BBmerge was not found. check that the BBmerge reformat.sh package is executible")
