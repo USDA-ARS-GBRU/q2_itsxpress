@@ -18,7 +18,7 @@ from itsxpressqiime2.main import trim_single,\
 plugin = Plugin(
     name='itsxpress',
     version='1.5.3',
-    package='Itsxpress-qiime2',
+    package='itsxpressqiime2',
     website='https://github.com/kweber1/ITSxpress-qiime2              '
             'ITSxpress: https://github.com/USDA-ARS-GBRU/itsxpress',
     description='ITSxpress is designed to support the calling of exact sequence variants'
