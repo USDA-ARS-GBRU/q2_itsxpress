@@ -1,6 +1,20 @@
 # ITSxpress-qiime2
 A plugin for qiime2 that runs ITSxpress
-# Installtion:
+
+
+
+
+# Installation
+---
+
+
+
+
+
+
+
+
+
 # First setup qiime2.
 Once qiime 2 is installed, add the bioconda channel: conda config --add channels bioconda
 # Next install hmmer: conda install hmmer
