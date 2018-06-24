@@ -135,9 +135,11 @@ def _fastq_id_maker(per_sample_sequences):
 
     sampleIds = []
 
-    for id, (fname, fp) in enumerate(iterator):
+    for ids, (fname, fp) in enumerate(iterator):
 
         sampleIds.append(str(fname))
+
+        holder = ids
 
     return sampleIds
 
