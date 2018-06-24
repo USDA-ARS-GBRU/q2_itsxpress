@@ -84,6 +84,7 @@ qiime itsxpress
 | ```--o-trimmed``` | The resulting trimmed sequences from ITSxpress in a qza format. |
 
 2. trimSingle
+
 | command-requirement | description |
 | :-----------: | :------------ |
 | ```--i-per-sample-sequences``` | The artifact that contains the sequence file(s). Only Paired can be used. Two files sequences in the qza data folder. |
@@ -91,8 +92,10 @@ qiime itsxpress
 | ```--p-taxa``` |Select the taxonomic group sequenced: {Alveolata, Bryophyta, Bacillariophyta, Amoebozoa, Euglenozoa, Fungi, 			Chlorophyta, Rhodophyta, Phaeophyceae, Marchantiophyta, Metazoa, Microsporidia, Oomycota, Haptophyceae, 		Raphidophyceae, Rhizaria, Synurophyceae, Tracheophyta, Eustigmatophyceae, Apusozoa, Parabasalia}.|
 | ```--p-threads ``` | the amount of threads to use.|
 | ```--o-trimmed``` | The resulting trimmed sequences from ITSxpress in a qza format. |
-	
-	
+
+## License information
+
+This software is a work of the United States Department of Agriculture, Agricultural Research Service. 17 U.S.C. 	Section 105 states that "Copyright protection under this title is not available for any work of the United States 	Government". While I anticipate that this work will be released under a CC0 public domain attribution, only the USDA 	ARS Office of Technology transfer has the authority to make that determination.
 	
 		
 	
