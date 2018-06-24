@@ -16,11 +16,11 @@ ITSxpress is designed to support the calling of exact sequence variants rather t
 ## Installation
 ### Requirments/Dependencies
 
-In order to consider install ITSxpress-qiime2, it is required to install qiime2.
+In order to consider install ITSxpress-qiime2, it is **required to install qiime2.**
 
 Here is the installation page to [install qiime](https://docs.qiime2.org/2018.6/install/)
 
-Once qiime2 has been install, you can now install the dependices for ITSxpress.
+Once qiime2 has been installed, you can now install the dependices for ITSxpress.
 
 1. Add the bioconda channel to the qiime2.
   
