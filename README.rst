@@ -100,7 +100,7 @@ The main command being:
 
 	qiime itsxpress
 
-1. qiime itsxpress trimSingle
+1. qiime itsxpress trim-single
 
 +----------------------------------+---------------------------------------------------------------------------------------+
 |    Command-requirement           | Description                                                                           |
@@ -124,7 +124,7 @@ The main command being:
 
 
 
-2. qiime itsxpress trimPair
+2. qiime itsxpress trim-pair
 
 +----------------------------------+---------------------------------------------------------------------------------------+
 |    Command-requirement           | Description                                                                           |
