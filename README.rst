@@ -108,19 +108,22 @@ The main command being:
 
 1. qiime itsxpress trimSingle
 
-====================== =============
- command-requirement  description 
----------------------- --------------
-```--i-per-sample-sequences```  The artifact that contains the sequence file(s). Either Joined Paired or just a single fastq. One file sequences in the qza data folder. 
- -------------------  --------------
-```--p-region```  The regions ITS2, ITS1, and ALL.
- -------------------  --------------
-``--p-taxa``` Select the taxonomic group sequenced: {Alveolata, Bryophyta, Bacillariophyta, Amoebozoa, Euglenozoa, Fungi, 			Chlorophyta, Rhodophyta, Phaeophyceae, Marchantiophyta, Metazoa, Microsporidia, Oomycota, Haptophyceae, 		Raphidophyceae, Rhizaria, Synurophyceae, Tracheophyta, Eustigmatophyceae, Apusozoa, Parabasalia}.
----------------------- --------------
- ```--p-threads ```  the amount of threads to use.
- ---------------------- --------------
- ```--o-trimmed```  The resulting trimmed sequences from ITSxpress in a qza format. 
-====================== ===============
++----------------------------------+---------------------------------------------------------------------------------------+
+|    Command-requirement           | Description                                                                           |
++----------------------------------+---------------------------------------------------------------------------------------+
+|   --i-per-sample-sequences       | - The artifact that contains the sequence file(s).                                    |
++ 			           + - Either Joined Paired or just a single fastq.                                        +
+|                                  | - One file sequence in the qza data folder.                                           | 
++----------------------------------+---------------------------------------------------------------------------------------+
+|       --p-region                 | - The regions ITS2, ITS1, and ALL.                                                    | 
++----------------------------------+---------------------------------------------------------------------------------------+
+|       --p-taxa                   |  Select the taxonomic group sequenced:  Alveolata, Bryophyta, Bacillariophyta,        |  +	            	 		 +   Amoebozoa, Euglenozoa, Fungi, Chlorophyta, Rhodophyta, Phaeophyceae,                + |                                  |   Marchantiophyta, Metazoa, Microsporidia, Oomycota, Haptophyceae, Raphidophyceae,    | +                                  +   Rhizaria, Synurophyceae, Tracheophyta,Eustigmatophyceae, Apusozoa, Parabasalia     +
+|                                  |                                                                                       |
++----------------------------------+---------------------------------------------------------------------------------------+
+|       --p-threads 	           | - The amount of threads to use.                                                       | 
++----------------------------------+---------------------------------------------------------------------------------------+
+|       --o-trimmed                | - The resulting trimmed sequences from ITSxpress in a qza format.                     |
++----------------------------------+---------------------------------------------------------------------------------------+
 
 
 
