@@ -4,8 +4,8 @@ setup(
     name='itsxpressqiime2',
     version='1.04',
     packages=['itsxpressqiime2'],
-    author=['Adam R. Rivers','Kyle Weber'],
-    author_email=['adam.rivers@ars.usda.gov','kweber1@ufl.edu'],
+    author='Kyle Weber',
+    author_email='kweber1@ufl.edu'
     description="itsxpress qiime2 plugin",
     url='https://github.com/kweber1/ITSxpress-qiime2',
     install_requires=[
