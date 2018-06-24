@@ -139,7 +139,9 @@ def _fastq_id_maker(per_sample_sequences):
 
         sampleIds.append(str(fname))
 
-        holder = ids
+        holder = ids, fp
+
+        holder = holder
 
     return sampleIds
 
