@@ -65,27 +65,35 @@ or
 	pip install itsxpress
 		
 ITSxpress-qiime2
-----------------
+________________
 
 To install the ITSxpress plugin for qiime, a few steps are needed.
 
 1. Clone the project onto your computer.
 
-		git clone https://github.com/kweber1/ITSxpress-qiime2.git
+.. code-block:: bash
+
+	git clone https://github.com/kweber1/ITSxpress-qiime2.git
 		
 2. Install the project using pip.
 
-		pip install .
+.. code-block:: bash
 
-		pip install -e .
+	pip install .
+
+	pip install -e .
 		
 3. Open your qiime2 environment.
 	
-		qiime dev refresh-cache
+.. code-block:: bash
+
+	qiime dev refresh-cache
 		
 4. Check to see if the ITSxpress plugin is installed.
 
-		qiime itsxpress
+.. code-block:: bash
+
+	qiime itsxpress
 		
 ![Image of console](https://i.gyazo.com/bc013672a324123209b284f889eaa277.png)
 
