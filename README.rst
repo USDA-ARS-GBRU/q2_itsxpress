@@ -89,7 +89,7 @@ To install the ITSxpress plugin for qiime, a few steps are needed.
 
 	qiime itsxpress
 	
-.. image:: https://i.gyazo.com/cf07254f1df187c5a3e0be9054630a2f.png
+.. image:: https://i.gyazo.com/2216236a43c75a92174185b4d81a2eb5.png
 
 Usage
 -----
