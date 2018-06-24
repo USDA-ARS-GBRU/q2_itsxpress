@@ -17,7 +17,7 @@ from itsxpressqiime2.main import trimSingle,\
 
 plugin = Plugin(
     name='itsxpress',
-    version='1.5.1',
+    version='1.5.3',
     package='Itsxpress-qiime2',
     website='ITSxpress: https://github.com/USDA-ARS-GBRU/itsxpress\n'
             'ITSxpress-plugin: https://github.com/kweber1/ITSxpress-qiime2',
