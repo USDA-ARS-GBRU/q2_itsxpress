@@ -5,8 +5,6 @@ from q2_types.per_sample_sequences import SequencesWithQuality, \
                                           PairedEndSequencesWithQuality, \
                                           JoinedSequencesWithQuality
 
-from itsxpress import definitions as taxa
-
 from qiime2.plugin import Plugin,\
                           Str, \
                           Choices, \
