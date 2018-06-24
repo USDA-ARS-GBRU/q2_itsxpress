@@ -73,7 +73,7 @@ The main command being
 qiime itsxpress
 ```
 
-1. trimPair
+1. ```qiime itsxpress trimSingle```
 	
 | command-requirement | description |
 | :-----------: | :------------ |
@@ -83,7 +83,7 @@ qiime itsxpress
 | ```--p-threads ``` | the amount of threads to use.|
 | ```--o-trimmed``` | The resulting trimmed sequences from ITSxpress in a qza format. |
 
-2. trimSingle
+2. ```qiime itsxpress trimPair```
 
 | command-requirement | description |
 | :-----------: | :------------ |
