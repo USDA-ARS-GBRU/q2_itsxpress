@@ -139,6 +139,7 @@ def _fastq_id_maker(per_sample_sequences):
 
         sampleIds.append(str(fname))
 
+        # useless code, just to call the ids, fp and holder.
         holder = ids, fp
 
         holder = holder
@@ -211,7 +212,7 @@ def _set_fastq_files(artifactType, qzapath, per_sample_sequences):
     else:
 
         raise ValueError("The qza and its type '{}' you entered contains more than\n"
-                         "the amount of sequence files for the ITSxpress program. ".format(artifactType),artifactType)
+                         "the amount of sequence files for the ITSxpress program. ".format(artifactType))
 
     return fastq, fastq2, singleEnd
 
@@ -255,7 +256,7 @@ def main(fastq, fastq2, singleEnd, threads, taxa, region):
     except:
 
         raise ValueError("There is a problem with the fastq file(s) you selected or\n"
-                         "BBtools was not found. check that the BBtools reformat.sh package is executible.")
+                         "BBtools was not found. check that the BBtools reformat.sh package is executable.")
 
     # Create SeqSample objects and merge if needed.
 
