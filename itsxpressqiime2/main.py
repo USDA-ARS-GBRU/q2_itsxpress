@@ -328,11 +328,9 @@ def main(fastq, fastq2, singleEnd, threads, taxa, region):
 
     return results
 
-"""
 
-Separating the functions from the commands
+# Separating the functions from the commands
 
-"""
  # First command Trim for SingleLanePerSampleSingleEndFastqDirFmt
 
 def trimSingle(per_sample_sequences: SingleLanePerSampleSingleEndFastqDirFmt,
