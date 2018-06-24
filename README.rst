@@ -94,26 +94,37 @@ To install the ITSxpress plugin for qiime, a few steps are needed.
 .. code-block:: bash
 
 	qiime itsxpress
-		
-![Image of console](https://i.gyazo.com/bc013672a324123209b284f889eaa277.png)
-
-## Usage
-
-The main command being 
-
-```
-qiime itsxpress
-```
-
-1. ```qiime itsxpress trimSingle```
 	
-| command-requirement | description |
-| :-----------: | :------------ |
-| ```--i-per-sample-sequences``` | The artifact that contains the sequence file(s). Either Joined Paired or just a single fastq. One file sequences in the qza data folder. |
-| ```--p-region``` | The regions ITS2, ITS1, and ALL.|
-| ```--p-taxa``` |Select the taxonomic group sequenced: {Alveolata, Bryophyta, Bacillariophyta, Amoebozoa, Euglenozoa, Fungi, 			Chlorophyta, Rhodophyta, Phaeophyceae, Marchantiophyta, Metazoa, Microsporidia, Oomycota, Haptophyceae, 		Raphidophyceae, Rhizaria, Synurophyceae, Tracheophyta, Eustigmatophyceae, Apusozoa, Parabasalia}.|
-| ```--p-threads ``` | the amount of threads to use.|
-| ```--o-trimmed``` | The resulting trimmed sequences from ITSxpress in a qza format. |
+.. image:: https://i.gyazo.com/bc013672a324123209b284f889eaa277.png
+
+Usage
+-----
+
+The main command being:
+
+.. code-block:: bash
+
+	qiime itsxpress
+
+1. qiime itsxpress trimSingle
+
+====================== =============
+ command-requirement  description 
+---------------------- --------------
+```--i-per-sample-sequences```  The artifact that contains the sequence file(s). Either Joined Paired or just a single fastq. One file sequences in the qza data folder. 
+ -------------------  --------------
+```--p-region```  The regions ITS2, ITS1, and ALL.
+ -------------------  --------------
+``--p-taxa``` Select the taxonomic group sequenced: {Alveolata, Bryophyta, Bacillariophyta, Amoebozoa, Euglenozoa, Fungi, 			Chlorophyta, Rhodophyta, Phaeophyceae, Marchantiophyta, Metazoa, Microsporidia, Oomycota, Haptophyceae, 		Raphidophyceae, Rhizaria, Synurophyceae, Tracheophyta, Eustigmatophyceae, Apusozoa, Parabasalia}.
+---------------------- --------------
+ ```--p-threads ```  the amount of threads to use.
+ ---------------------- --------------
+ ```--o-trimmed```  The resulting trimmed sequences from ITSxpress in a qza format. 
+====================== ===============
+
+
+
+
 
 2. ```qiime itsxpress trimPair```
 
