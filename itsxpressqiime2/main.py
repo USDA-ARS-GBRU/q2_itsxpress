@@ -23,8 +23,6 @@ Refernce:
 	eukaryotes for use in environmental sequencing. Methods in Ecology and Evolution,
 	4: 914-919, 2013 (DOI: 10.1111/2041-210X.12073)
 """
-
-
 from q2_types.per_sample_sequences import SingleLanePerSamplePairedEndFastqDirFmt, \
                                           SingleLanePerSampleSingleEndFastqDirFmt, \
                                           FastqGzFormat, \
@@ -36,9 +34,7 @@ from itsxpress import main as itsx
 from itsxpress.definitions import ROOT_DIR,\
                                   taxa_dict
 
-
 def _view_artifact_type(qzaPath):
-
 
     """Opens the metadata file and looks for the 'type'.
 
@@ -140,7 +136,6 @@ def _set_fastq_files(artifactType, qzapath, per_sample_sequences):
         per_sample_sequences (SingleLanePerSampleSingleEndFastqDirFmt): The SingleLanePerSampleSingleEndFastqDirFmt type
         of the input.
 
-
     Returns:
 
         (str): The first fastq location.
@@ -151,7 +146,6 @@ def _set_fastq_files(artifactType, qzapath, per_sample_sequences):
     Raises:
 
         ValueError1: The sequences files in the qza is an invalid amount.
-
         ValueError2: The qza is a invalid type or the number of files is invalid
 
     """
@@ -192,8 +186,6 @@ def _taxa_prefix_to_taxa(taxa_prefix):
         Args:
             taxa_prefix (str): The taxa prefix that will be converted to taxa.
 
-
-
         Returns:
 
             (str): The Taxa
@@ -219,19 +211,15 @@ def main(fastq, fastq2, singleEnd, threads, taxa, region):
         taxa (str): The taxa to be used for the search.
         region (str) : The region to be used for the search.
 
-
     Returns:
 
         (SingleLanePerSampleSingleEndFastqDirFmt): The SingleLanePerSampleSingleEndFastqDirFmt type
         of the output.
 
-
     Raises:
 
         ValueError1: BBTools error or fastq format issue.
-
         ValueError2: BBmerge error.
-
         ValueError3: hmmsearch error.
 
     """
