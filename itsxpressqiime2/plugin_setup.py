@@ -12,8 +12,8 @@ from qiime2.plugin import Plugin,\
                           Choices, \
                           Int
 
-from itsxpressqiime2.main import trimSingle,\
-                                 trimPair
+from itsxpressqiime2.main import trim_single,\
+                                 trim_pair
 
 plugin = Plugin(
     name='itsxpress',
@@ -34,7 +34,7 @@ plugin = Plugin(
 )
 
 plugin.methods.register_function(
-    function=trimSingle,
+    function=trim_single,
     inputs={'per_sample_sequences': SampleData[SequencesWithQuality |
                                                JoinedSequencesWithQuality]},
     parameters={'region': Str %Choices(['ITS2','ITS1','ALL']),
@@ -51,7 +51,7 @@ plugin.methods.register_function(
         'threads': ('\nThe number of processor threads to use in the run.')
     },
     output_descriptions={'trimmed': 'The trimmed sequences from ITSxpress.'},
-    name='TrimPaired',
+    name='TrimSingle',
     description='ITSxpress trimSingle is used for qza types with\n'
                 'SquencesWithQuality or JoinedSequencesWithQuality.'
                 ' This means the qza must be in the\n'
@@ -82,7 +82,7 @@ plugin.methods.register_function(
 )
 
 plugin.methods.register_function(
-    function=trimPair,
+    function=trim_pair,
     inputs={'per_sample_sequences': SampleData[PairedEndSequencesWithQuality]},
     parameters={'region': Str %Choices(['ITS2','ITS1','ALL']),
                 'taxa': Str %Choices(['A','B','C','D','E','F','G','H','I','L','M','N','O','P','Q', 'R', 'S', 'T','U','X','Y']),

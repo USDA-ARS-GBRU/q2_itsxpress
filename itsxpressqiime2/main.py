@@ -353,7 +353,7 @@ def main(fastq, fastq2, singleEnd, threads, taxa, region):
 
  # First command Trim for SingleLanePerSampleSingleEndFastqDirFmt
 
-def trimSingle(per_sample_sequences: SingleLanePerSampleSingleEndFastqDirFmt,
+def trim_single(per_sample_sequences: SingleLanePerSampleSingleEndFastqDirFmt,
          region: str,
          taxa: str,
          threads: int)-> SingleLanePerSampleSingleEndFastqDirFmt:
@@ -375,7 +375,7 @@ def trimSingle(per_sample_sequences: SingleLanePerSampleSingleEndFastqDirFmt,
 
 # Second command Trim for SingleLanePerSamplePairedEndFastqDirFmt
 
-def trimPair(per_sample_sequences: SingleLanePerSamplePairedEndFastqDirFmt,
+def trim_pair(per_sample_sequences: SingleLanePerSamplePairedEndFastqDirFmt,
                region: str,
                taxa: str,
                threads: int) -> SingleLanePerSampleSingleEndFastqDirFmt:
