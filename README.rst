@@ -105,18 +105,14 @@ The main command being:
 +----------------------------------+---------------------------------------------------------------------------------------+
 |       --p-region                 | - The regions ITS2, ITS1, and ALL.                                                    | 
 +----------------------------------+---------------------------------------------------------------------------------------+
-|				   | -	Select the taxonomic group sequenced:  Alveolata, Bryophyta, Bacillariophyt,       |
-+	--p-taxa 		   + 	Amoebozoa, Euglenozoa, Fungi, Chlorophyta, Rhodophyta, Phaeophyceae,               +
-|				   | 	Marchantiophyta, Metazoa, Microsporidia, Oomycota, Haptophyceae, Raphidophyceae,   |
-+				   + 	Rhizaria, Synurophyceae, Tracheophyta,Eustigmatophyceae, Apusozoa, Parabasalia.    +
-|				   |											   |
+|				   | -	Select the taxonomic group sequenced: A, B, C, D, E, F, G, H, I, L, M, N, O, P,	   |
++	--p-taxa		   +	Q, R, S, T, U, V, X, Y.								   +
+| 				   |											   |
 +----------------------------------+---------------------------------------------------------------------------------------+
 |       --p-threads 	           | - The amount of threads to use.                                                       | 
 +----------------------------------+---------------------------------------------------------------------------------------+
 |       --o-trimmed                | - The resulting trimmed sequences from ITSxpress in a qza format.                     |
 +----------------------------------+---------------------------------------------------------------------------------------+
-
-
 
 2. qiime itsxpress trim-pair
 
@@ -129,16 +125,61 @@ The main command being:
 +----------------------------------+---------------------------------------------------------------------------------------+
 |       --p-region                 | - The regions ITS2, ITS1, and ALL.                                                    | 
 +----------------------------------+---------------------------------------------------------------------------------------+
-|				   | -	Select the taxonomic group sequenced:  Alveolata, Bryophyta, Bacillariophyt,       |
-+	--p-taxa 		   + 	Amoebozoa, Euglenozoa, Fungi, Chlorophyta, Rhodophyta, Phaeophyceae,               +
-|				   | 	Marchantiophyta, Metazoa, Microsporidia, Oomycota, Haptophyceae, Raphidophyceae,   |
-+				   + 	Rhizaria, Synurophyceae, Tracheophyta,Eustigmatophyceae, Apusozoa, Parabasalia.    +
-|				   |											   |
+|				   | -	Select the taxonomic group sequenced: A, B, C, D, E, F, G, H, I, L, M, N, O, P,	   |
++	--p-taxa		   +	Q, R, S, T, U, V, X, Y.								   +
+| 				   |											   |
 +----------------------------------+---------------------------------------------------------------------------------------+
 |       --p-threads 	           | - The amount of threads to use.                                                       | 
 +----------------------------------+---------------------------------------------------------------------------------------+
 |       --o-trimmed                | - The resulting trimmed sequences from ITSxpress in a qza format.                     |
 +----------------------------------+---------------------------------------------------------------------------------------+
+
+Taxa Key
+________
+
++-+-------------------------------------+
+|A| Alveolata				|
++-+-------------------------------------+
+|B| Bryophyta				|
++-+-------------------------------------+
+|C| Bacillariophyta			|
++-+-------------------------------------+
+|D| Amoebozoa				|
++-+-------------------------------------+
+|E+ Euglenozoa				|
++-+-------------------------------------+
+|F| Fungi				|
++-+-------------------------------------+
+|G| Chlorophyta (green algae)		|
++-+-------------------------------------+
+|H| Rhodophyta (red algae)		|
++-+-------------------------------------+
+|I| Phaeophyceae (brown algae)		|
++-+-------------------------------------+
+|L| Marchantiophyta (liverworts)	|
++-+-------------------------------------+
+|M| Metazoa				|
++-+-------------------------------------+
+|N| Microsporidia			|
++-+-------------------------------------+
+|O| Oomycota				|
++-+-------------------------------------+
+|P| Haptophyceae (prymnesiophytes)	|
++-+-------------------------------------+
+|Q| Raphidophyceae			|			
++-+-------------------------------------+
+|R| Rhizaria				|
++-+-------------------------------------+
+|S| Synurophyceae			|
++-+-------------------------------------+
+|T| Tracheophyta (higher plants)	|
++-+-------------------------------------+
+|U| Eustigmatophyceae			|
++-+-------------------------------------+
+|X| Apusozoa				|
++-+-------------------------------------+
+|Y| Parabasalia				|
++-+-------------------------------------+
 
 Example
 -------
