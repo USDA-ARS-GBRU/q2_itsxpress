@@ -27,6 +27,7 @@ In order to consider install ITSxpress-qiime2, it is **required to install qiime
 Here is the installation page to install qiime at <https://docs.qiime2.org/2018.6/install/>
 
 Once qiime2 has been installed, you can now install the dependices for ITSxpress.
+
 **Make sure you are in your qiime2 environment when installing the dependices and ITSpress-qiime2.**
 
 1. Add the bioconda channel to qiime2.
