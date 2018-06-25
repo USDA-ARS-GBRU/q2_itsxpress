@@ -62,26 +62,20 @@ ITSxpress-qiime2
 ________________
 
 To install the ITSxpress plugin for qiime, a few steps are needed.
-
-1. Clone the project onto your computer.
-
-.. code-block:: bash
-
-	git clone https://github.com/kweber1/ITSxpress-qiime2.git
 		
-2. Install the project using pip. Make sure you install it in you qiime2.
+1. Install the project using pip. Make sure you install it in you qiime2.
 
 .. code-block:: bash
 
 	pip install itsxpressqiime2
 		
-3. In your qiime2 environment, refresh the plugins.
+2. In your qiime2 environment, refresh the plugins.
 	
 .. code-block:: bash
 
 	qiime dev refresh-cache
 		
-4. Check to see if the ITSxpress plugin is installed.
+3. Check to see if the ITSxpress plugin is installed.
 
 .. code-block:: bash
 
@@ -150,7 +144,7 @@ Use case: Trimming the ITS1 region from a fungal amplicon sequencing dataset wit
 
 .. code:: bash
 
-	qiime itsxpress trimPair --i-per-sample-sequences /home/kweber/Desktop/in.qza --p-region ITS1 
+	qiime itsxpress trim-pair --i-per-sample-sequences /home/kweber/Desktop/in.qza --p-region ITS1 \
 	--p-taxa O --p-threads 2 --o-trimmed /home/kweber/Desktop/out.qza
 
 
