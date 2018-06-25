@@ -1,5 +1,9 @@
 ITSxpress-qiime2: A qiime2 plugin using ITSxpress to rapidly trim the Internally transcribed spacer (ITS) region of FASTQ files
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+.. image:: https://travis-ci.org/kweber1/itsxpressqiime2.svg?branch=master
+  :target: https://travis-ci.org/kweber1/itsxpressqiime2
+  
 .. image:: https://api.codacy.com/project/badge/Grade/4d00341b4abc4e04a77cf5ca6674cd3c
   :target: https://www.codacy.com/app/kweber1/ITSxpress-qiime2?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kweber1/ITSxpress-qiime2&amp;utm_campaign=Badge_Grade
   
