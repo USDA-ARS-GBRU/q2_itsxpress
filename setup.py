@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='itsxpressqiime2',
-    version='1.06',
+    version='1.07',
     packages=['itsxpressqiime2'],
     author='Kyle Weber',
     author_email='kweber1@ufl.edu',
