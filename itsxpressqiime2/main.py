@@ -240,6 +240,10 @@ def main(fastq, fastq2, singleEnd, threads, taxa, region):
         elif paired_end and not interleaved:
             sobj = itsx.SeqSamplePairedNotInterleaved(fastq=fastq, fastq2=fastq2, tempdir=dirt)
             sobj = itsx.SeqSampleNotPaired(fastq=fastq, tempdir=dirt)
+
+        elif not paired_end and not interleaved:
+            sobj = itsx.SeqSampleNotPaired(fastq=fastq, tempdir=dirt)
+
     except:
         raise ValueError("BBmerge was not found. check that the BBmerge reformat.sh package is executible")
 
@@ -265,7 +269,7 @@ def main(fastq, fastq2, singleEnd, threads, taxa, region):
     manifest = FastqManifestFormat()
     manifest_fn = manifest.open()
     manifest_fn.write('sample-id,filename,direction\n')
-    manifest_fn.write("seq,{},reverse".format(path))
+    manifest_fn.write("seq,{},forward".format(path.name))
     manifest_fn.close()
     # Create trimmed sequences.
     dedup_obj.create_trimmed_seqs(str(path), gzipped=True, itspos=its_pos)
@@ -276,8 +280,8 @@ def main(fastq, fastq2, singleEnd, threads, taxa, region):
     itsx.shutil.rmtree(sobj.tempdir)
     return results
 # Separating the functions from the commands
- # First command Trim for SingleLanePerSampleSingleEndFastqDirFmt
 
+# First command Trim for SingleLanePerSampleSingleEndFastqDirFmt
 def trim_single(per_sample_sequences: SingleLanePerSampleSingleEndFastqDirFmt,
          region: str,
          taxa: str,
