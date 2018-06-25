@@ -28,7 +28,7 @@ Here is the installation page to install qiime at <https://docs.qiime2.org/2018.
 
 Once qiime2 has been installed, you can now install the dependices for ITSxpress.
 
-1. Add the bioconda channel to the qiime2.
+1. Add the bioconda channel to qiime2.
 
 .. code-block:: bash
 
@@ -46,7 +46,7 @@ Once qiime2 has been installed, you can now install the dependices for ITSxpress
 
 	conda install bbmap
 	
-4. Install ITSxpress
+4. Install ITSxpress.
 
 .. code-block:: bash
 
