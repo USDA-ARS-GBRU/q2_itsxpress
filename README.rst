@@ -147,17 +147,55 @@ Use case: Trimming the ITS1 region from a fungal amplicon sequencing dataset wit
 	qiime itsxpress trim-pair --i-per-sample-sequences /home/kweber/Desktop/in.qza --p-region ITS1 \
 	--p-taxa O --p-threads 2 --o-trimmed /home/kweber/Desktop/out.qza
 
+Known errors
+------------
+1. If an error is with hmmer:
+
+.. image:: https://i.gyazo.com/fc4c32c86971af29347d035d809f3fb0.png
+
+To resolve this issue:
+
+1. Change your directory to itsxpress database in your qiime environment.
+
+.. code-block:: bash
+
+	cd ~/miniconda3/envs/qiime*/lib/python3.5/site-packages/itsxpress/ITSx_db
+
+or
+ 
+.. code-block:: bash
+ 
+	cd ~/anaconda3/envs/qiime*/lib/python3.5/site-packages/itsxpress/ITSx_db
+	
+2. List the current files in the directory.
+
+.. code-block:: bash
+
+	ls -d .!(|.)
+and
+
+.. code-block:: bash
+
+	ls
+	
+If you see this output:
+
+.. image:: https://i.gyazo.com/d22a6fb16c6f08430e2c78dd81acd7a9.png
+
+or
+
+.. image:: https://i.gyazo.com/eedbdf635f2d8449ecb48048dce17420.png
+
+You may need to delete the .DS_store file and place the true ITSx_dp file in its place.
+You can download the ITSx_dp file from here <https://github.com/USDA-ARS-GBRU/itsxpress/tree/master/itsxpress/ITSx_db>
+
+If you see this output:
+
+.. image:: https://i.gyazo.com/fbe68023f85325d301b817575b793baa.png
+
+This may mean another error such as hmmer may not be installed.
 
 License information
 -------------------
 
 This software is a work of the United States Department of Agriculture, Agricultural Research Service. 17 U.S.C. 	Section 105 states that "Copyright protection under this title is not available for any work of the United States 	Government". While I anticipate that this work will be released under a CC0 public domain attribution, only the USDA 	ARS Office of Technology transfer has the authority to make that determination.
-	
-		
-	
-	
-	
-
-
-
-
