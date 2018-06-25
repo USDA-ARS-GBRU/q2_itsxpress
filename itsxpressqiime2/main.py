@@ -239,7 +239,7 @@ def main(fastq, fastq2, singleEnd, threads, taxa, region):
 
         elif paired_end and not interleaved:
             sobj = itsx.SeqSamplePairedNotInterleaved(fastq=fastq, fastq2=fastq2, tempdir=dirt)
-            sobj = itsx.SeqSampleNotPaired(fastq=fastq, tempdir=dirt)
+            ssobj._merge_reads(threads=threads)
 
         elif not paired_end and not interleaved:
             sobj = itsx.SeqSampleNotPaired(fastq=fastq, tempdir=dirt)
