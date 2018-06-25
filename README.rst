@@ -142,7 +142,7 @@ The main command being:
 
 Example
 -------
-Use case: Trimming the ITS1 region from a fungal amplicon sequencing dataset with a PairedSequencesWithQuailty qza using two cpu threads.
+Use case: Trimming the ITS1 region from a fungal amplicon sequencing dataset with a PairedSequencesWithQuailty qza using two cpu threads.The exmaple file used is in the Tests folder.
 
 .. code:: bash
 
