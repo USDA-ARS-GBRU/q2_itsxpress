@@ -27,8 +27,8 @@ plugin = Plugin(
                 'Results are parsed and the trimmed files are returned.'
                 'The ITS 1, ITS2 or the entire ITS region including the 5.8s rRNA gene can be selected.'
                 'ITSxpress uses the hmm model from ITSx so results are comprable.',
-    short_description='A qiime2 plugin using ITSxpress to rapidly trim the\n'
-                      'Internally transcribed spacer (ITS) region of FASTQ files.'
+    short_description='Plugin using ITSxpress to rapidly trim the\n'
+                      'internally transcribed spacer (ITS) region of FASTQ files.'
 )
 
 plugin.methods.register_function(
