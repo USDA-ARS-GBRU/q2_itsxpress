@@ -191,8 +191,8 @@ Use case: Trimming the ITS1 region from a fungal amplicon sequencing dataset wit
 
 .. code:: bash
 
-	qiime itsxpress trim-pair --i-per-sample-sequences /home/kweber/Desktop/in.qza --p-region ITS1 \
-	--p-taxa O --p-threads 2 --o-trimmed /home/kweber/Desktop/out.qza
+	qiime itsxpress trim-pair --i-per-sample-sequences ~/in.qza --p-region ITS2 \
+	--p-taxa F --p-threads 2 --o-trimmed ~/Desktop/out.qza
 
 Known errors
 ------------
