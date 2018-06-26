@@ -26,7 +26,7 @@ Installation:
 Requirments/Dependencies
 ________________________
 
-In order to consider install ITSxpress-qiime2, it is **required to install qiime2.**
+In order to consider installing ITSxpress-qiime2, it is **required to install qiime2.**
 
 Here is the installation page to install qiime at <https://docs.qiime2.org/2018.6/install/>
 
