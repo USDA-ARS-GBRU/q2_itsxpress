@@ -31,7 +31,7 @@ plugin = Plugin(
                       'internally transcribed spacer (ITS) region of FASTQ files.'
 )
 
-taxaList = ['A','B','C','D','E','F','G','H','I','L','M','N','O','P','Q', 'R', 'S', 'T','U','X','Y']
+taxaList = ['A','B','C','D','E','F','G','H','I','L','M','N','O','P','Q', 'R', 'S', 'T','U']
 
 
 plugin.methods.register_function(
@@ -76,9 +76,7 @@ plugin.methods.register_function(
                 '\n# R = Rhizaria\n'
                 '\n# S = Synurophyceae\n'
                 '\n# T = Tracheophyta (higher plants)\n'
-                '\n# U = Eustigmatophyceae\n'
-                '\n# X = Apusozoa\n'
-                '\n# Y = Parabasalia'
+                '\n# U = Eustigmatophyceae'
 )
 
 plugin.methods.register_function(
@@ -121,7 +119,6 @@ plugin.methods.register_function(
                 '\n# R = Rhizaria\n'
                 '\n# S = Synurophyceae\n'
                 '\n# T = Tracheophyta (higher plants)\n'
-                '\n# U = Eustigmatophyceae\n'
-                '\n# X = Apusozoa\n'
-                '\n# Y = Parabasalia'
+                '\n# U = Eustigmatophyceae'
+
 )
