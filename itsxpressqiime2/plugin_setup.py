@@ -31,13 +31,15 @@ plugin = Plugin(
                       'internally transcribed spacer (ITS) region of FASTQ files.'
 )
 
+taxaList = ['A','B','C','D','E','F','G','H','I','L','M','N','O','P','Q', 'R', 'S', 'T','U','X','Y']
+
+
 plugin.methods.register_function(
     function=trim_single,
     inputs={'per_sample_sequences': SampleData[SequencesWithQuality |
                                                JoinedSequencesWithQuality]},
     parameters={'region': Str %Choices(['ITS2','ITS1','ALL']),
-                'taxa': Str %Choices(['A','B','C','D','E','F','G','H','I','L','M','N','O','P',
-                                     'Q', 'R', 'S', 'T','U','X','Y']),
+                'taxa': Str %Choices(taxaList),
                 'threads': Int},
     outputs=[('trimmed', SampleData[SequencesWithQuality])],
     input_descriptions={'per_sample_sequences': 'The artifact that contains the sequence file(s).'
@@ -83,7 +85,7 @@ plugin.methods.register_function(
     function=trim_pair,
     inputs={'per_sample_sequences': SampleData[PairedEndSequencesWithQuality]},
     parameters={'region': Str %Choices(['ITS2','ITS1','ALL']),
-                'taxa': Str %Choices(['A','B','C','D','E','F','G','H','I','L','M','N','O','P','Q', 'R', 'S', 'T','U','X','Y']),
+                'taxa': Str %Choices(taxaList),
                 'threads': Int},
     outputs=[('trimmed', SampleData[SequencesWithQuality])],
     input_descriptions={'per_sample_sequences': 'The artifact that contains the sequence file(s). '
