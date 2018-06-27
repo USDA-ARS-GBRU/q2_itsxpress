@@ -81,7 +81,7 @@ def _write_metadata(results):
 
 def _fastq_id_maker(per_sample_sequences, artifactType):
 
-    """Iterates thru the sequences files to get the file path/name.
+    """Iterates thru the manifest to get the file path/name.
 
     Args:
 
@@ -113,7 +113,7 @@ def _fastq_id_maker(per_sample_sequences, artifactType):
             sampleForward.append(line[1].replace(",",""))
             outputNames.append(line[0].replace(",",""))
         elif ",reverse" in line:
-            if artifactType == "SampleData[PairedEndSequencesWithQuality]":
+            if "SampleData[PairedEndSequencesWithQuality]" in artifactType:
                 line = line.split(",")
                 sampleReverse.append(line[1].replace(",",""))
             else:
@@ -189,11 +189,12 @@ def main(per_sample_sequences, threads, taxa, region):
     manifest_fn.write('sample-id,filename,direction\n')
     sequences,singleEnd = _fastq_id_maker(per_sample_sequences, artifactType)
     sequenceList = set(sequences)
+    barcode = 0
     for sequence in sequenceList:
 
         # Setting the fastq files and if singleEnd is used.
         fastq = os.path.join(str(per_sample_sequences.path),str(sequence[0]))
-        if artifactType == "SampleData[PairedEndSequencesWithQuality]":
+        if "SampleData[PairedEndSequencesWithQuality]" in artifactType:
             fastq2 = os.path.join(str(per_sample_sequences.path),str(sequence[1]))
         else:
             fastq2 = sequence[1]
@@ -236,20 +237,28 @@ def main(per_sample_sequences, threads, taxa, region):
         # Create deduplication object.
         dedup_obj = itsx.Dedup(uc_file=sobj.uc_file, rep_file=sobj.rep_file, seq_file=sobj.seq_file)
         results = SingleLanePerSampleSingleEndFastqDirFmt()
-        path = results.sequences.path_maker(sample_id=sequenceID,
-                                            barcode_id=1,
-                                            lane_number=1,
-                                            read_number=1)
-
-        manifest_fn.write("{},{},forward".format(sequenceID,path.name))
+        pathForward = results.sequences.path_maker(sample_id=sequenceID,
+                                                   barcode_id=barcode,
+                                                   lane_number=1,
+                                                   read_number=1)
+        barcode+=1
+        pathReverse = results.sequences.path_maker(sample_id=sequenceID,
+                                                   barcode_id=barcode,
+                                                   lane_number=1,
+                                                   read_number=2)
+        manifest_fn.write("{},{},forward".format(sequenceID,pathForward.name))
+        manifest_fn.write("{},{},reverse".format(sequenceID,pathReverse.name))
         # Create trimmed sequences.
-        dedup_obj.create_trimmed_seqs(str(path), gzipped=True, itspos=its_pos)
+        dedup_obj.create_trimmed_seqs(str(pathForward), gzipped=True, itspos=its_pos)
+        dedup_obj.create_trimmed_seqs(str(pathReverse), gzipped=True, itspos=its_pos)
         # Deleting the temp files.
         itsx.shutil.rmtree(sobj.tempdir)
     # Writing out the results.
     manifest_fn.close()
     _write_metadata(results)
+
     results.manifest.write_data(manifest, FastqManifestFormat)
+    barcode += 1
     return results
 # Separating the functions from the commands
 
