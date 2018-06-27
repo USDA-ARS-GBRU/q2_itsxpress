@@ -34,13 +34,9 @@ from itsxpress import main as itsx
 from itsxpress.definitions import ROOT_DIR,\
                                   taxa_dict
 
-def _view_artifact_type(qzaPath):
+def _view_artifact_type():
 
     """Opens the metadata file and looks for the 'type'.
-
-    Args:
-
-        qzaPath (str): The path of the per_sequence_sample
 
     Returns:
 
@@ -53,7 +49,8 @@ def _view_artifact_type(qzaPath):
     """
 
     try:
-        path = str(qzaPath[:-4]) + "/metadata.yaml"
+        os.chdir("../")
+        path = os.path.join(os.getcwd(), "metadata.yaml")
         fnOpen = open(path, "r")
 
         for line in fnOpen:
@@ -125,14 +122,13 @@ def _fastq_id_maker(per_sample_sequences):
 
     return sampleIds
 
-def _set_fastq_files(artifactType, qzapath, per_sample_sequences):
+def _set_fastq_files(artifactType, per_sample_sequences):
 
     """Gives the one or two fastq files that th ITSxpress program will be handed.
 
     Args:
 
         artifactType (str) : The artifact type in the metadata file.
-        qzaPath (int): The path of the per_sequence_sample.
         per_sample_sequences (SingleLanePerSampleSingleEndFastqDirFmt): The SingleLanePerSampleSingleEndFastqDirFmt type
         of the input.
 
@@ -150,27 +146,27 @@ def _set_fastq_files(artifactType, qzapath, per_sample_sequences):
 
     """
 
-    seqAmount = int(_amount_of_files_in_data(qzapath)) - 2
+    seqAmount = int(_amount_of_files_in_data(str(per_sample_sequences.path))) - 2
     sequences = _fastq_id_maker(per_sample_sequences)
     singleEnd = False
 
     if (("SampleData[PairedEndSequencesWithQuality]" in artifactType)
         and (seqAmount == 2)):
         try:
-            fastq = qzapath + "/" + sequences[0]
-            fastq2 = qzapath + "/" + sequences[1]
+            fastq = os.path.join(str(per_sample_sequences.path), str(sequences[0]))
+            fastq2 = os.path.join(str(per_sample_sequences.path), str(sequences[1]))
         except:
             raise ValueError("Invalid Sequence amount for type.")
 
     elif (("SampleData[SequencesWithQuality]" in artifactType)
         and (seqAmount == 1)):
-        fastq = qzapath + "/" + sequences[0]
+        fastq = os.path.join(str(per_sample_sequences.path), str(sequences[0]))
         fastq2 = None
         singleEnd = True
 
     elif (("SampleData[JoinedSequencesWithQuality]" in artifactType)
         and (seqAmount == 1)):
-        fastq = qzapath + "/" + sequences[0]
+        fastq = os.path.join(str(per_sample_sequences.path), str(sequences[0]))
         fastq2 = None
 
     else:
@@ -191,22 +187,20 @@ def _taxa_prefix_to_taxa(taxa_prefix):
             (str): The Taxa
     """
     taxa_dict = {"A": "Alveolata", "B": "Bryophyta", "C": "Bacillariophyta", "D": "Amoebozoa", "E": "Euglenozoa",
-                 "F": "Fungi",
-                 "G": "Chlorophyta", "H": "Rhodophyta", "I": "Phaeophyceae", "L": "Marchantiophyta", "M": "Metazoa",
-                 "N": "Microsporidia",
-                 "O": "Oomycota", "P": "Haptophyceae", "Q": "Raphidophyceae", "R": "Rhizaria", "S": "Synurophyceae",
-                 "T": "Tracheophyta", "U": "Eustigmatophyceae", "X": "Apusozoa", "Y": "Parabasalia"}
+                 "F": "Fungi","G": "Chlorophyta", "H": "Rhodophyta", "I": "Phaeophyceae", "L": "Marchantiophyta",
+                 "M": "Metazoa","N": "Microsporidia","O": "Oomycota", "P": "Haptophyceae", "Q": "Raphidophyceae",
+                 "R": "Rhizaria", "S": "Synurophyceae","T": "Tracheophyta", "U": "Eustigmatophyceae", "X": "Apusozoa",
+                 "Y": "Parabasalia"}
     taxa_choice = taxa_dict[taxa_prefix]
     return taxa_choice
 
-def main(fastq, fastq2, singleEnd, threads, taxa, region):
+def main(per_sample_sequences, threads, taxa, region):
     """The main communtion between the pluin and the ITSxpress program.
 
     Args:
 
-        fastq (str) : The first fastq location.
-        fastq2 (str) : The second fastq location.
-        singleEnd (bool) : boolean for if singleEnd is used or not.
+        per_sample_sequences (SingleLanePerSampleSingleEndFastqDirFmt): The SingleLanePerSampleSingleEndFastqDirFmt type
+        of the input.
         threads (int) : The number of threads to use.
         taxa (str): The taxa to be used for the search.
         region (str) : The region to be used for the search.
@@ -224,6 +218,15 @@ def main(fastq, fastq2, singleEnd, threads, taxa, region):
 
     """
     dirt = "/tmp"
+    # Setting the current dir
+    os.chdir(str(per_sample_sequences.path))
+    # Finding the artifact type.
+    artifactType = _view_artifact_type()
+    # Setting the fastq files and if singleEnd is used.
+    fastq, fastq2, singleEnd = _set_fastq_files(artifactType, per_sample_sequences)
+    # setting the taxa
+    taxa = _taxa_prefix_to_taxa(taxa)
+    # Running the main ITSxpress program.
     try:
         itsx._check_fastqs(fastq, fastq2)
         # Parse input types
@@ -287,16 +290,7 @@ def trim_single(per_sample_sequences: SingleLanePerSampleSingleEndFastqDirFmt,
          taxa: str,
          threads: int)-> SingleLanePerSampleSingleEndFastqDirFmt:
 
-    # Finding the main path of the qza.
-    qzaPath = str(per_sample_sequences.path)
-    # Finding the artifact type.
-    artifactType = _view_artifact_type(qzaPath)
-    # Setting the fastq files and if singleEnd is used.
-    fastq, fastq2, singleEnd =_set_fastq_files(artifactType, qzaPath, per_sample_sequences)
-    # setting the taxa
-    taxa = _taxa_prefix_to_taxa(taxa)
-    # Running the main ITSxpress program.
-    results = main(fastq, fastq2, singleEnd, threads, taxa, region)
+    results = main(per_sample_sequences, threads, taxa, region)
     return results
 
 # Second command Trim for SingleLanePerSamplePairedEndFastqDirFmt
@@ -305,14 +299,5 @@ def trim_pair(per_sample_sequences: SingleLanePerSamplePairedEndFastqDirFmt,
                taxa: str,
                threads: int) -> SingleLanePerSampleSingleEndFastqDirFmt:
 
-    # Finding the main path of the qza.
-    qzaPath = str(per_sample_sequences.path)
-    # Finding the artifact type.
-    artifactType = _view_artifact_type(qzaPath)
-    # Setting the fastq files and if singleEnd is used.
-    fastq, fastq2, singleEnd = _set_fastq_files(artifactType, qzaPath, per_sample_sequences)
-    # setting the taxa
-    taxa = _taxa_prefix_to_taxa(taxa)
-    # Running the main ITSxpress program.
-    results = main(fastq, fastq2, singleEnd, threads, taxa, region)
+    results = main(per_sample_sequences, threads, taxa, region)
     return results
