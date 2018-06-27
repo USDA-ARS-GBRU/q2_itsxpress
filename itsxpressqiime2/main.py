@@ -100,6 +100,7 @@ def _fastq_id_maker(per_sample_sequences, artifactType):
     fn = open(path, "r")
     sampleForward = []
     sampleReverse = []
+    outputNames = []
     singleEnd = False
     for line in fn:
 
@@ -110,6 +111,7 @@ def _fastq_id_maker(per_sample_sequences, artifactType):
         elif ",forward" in line:
             line = line.split(",")
             sampleForward.append(line[1].replace(",",""))
+            outputNames.append(line[0].replace(",",""))
         elif ",reverse" in line:
             if artifactType == "SampleData[PairedEndSequencesWithQuality]":
                 line = line.split(",")
@@ -124,7 +126,7 @@ def _fastq_id_maker(per_sample_sequences, artifactType):
         raise ValueError("The number of forward and reverse samples do not match.")
 
     else:
-        sampleIds = zip(sampleForward, sampleReverse)
+        sampleIds = zip(sampleForward, sampleReverse, outputNames)
         if ("SampleData[SequencesWithQuality]" in artifactType):
             singleEnd = True
 
@@ -185,13 +187,17 @@ def main(per_sample_sequences, threads, taxa, region):
     manifest = FastqManifestFormat()
     manifest_fn = manifest.open()
     manifest_fn.write('sample-id,filename,direction\n')
-    sequences = _fastq_id_maker(per_sample_sequences, artifactType)
-
-    k = True
-    if k:
+    sequences,singleEnd = _fastq_id_maker(per_sample_sequences, artifactType)
+    sequenceList = set(sequences)
+    for sequence in sequenceList:
 
         # Setting the fastq files and if singleEnd is used.
-        fastq, fastq2, singleEnd = _set_fastq_files(artifactType, per_sample_sequences)
+        fastq = os.path.join(str(per_sample_sequences.path),str(sequence[0]))
+        if artifactType == "SampleData[PairedEndSequencesWithQuality]":
+            fastq2 = os.path.join(str(per_sample_sequences.path),str(sequence[1]))
+        else:
+            fastq2 = sequence[1]
+        sequenceID = sequence[2]
         # Running the main ITSxpress program.
         try:
             itsx._check_fastqs(fastq, fastq2)
@@ -230,12 +236,12 @@ def main(per_sample_sequences, threads, taxa, region):
         # Create deduplication object.
         dedup_obj = itsx.Dedup(uc_file=sobj.uc_file, rep_file=sobj.rep_file, seq_file=sobj.seq_file)
         results = SingleLanePerSampleSingleEndFastqDirFmt()
-        path = results.sequences.path_maker(sample_id="seq",
+        path = results.sequences.path_maker(sample_id=sequenceID,
                                             barcode_id=1,
                                             lane_number=1,
                                             read_number=1)
 
-        manifest_fn.write("seq,{},forward".format(path.name))
+        manifest_fn.write("{},{},forward".format(sequenceID,path.name))
         # Create trimmed sequences.
         dedup_obj.create_trimmed_seqs(str(path), gzipped=True, itspos=its_pos)
         # Deleting the temp files.
