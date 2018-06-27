@@ -69,7 +69,7 @@ def _view_artifact_type(qzaPath):
 
 def _amount_of_files_in_data(qzaPath):
 
-    """Finds the number of file in the data folder of the qza.
+    """Finds the number of files in the data folder of the qza.
 
     Args:
 
@@ -127,7 +127,7 @@ def _fastq_id_maker(per_sample_sequences):
 
 def _set_fastq_files(artifactType, qzapath, per_sample_sequences):
 
-    """Gives the one or two fastq files that th ITSxpress program will be handed.
+    """Gives the one or two fastq files that the ITSxpress program will be handed.
 
     Args:
 
@@ -140,8 +140,7 @@ def _set_fastq_files(artifactType, qzapath, per_sample_sequences):
 
         (str): The first fastq location.
         (str): The second fastq location.
-        (bool): The number of files in the data folder.
-        (str): The number of files in the data folder.
+        (bool): Is its single-end or not.
 
     Raises:
 
@@ -181,7 +180,7 @@ def _set_fastq_files(artifactType, qzapath, per_sample_sequences):
 # The ITSxpress handling
 def _taxa_prefix_to_taxa(taxa_prefix):
 
-    """Trun the taxa prefix letter into the taxa
+    """Turns the taxa prefix letter into the taxa
 
         Args:
             taxa_prefix (str): The taxa prefix that will be converted to taxa.
