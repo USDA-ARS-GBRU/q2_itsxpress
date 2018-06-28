@@ -300,8 +300,8 @@ def main(per_sample_sequences, threads, taxa, region):
 # First command Trim for SingleLanePerSampleSingleEndFastqDirFmt
 def trim_single(per_sample_sequences: SingleLanePerSampleSingleEndFastqDirFmt,
          region: str,
-         taxa: str,
-         threads: int)-> SingleLanePerSampleSingleEndFastqDirFmt:
+         taxa : str="F",
+         threads: int=1)-> SingleLanePerSampleSingleEndFastqDirFmt:
 
     results = main(per_sample_sequences, threads, taxa, region)
     return results
@@ -309,8 +309,8 @@ def trim_single(per_sample_sequences: SingleLanePerSampleSingleEndFastqDirFmt,
 # Second command Trim for SingleLanePerSamplePairedEndFastqDirFmt
 def trim_pair(per_sample_sequences: SingleLanePerSamplePairedEndFastqDirFmt,
                region: str,
-               taxa: str,
-               threads: int) -> SingleLanePerSampleSingleEndFastqDirFmt:
+               taxa: str="F",
+               threads: int=1) -> SingleLanePerSampleSingleEndFastqDirFmt:
 
     results = main(per_sample_sequences, threads, taxa, region)
     return results

@@ -33,7 +33,6 @@ plugin = Plugin(
 
 taxaList = ['A','B','C','D','E','F','G','H','I','L','M','N','O','P','Q', 'R', 'S', 'T','U']
 
-
 plugin.methods.register_function(
     function=trim_single,
     inputs={'per_sample_sequences': SampleData[SequencesWithQuality |
