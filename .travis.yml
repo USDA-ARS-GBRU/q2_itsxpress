@@ -11,7 +11,7 @@ before_install:
  - conda config --set always_yes yes
  - conda update -q conda
  - wget https://raw.githubusercontent.com/qiime2/environment-files/master/latest/staging/qiime2-latest-py35-linux-conda.yml
- - conda env create -n test-env --file qiime2-latest-py35-linux-conda.
+ - conda env create -n test-env --file qiime2-latest-py35-linux-conda.yml
  - source activate test-env
 install:
   - conda config --add channels bioconda
