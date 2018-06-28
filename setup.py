@@ -7,7 +7,7 @@ setup(
     author='Kyle Weber',
     author_email='kweber1@ufl.edu',
     description="itsxpress qiime2 plugin",
-    url='https://github.com/kweber1/ITSxpress-qiime2',
+    url='https://github.com/kweber1/q2_itsxpress',
     test_suite ='nose.collector',
 
     install_requires=[

@@ -10,7 +10,7 @@ from qiime2.plugin import Plugin,\
                           Choices, \
                           Int
 
-from q2_itsxpress.q2_itsxpress import trim_single,\
+from q2_itsxpress._itsxpress import trim_single,\
                                  trim_pair
 
 plugin = Plugin(
