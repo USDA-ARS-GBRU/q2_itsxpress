@@ -30,13 +30,13 @@ import yaml
 
 from itsxpress import main as itsx
 
-from itsxpress.definitions import ROOT_DIR,\
-                                  taxa_dict
+from itsxpress.definitions import (ROOT_DIR,
+                                   taxa_dict)
 
-from q2_types.per_sample_sequences import SingleLanePerSamplePairedEndFastqDirFmt, \
-                                          SingleLanePerSampleSingleEndFastqDirFmt, \
-                                          FastqManifestFormat, \
-                                          YamlFormat
+from q2_types.per_sample_sequences import (SingleLanePerSamplePairedEndFastqDirFmt,
+                                           SingleLanePerSampleSingleEndFastqDirFmt,
+                                           FastqManifestFormat,
+                                           YamlFormat)
 import tempfile
 
 def _view_artifact_type():
@@ -131,7 +131,7 @@ def _fastq_id_maker(per_sample_sequences, artifactType):
                 sampleReverse.append(None)
 
     if (len(sampleForward) != len(sampleReverse)
-    and (artifactType == "SampleData[PairedEndSequencesWithQuality]")):
+    and ("SampleData[PairedEndSequencesWithQuality]" in artifactType)):
 
         raise ValueError("The number of forward and reverse samples do not match.")
 
@@ -253,6 +253,7 @@ def main(per_sample_sequences, threads, taxa, region):
                                                    barcode_id=barcode,
                                                    lane_number=1,
                                                    read_number=1)
+
         manifest_fn.write("{},{},forward\n".format(sequenceID,pathForward.name))
         # Create trimmed sequences.
         dedup_obj.create_trimmed_seqs(str(pathForward), gzipped=True, itspos=its_pos)

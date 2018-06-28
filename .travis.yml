@@ -1,7 +1,31 @@
 language: python
-python:
-  - "3.6"
+dist: trusty
+sudo: false
   
+# command to install dependencies
+before_install:
+ - wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+ - export MINICONDAS="$HOME/miniconda"
+ - bash miniconda.sh -b -p $MINICONDAS
+ - export PATH="$MINICONDAS/bin:$PATH"
+ - conda config --set always_yes yes
+ - conda update -q conda
+ - wget -q https://raw.githubusercontent.com/qiime2/environment-files/master/latest/staging/qiime2-latest-py35-linux-conda.yml
+ - conda env create -q -n test-env --file qiime2-latest-py35-linux-conda.
+ - source activate test-env
+install:
+  - conda config --add channels bioconda
+  - conda install hmmer
+  - conda install bbmap
+  - pip install itsxpress
+  - pip install -e .
+  - qiime dev refresh-cache
+  - pip install codecov
+# command to run tests
+script:
+  - nosetests --with-coverage # or py.test for Python versions 3.5 and below
+
 after_success:
   - codecov
+
 

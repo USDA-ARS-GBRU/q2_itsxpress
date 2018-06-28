@@ -8,6 +8,8 @@ setup(
     author_email='kweber1@ufl.edu',
     description="itsxpress qiime2 plugin",
     url='https://github.com/kweber1/ITSxpress-qiime2',
+    test_suite ='nose.collector',
+
     install_requires=[
         'itsxpress'
 
