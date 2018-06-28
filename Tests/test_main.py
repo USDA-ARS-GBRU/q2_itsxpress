@@ -55,7 +55,6 @@ def test_fastq_id_maker():
         raise AssertionError()
     testFile2 = os.path.join(TEST_DIR, "test_data","pairedAllForward","445cf54a-bf06-4852-8010-13a60fa1598c","data")
     testData2 = SingleLanePerSamplePairedEndFastqDirFmt(testFile2,"r")
-    passed = False
     try:
         itsxq._fastq_id_maker(testData2, artifactType)
         passed = True
