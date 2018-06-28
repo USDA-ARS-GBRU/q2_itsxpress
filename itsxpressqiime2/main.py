@@ -68,6 +68,64 @@ def _view_artifact_type():
     except:
         raise ValueError("The metadata file of the qza you entered is missing or the 'type:' in the file is missing.")
 
+def _set_fastqs_and_check(per_sample_sequences, artifactType, sequence, singleEnd, threads):
+
+    """Checks and writes the fastqs as well as if there paired end, interleaved and single end.
+
+        Args:
+
+            per_sample_sequences (SingleLanePerSampleSingleEndFastqDirFmt): The SingleLanePerSampleSingleEndFastqDirFmt type
+            of the input.
+            artifactType (str): The artifact type in the metadata file.
+            sequence (list): The list of sequences and their IDs
+            singleEnd (bool): If the sequences are singled ended or not
+            threads (int): The amount of threads to use
+
+        Returns:
+
+            (zip lists): The path/name of the sequences.
+            (bool): If single end is true or false
+
+        Raises:
+
+            ValueError1: BBTools error or fastq format issue.
+            ValueError2: BBmerge error.
+
+        """
+    # Setting a temp folder
+    dirt = tempfile.tempdir
+    # Setting the fastq files and if singleEnd is used.
+    fastq = os.path.join(str(per_sample_sequences.path), str(sequence[0]))
+    if "SampleData[PairedEndSequencesWithQuality]" in artifactType:
+        fastq2 = os.path.join(str(per_sample_sequences.path), str(sequence[1]))
+    else:
+        fastq2 = sequence[1]
+    sequenceID = sequence[2]
+    # checking fastqs
+    try:
+        itsx._check_fastqs(fastq, fastq2)
+        # Parse input types
+        paired_end, interleaved = itsx._is_paired(fastq, fastq2, singleEnd)
+    except:
+        raise ValueError("There is a problem with the fastq file(s) you selected or\n"
+                         "BBtools was not found. check that the BBtools reformat.sh package is executable.")
+    # Create SeqSample objects and merge if needed.
+    try:
+        if paired_end and interleaved:
+            sobj = itsx.SeqSamplePairedInterleaved(fastq=fastq, tempdir=dirt)
+            sobj._merge_reads(threads=threads)
+
+        elif paired_end and not interleaved:
+            sobj = itsx.SeqSamplePairedNotInterleaved(fastq=fastq, fastq2=fastq2, tempdir=dirt)
+            sobj._merge_reads(threads=threads)
+
+        elif not paired_end and not interleaved:
+            sobj = itsx.SeqSampleNotPaired(fastq=fastq, tempdir=dirt)
+
+    except:
+        raise ValueError("BBmerge was not found. check that the BBmerge reformat.sh package is executible")
+
+    return sequenceID, sobj
 
 def _write_metadata(results):
 
@@ -111,7 +169,7 @@ def _fastq_id_maker(per_sample_sequences, artifactType):
         if "#" in line:
             continue
 
-        elif line == "sample-id,filename,direction":
+        elif "sample-id,filename,direction" in line:
             continue
 
         elif ",forward" in line:
@@ -182,13 +240,9 @@ def main(per_sample_sequences, threads, taxa, region):
 
     Raises:
 
-        ValueError1: BBTools error or fastq format issue.
-        ValueError2: BBmerge error.
-        ValueError3: hmmsearch error.
+        ValueError1: hmmsearch error.
 
     """
-    # Setting a temp folder
-    dirt = tempfile.tempdir
     # Setting the current dir
     os.chdir(str(per_sample_sequences.path))
     # Finding the artifact type.
@@ -199,6 +253,7 @@ def main(per_sample_sequences, threads, taxa, region):
     manifest = FastqManifestFormat()
     manifest_fn = manifest.open()
     manifest_fn.write('sample-id,filename,direction\n')
+    # Getting the sequences from the manifest
     sequences,singleEnd = _fastq_id_maker(per_sample_sequences, artifactType)
     sequenceList = set(sequences)
     barcode = 0
@@ -206,37 +261,8 @@ def main(per_sample_sequences, threads, taxa, region):
     results = SingleLanePerSampleSingleEndFastqDirFmt()
     # Running the for loop for each sample
     for sequence in sequenceList:
-
-        # Setting the fastq files and if singleEnd is used.
-        fastq = os.path.join(str(per_sample_sequences.path),str(sequence[0]))
-        if "SampleData[PairedEndSequencesWithQuality]" in artifactType:
-            fastq2 = os.path.join(str(per_sample_sequences.path),str(sequence[1]))
-        else:
-            fastq2 = sequence[1]
-        sequenceID = sequence[2]
-        # Running the main ITSxpress program.
-        try:
-            itsx._check_fastqs(fastq, fastq2)
-            # Parse input types
-            paired_end, interleaved = itsx._is_paired(fastq, fastq2, singleEnd)
-        except:
-            raise ValueError("There is a problem with the fastq file(s) you selected or\n"
-                             "BBtools was not found. check that the BBtools reformat.sh package is executable.")
-        # Create SeqSample objects and merge if needed.
-        try:
-            if paired_end and interleaved:
-                sobj = itsx.SeqSamplePairedInterleaved(fastq=fastq, tempdir=dirt)
-                sobj._merge_reads(threads=threads)
-
-            elif paired_end and not interleaved:
-                sobj = itsx.SeqSamplePairedNotInterleaved(fastq=fastq, fastq2=fastq2, tempdir=dirt)
-                sobj._merge_reads(threads=threads)
-
-            elif not paired_end and not interleaved:
-                sobj = itsx.SeqSampleNotPaired(fastq=fastq, tempdir=dirt)
-
-        except:
-            raise ValueError("BBmerge was not found. check that the BBmerge reformat.sh package is executible")
+        # writing fastqs and there attributes and checking the files
+        sequenceID,sobj=_set_fastqs_and_check(per_sample_sequences,artifactType,sequence,singleEnd,threads)
 
         # Deduplicate
         sobj._deduplicate(threads=threads)
@@ -261,6 +287,7 @@ def main(per_sample_sequences, threads, taxa, region):
         dedup_obj.create_trimmed_seqs(str(pathForward), gzipped=True, itspos=its_pos)
         # Deleting the temp files.
         itsx.shutil.rmtree(sobj.tempdir)
+        # Adding one to the barcode
         barcode += 1
     #Writing out the results.
     manifest_fn.close()
