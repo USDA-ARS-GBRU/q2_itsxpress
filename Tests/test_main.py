@@ -1,7 +1,5 @@
 import os
 
-import subprocess
-
 import itsxpressqiime2.main as itsxq
 
 from nose.tools import assert_raises
@@ -19,7 +17,7 @@ def test_view_artifcat_type():
     testFile2 = os.path.join(TEST_DIR, "test_data","pairedbroken","50d5f31a-a761-4c04-990c-e7668fe6bf00","data")
     testData2 = SingleLanePerSamplePairedEndFastqDirFmt(testFile2,"r")
     os.chdir(str(testData2))
-    assert_raises(subprocess.CalledProcessError, exp2=itsxq._view_artifact_type())
+    assert_raises(ValueError,exp2=itsxq._view_artifact_type())
 
 def test_fastq_id_maker():
     testFile = os.path.join(TEST_DIR, "test_data","paired","445cf54a-bf06-4852-8010-13a60fa1598c","data")
