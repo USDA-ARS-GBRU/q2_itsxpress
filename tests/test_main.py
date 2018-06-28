@@ -1,6 +1,6 @@
 import os
 
-import itsxpressqiime2.main as itsxq
+import q2_itsxpress.q2_itsxpress as itsxq
 
 import operator
 

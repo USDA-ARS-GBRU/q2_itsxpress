@@ -1,9 +1,9 @@
 from setuptools import setup
 
 setup(
-    name='itsxpressqiime2',
+    name='q2_itsxpress',
     version='1.3',
-    packages=['itsxpressqiime2'],
+    packages=['q2_itsxpress'],
     author='Kyle Weber',
     author_email='kweber1@ufl.edu',
     description="itsxpress qiime2 plugin",
@@ -15,7 +15,7 @@ setup(
 
     ],
     entry_points={
-        'qiime2.plugins':['itsxpressqiime2=itsxpressqiime2.plugin_setup:plugin']
+        'qiime2.plugins':['q2_itsxpress=q2_itsxpress.plugin_setup:plugin']
     },
     zip_safe=False
 )
