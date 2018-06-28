@@ -30,8 +30,7 @@ import yaml
 
 from itsxpress import main as itsx
 
-from itsxpress.definitions import (ROOT_DIR,
-                                   taxa_dict)
+from itsxpress.definitions import (taxa_dict)
 
 from q2_types.per_sample_sequences import (SingleLanePerSamplePairedEndFastqDirFmt,
                                            SingleLanePerSampleSingleEndFastqDirFmt,
@@ -259,6 +258,8 @@ def main(per_sample_sequences, threads, taxa, region):
     barcode = 0
     # Creating result dir
     results = SingleLanePerSampleSingleEndFastqDirFmt()
+    # Setting root dir
+    ROOT_DIRT = os.path.dirname(os.path.abspath(__file__))
     # Running the for loop for each sample
     for sequence in sequenceList:
         # writing fastqs and there attributes and checking the files
@@ -268,7 +269,7 @@ def main(per_sample_sequences, threads, taxa, region):
         sobj._deduplicate(threads=threads)
         try:
             # HMMSearch for ITS regions
-            hmmfile = os.path.join(ROOT_DIR, "ITSx_db", "HMMs", taxa_dict[taxa])
+            hmmfile = os.path.join(ROOT_DIRT, "ITSx_db", "HMMs", taxa_dict[taxa])
             sobj._search(hmmfile=hmmfile, threads=threads)
         except:
             raise ValueError("hmmsearch was not found, make sure HMMER3 is installed and executible")
