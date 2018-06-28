@@ -23,16 +23,21 @@ Refernce:
 	eukaryotes for use in environmental sequencing. Methods in Ecology and Evolution,
 	4: 914-919, 2013 (DOI: 10.1111/2041-210X.12073)
 """
-from q2_types.per_sample_sequences import SingleLanePerSamplePairedEndFastqDirFmt, \
-                                          SingleLanePerSampleSingleEndFastqDirFmt, \
-                                          FastqGzFormat, \
-                                          FastqManifestFormat, \
-                                          YamlFormat
+
 import os
+
 import yaml
+
 from itsxpress import main as itsx
+
 from itsxpress.definitions import ROOT_DIR,\
                                   taxa_dict
+
+from q2_types.per_sample_sequences import SingleLanePerSamplePairedEndFastqDirFmt, \
+                                          SingleLanePerSampleSingleEndFastqDirFmt, \
+                                          FastqManifestFormat, \
+                                          YamlFormat
+import tempfile
 
 def _view_artifact_type():
 
@@ -59,7 +64,6 @@ def _view_artifact_type():
                 break
 
         fnOpen.close()
-
         return artifactType
     except:
         raise ValueError("The metadata file of the qza you entered is missing or the 'type:' in the file is missing.")
@@ -81,7 +85,7 @@ def _write_metadata(results):
 
 def _fastq_id_maker(per_sample_sequences, artifactType):
 
-    """Iterates thru the manifest to get the file path/name.
+    """Iterates among the manifest to get the file path/name.
 
     Args:
 
@@ -104,36 +108,40 @@ def _fastq_id_maker(per_sample_sequences, artifactType):
     singleEnd = False
     for line in fn:
 
-        if line[0] == "#":
+        if "#" in line:
             continue
+
         elif line == "sample-id,filename,direction":
             continue
+
         elif ",forward" in line:
             line = line.split(",")
             sampleForward.append(line[1].replace(",",""))
             outputNames.append(line[0].replace(",",""))
+
         elif ",reverse" in line:
+
             if "SampleData[PairedEndSequencesWithQuality]" in artifactType:
                 line = line.split(",")
                 sampleReverse.append(line[1].replace(",",""))
+
             else:
                 line = line.split(",")
                 sampleForward.append(line[1].replace(",",""))
                 sampleReverse.append(None)
 
     if (len(sampleForward) != len(sampleReverse)
-        and (artifactType == "SampleData[PairedEndSequencesWithQuality]")):
+    and (artifactType == "SampleData[PairedEndSequencesWithQuality]")):
+
         raise ValueError("The number of forward and reverse samples do not match.")
 
     else:
-        sampleIds = zip(sampleForward, sampleReverse, outputNames)
-        if ("SampleData[SequencesWithQuality]" in artifactType):
-            singleEnd = True
 
+        sampleIds = zip(sampleForward, sampleReverse, outputNames)
+        if "SampleData[SequencesWithQuality]" in artifactType:
+            singleEnd = True
     return sampleIds, singleEnd
 
-
-# The ITSxpress handling
 def _taxa_prefix_to_taxa(taxa_prefix):
 
     """Turns the taxa prefix letter into the taxa
@@ -153,6 +161,7 @@ def _taxa_prefix_to_taxa(taxa_prefix):
     taxa_choice = taxa_dict[taxa_prefix]
     return taxa_choice
 
+# The ITSxpress handling
 def main(per_sample_sequences, threads, taxa, region):
     """The main communtion between the pluin and the ITSxpress program.
 
@@ -176,12 +185,13 @@ def main(per_sample_sequences, threads, taxa, region):
         ValueError3: hmmsearch error.
 
     """
-    dirt = "/tmp"
+    # Setting a temp folder
+    dirt = tempfile.tempdir
     # Setting the current dir
     os.chdir(str(per_sample_sequences.path))
     # Finding the artifact type.
     artifactType = _view_artifact_type()
-    # setting the taxa
+    # Setting the taxa
     taxa = _taxa_prefix_to_taxa(taxa)
     # Writing the manifest for the output qza
     manifest = FastqManifestFormat()
@@ -190,6 +200,9 @@ def main(per_sample_sequences, threads, taxa, region):
     sequences,singleEnd = _fastq_id_maker(per_sample_sequences, artifactType)
     sequenceList = set(sequences)
     barcode = 0
+    # Creating result dir
+    results = SingleLanePerSampleSingleEndFastqDirFmt()
+    # Running the for loop for each sample
     for sequence in sequenceList:
 
         # Setting the fastq files and if singleEnd is used.
@@ -236,30 +249,22 @@ def main(per_sample_sequences, threads, taxa, region):
         its_pos = itsx.ItsPosition(domtable=sobj.dom_file, region=region)
         # Create deduplication object.
         dedup_obj = itsx.Dedup(uc_file=sobj.uc_file, rep_file=sobj.rep_file, seq_file=sobj.seq_file)
-        results = SingleLanePerSampleSingleEndFastqDirFmt()
         pathForward = results.sequences.path_maker(sample_id=sequenceID,
                                                    barcode_id=barcode,
                                                    lane_number=1,
                                                    read_number=1)
-        barcode+=1
-        pathReverse = results.sequences.path_maker(sample_id=sequenceID,
-                                                   barcode_id=barcode,
-                                                   lane_number=1,
-                                                   read_number=2)
-        manifest_fn.write("{},{},forward".format(sequenceID,pathForward.name))
-        manifest_fn.write("{},{},reverse".format(sequenceID,pathReverse.name))
+        manifest_fn.write("{},{},forward\n".format(sequenceID,pathForward.name))
         # Create trimmed sequences.
         dedup_obj.create_trimmed_seqs(str(pathForward), gzipped=True, itspos=its_pos)
-        dedup_obj.create_trimmed_seqs(str(pathReverse), gzipped=True, itspos=its_pos)
         # Deleting the temp files.
         itsx.shutil.rmtree(sobj.tempdir)
-    # Writing out the results.
+        barcode += 1
+    #Writing out the results.
     manifest_fn.close()
     _write_metadata(results)
-
     results.manifest.write_data(manifest, FastqManifestFormat)
-    barcode += 1
     return results
+
 # Separating the functions from the commands
 
 # First command Trim for SingleLanePerSampleSingleEndFastqDirFmt
