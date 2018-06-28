@@ -21,8 +21,7 @@ install:
   - pip install -e .
   - qiime dev refresh-cache
   - pip install codecov
-  - qiime itsxpress trim-pair --i-per-sample-sequences ~/paired.qza --p-region ITS2 --p-taxa F --p-threads 4 --o-trimmed /tmp/out.qza
-
+  - qiime itsxpress
 # command to run tests
 script:
   - nosetests --with-coverage # or py.test for Python versions 3.5 and below

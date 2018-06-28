@@ -57,16 +57,16 @@ def test_fastq_id_maker():
     testData2 = SingleLanePerSamplePairedEndFastqDirFmt(testFile2,"r")
     passed = False
     try:
-        exp3 = itsxq._fastq_id_maker(testData2, artifactType)
-        passed= True
+        itsxq._fastq_id_maker(testData2, artifactType)
+        passed = True
     except:
-        pass
+        passed = False
     if passed:
         raise AssertionError()
     testFile3 = os.path.join(TEST_DIR, "test_data","paired","445cf54a-bf06-4852-8010-13a60fa1598c","data")
     testData3 = SingleLanePerSamplePairedEndFastqDirFmt(testFile3,"r")
     artifactType = "SampleData[SequencesWithQuality]"
-    exp1, exp2 = itsxq._fastq_id_maker(testData3, artifactType)
+    itsxq._fastq_id_maker(testData3, artifactType)
 
 def test_taxa_prefix_to_taxa():
     exp1 = itsxq._taxa_prefix_to_taxa("A")
@@ -116,10 +116,11 @@ def test_set_fastqs_and_check():
     passed = False
     try:
         for sequence in sequenceSet:
-            exp1= itsxq._set_fastqs_and_check(testData2, artifactType, sequence, singleEnd, threads)
+            itsxq._set_fastqs_and_check(testData2, artifactType, sequence, singleEnd, threads)
+
         passed = True
     except:
-        pass
+        passed = False
     if passed:
         raise AssertionError()
 
@@ -130,7 +131,6 @@ def test_main():
     taxa = "A"
     region = "ITS1"
     try:
-        results = itsxq.main(testData, threads, taxa, region)
+        itsxq.main(testData, threads, taxa, region)
     except:
         raise AssertionError()
-
