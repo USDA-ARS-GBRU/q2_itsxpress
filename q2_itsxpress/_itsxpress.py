@@ -82,8 +82,8 @@ def _set_fastqs_and_check(per_sample_sequences, artifactType, sequence, singleEn
 
         Returns:
 
-            (zip lists): The path/name of the sequences.
-            (bool): If single end is true or false
+            (lists): The sequenceIDs
+            (object): Ihe sobj object
 
         Raises:
 
