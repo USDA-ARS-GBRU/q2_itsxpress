@@ -136,7 +136,9 @@ def _fastq_id_maker(per_sample_sequences, artifactType):
         raise ValueError("The number of forward and reverse samples do not match.")
 
     else:
-
+        sampleForward.sort()
+        sampleReverse.sort()
+        outputNames.sort()
         sampleIds = zip(sampleForward, sampleReverse, outputNames)
         if "SampleData[SequencesWithQuality]" in artifactType:
             singleEnd = True

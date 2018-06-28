@@ -2,34 +2,40 @@ import os
 
 import subprocess
 
+import itsxpressqiime2.main as itsxq
+
 from nose.tools import assert_raises
 
 from q2_types.per_sample_sequences import SingleLanePerSamplePairedEndFastqDirFmt
 
-import itsxpressqiime2.main as itsxq
-
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
-
-
 def test_view_artifcat_type():
-    testfile = os.path.join(TEST_DIR, "test_data","paired.qza","45cf54a-bf06-4852-8010-13a60fa1598c","data")
-    os.chdir(testfile)
+    testFile = os.path.join(TEST_DIR, "test_data","paired","445cf54a-bf06-4852-8010-13a60fa1598c","data")
+    testData = SingleLanePerSamplePairedEndFastqDirFmt(testFile,"r")
+    os.chdir(str(testData))
     exp1 = itsxq._view_artifact_type()
-    assert exp1 == "SampleData[PairedEndSequencesWithQuality]"
-    testfile2 = os.path.join(TEST_DIR, "test_data","pairedbroken.qza","45cf54a-bf06-4852-8010-13a60fa1598c","data")
-    os.chdir(testfile2)
-    assert_raises(subprocess.CalledProcessError, itsxq._view_artifact_type)
+    assert "SampleData[PairedEndSequencesWithQuality]" in exp1
+    testFile2 = os.path.join(TEST_DIR, "test_data","pairedbroken","50d5f31a-a761-4c04-990c-e7668fe6bf00","data")
+    testData2 = SingleLanePerSamplePairedEndFastqDirFmt(testFile2,"r")
+    os.chdir(str(testData2))
+    assert_raises(subprocess.CalledProcessError, exp2=itsxq._view_artifact_type())
 
 def test_fastq_id_maker():
-    testfile = os.path.join(TEST_DIR, "test_data", "paired.qza")
-    test_data = SingleLanePerSamplePairedEndFastqDirFmt(testfile, "r")
+    testFile = os.path.join(TEST_DIR, "test_data","paired","445cf54a-bf06-4852-8010-13a60fa1598c","data")
+    testData = SingleLanePerSamplePairedEndFastqDirFmt(testFile,"r")
     artifactType = "SampleData[PairedEndSequencesWithQuality]"
-    exp1 = itsxq._fastq_id_maker(test_data, artifactType)
+    exp1,exp2 = itsxq._fastq_id_maker(testData, artifactType)
     expList = []
-    for sequence in exp1:
-        expList.append(sequence[0],sequence[1])
-    assert expList == ["4474-1MSITS3_0_L001_R1_001.fastq.gz","4474-1MSITS3_0_L001_R2_001.fastq.gz"]
+    exp1Set = set(exp1)
+    for sequence in exp1Set:
+        expList.append(sequence[0])
+        expList.append(sequence[1])
+    assert expList == ['4774-1-MSITS3_0_L001_R1_001.fastq.gz', '4774-1-MSITS3_1_L001_R2_001.fastq.gz']
+    assert exp2 == False
 
 def test_taxa_prefix_to_taxa():
     exp1 = itsxq._taxa_prefix_to_taxa("A")
     assert exp1 == "Alveolata"
+
+
+
