@@ -25,22 +25,24 @@ Refernce:
 """
 
 import os
+import tempfile
 
 import yaml
-
 from itsxpress import main as itsx
-
 from itsxpress.definitions import (taxa_dict)
-
 from q2_types.per_sample_sequences import (SingleLanePerSamplePairedEndFastqDirFmt,
                                            SingleLanePerSampleSingleEndFastqDirFmt,
                                            FastqManifestFormat,
                                            YamlFormat)
-import tempfile
+from q2_types.per_sample_sequences._format import _SingleLanePerSampleFastqDirFmt
 
-def _view_artifact_type():
 
+def _view_artifact_type(per_sample_sequence: _SingleLanePerSampleFastqDirFmt):
     """Opens the metadata file and looks for the 'type'.
+
+    Args:
+
+        qzaPath: The path of the qza
 
     Returns:
 
@@ -51,33 +53,33 @@ def _view_artifact_type():
     ValueError: If the metadata file is missing or the 'type' is missing in the metadata file.
 
     """
-
     try:
-        os.chdir("../")
-        path = os.path.join(os.getcwd(), "metadata.yaml")
-        fnOpen = open(path, "r")
+        per_sample_sequence_str = str(per_sample_sequence.path)
+        head = os.path.split(per_sample_sequence_str)
+        path = os.path.join(str(head[0]), "metadata.yaml")
+        fn_open = open(path, "r")
 
-        for line in fnOpen:
+        for line in fn_open:
             if 'type:' in line:
-                artifactType = line[6:]
-                break
+                artifact_type = line
+                fn_open.close()
+                return artifact_type
 
-        fnOpen.close()
-        return artifactType
     except:
         raise ValueError("The metadata file of the qza you entered is missing or the 'type:' in the file is missing.")
 
-def _set_fastqs_and_check(per_sample_sequences, artifactType, sequence, singleEnd, threads):
 
+def _set_fastqs_and_check(per_sample_sequences: _SingleLanePerSampleFastqDirFmt, artifact_type: str,
+                          sequence: tuple, single_end: bool, threads: int):
     """Checks and writes the fastqs as well as if there paired end, interleaved and single end.
 
         Args:
 
             per_sample_sequences (SingleLanePerSampleSingleEndFastqDirFmt): The SingleLanePerSampleSingleEndFastqDirFmt type
             of the input.
-            artifactType (str): The artifact type in the metadata file.
+            artifact_type (str): The artifact type in the metadata file.
             sequence (list): The list of sequences and their IDs
-            singleEnd (bool): If the sequences are singled ended or not
+            single_end (bool): If the sequences are singled ended or not
             threads (int): The amount of threads to use
 
         Returns:
@@ -95,16 +97,16 @@ def _set_fastqs_and_check(per_sample_sequences, artifactType, sequence, singleEn
     dirt = tempfile.tempdir
     # Setting the fastq files and if singleEnd is used.
     fastq = os.path.join(str(per_sample_sequences.path), str(sequence[0]))
-    if "SampleData[PairedEndSequencesWithQuality]" in artifactType:
+    if "SampleData[PairedEndSequencesWithQuality]" in artifact_type:
         fastq2 = os.path.join(str(per_sample_sequences.path), str(sequence[1]))
     else:
-        fastq2 = sequence[1]
-    sequenceID = sequence[2]
+        fastq2 = None
+    sequence_id = sequence[2]
     # checking fastqs
     try:
-        itsx._check_fastqs(fastq, fastq2)
+        itsx._check_fastqs(fastq=fastq, fastq2=fastq2)
         # Parse input types
-        paired_end, interleaved = itsx._is_paired(fastq, fastq2, singleEnd)
+        paired_end, interleaved = itsx._is_paired(fastq=fastq, fastq2=fastq2, single_end=single_end)
     except:
         raise ValueError("There is a problem with the fastq file(s) you selected or\n"
                          "BBtools was not found. check that the BBtools reformat.sh package is executable.")
@@ -113,21 +115,21 @@ def _set_fastqs_and_check(per_sample_sequences, artifactType, sequence, singleEn
         if paired_end and interleaved:
             sobj = itsx.SeqSamplePairedInterleaved(fastq=fastq, tempdir=dirt)
             sobj._merge_reads(threads=threads)
+            return sequence_id, sobj
 
         elif paired_end and not interleaved:
             sobj = itsx.SeqSamplePairedNotInterleaved(fastq=fastq, fastq2=fastq2, tempdir=dirt)
             sobj._merge_reads(threads=threads)
+            return sequence_id, sobj
 
         elif not paired_end and not interleaved:
             sobj = itsx.SeqSampleNotPaired(fastq=fastq, tempdir=dirt)
+            return sequence_id, sobj
 
     except:
         raise ValueError("BBmerge was not found. check that the BBmerge reformat.sh package is executible")
 
-    return sequenceID, sobj
-
-def _write_metadata(results):
-
+def _write_metadata(results: SingleLanePerSampleSingleEndFastqDirFmt):
     """Writes the metadata for the output qza as phred-offset33
 
     Args:
@@ -140,15 +142,15 @@ def _write_metadata(results):
     metadata.path.write_text(yaml.dump({'phred-offset': 33}))
     results.metadata.write_data(metadata, YamlFormat)
 
-def _fastq_id_maker(per_sample_sequences, artifactType):
 
+def _fastq_id_maker(per_sample_sequences: _SingleLanePerSampleFastqDirFmt, artifact_type: str):
     """Iterates among the manifest to get the file path/name.
 
     Args:
 
         per_sample_sequences (SingleLanePerSampleSingleEndFastqDirFmt): The SingleLanePerSampleSingleEndFastqDirFmt type
         of the input.
-        artifactType (str): The artifact type in the metadata file.
+        artifact_type (str): The artifact type in the metadata file.
 
     Returns:
 
@@ -159,50 +161,47 @@ def _fastq_id_maker(per_sample_sequences, artifactType):
 
     path = os.path.join(str(per_sample_sequences.path), "MANIFEST")
     fn = open(path, "r")
-    sampleForward = []
-    sampleReverse = []
-    outputNames = []
-    singleEnd = False
+    sample_forward, sample_reverse, output_names = [], [], []
+    single_end = False
     for line in fn:
-
+        parts = line.split(",")
         if "#" in line:
             continue
 
         elif "sample-id,filename,direction" in line:
             continue
 
-        elif ",forward" in line:
-            line = line.split(",")
-            sampleForward.append(line[1].replace(",",""))
-            outputNames.append(line[0].replace(",",""))
+        elif "forward" in parts[2]:
 
-        elif ",reverse" in line:
+            sample_forward.append(parts[1])
+            output_names.append(parts[0])
 
-            if "SampleData[PairedEndSequencesWithQuality]" in artifactType:
-                line = line.split(",")
-                sampleReverse.append(line[1].replace(",",""))
+        elif "reverse" in parts[2]:
+
+            if "SampleData[PairedEndSequencesWithQuality]" in artifact_type:
+                sample_reverse.append(parts[1])
 
             else:
-                line = line.split(",")
-                sampleForward.append(line[1].replace(",",""))
-                sampleReverse.append(None)
+                sample_forward.append(parts[1])
+                sample_reverse.append(None)
+                output_names.append(parts[0])
 
-    if (len(sampleForward) != len(sampleReverse)
-    and ("SampleData[PairedEndSequencesWithQuality]" in artifactType)):
+    if (len(sample_forward) != len(sample_reverse)
+            and ("SampleData[PairedEndSequencesWithQuality]" in artifact_type)):
 
         raise ValueError("The number of forward and reverse samples do not match.")
 
     else:
-        sampleForward.sort()
-        sampleReverse.sort()
-        outputNames.sort()
-        sampleIds = zip(sampleForward, sampleReverse, outputNames)
-        if "SampleData[SequencesWithQuality]" in artifactType:
-            singleEnd = True
-    return sampleIds, singleEnd
+        sample_forward.sort()
+        sample_reverse.sort()
+        output_names.sort()
+        sample_ids = zip(sample_forward, sample_reverse, output_names)
+        if "SampleData[SequencesWithQuality]" in artifact_type:
+            single_end = True
+    return sample_ids, single_end
 
-def _taxa_prefix_to_taxa(taxa_prefix):
 
+def _taxa_prefix_to_taxa(taxa_prefix: str):
     """Turns the taxa prefix letter into the taxa
 
         Args:
@@ -212,16 +211,35 @@ def _taxa_prefix_to_taxa(taxa_prefix):
 
             (str): The Taxa
     """
-    taxa_dict = {"A": "Alveolata", "B": "Bryophyta", "C": "Bacillariophyta", "D": "Amoebozoa", "E": "Euglenozoa",
-                 "F": "Fungi","G": "Chlorophyta", "H": "Rhodophyta", "I": "Phaeophyceae", "L": "Marchantiophyta",
-                 "M": "Metazoa","N": "Microsporidia","O": "Oomycota", "P": "Haptophyceae", "Q": "Raphidophyceae",
-                 "R": "Rhizaria", "S": "Synurophyceae","T": "Tracheophyta", "U": "Eustigmatophyceae", "X": "Apusozoa",
-                 "Y": "Parabasalia"}
-    taxa_choice = taxa_dict[taxa_prefix]
+    taxa_dic = {"A": "Alveolata", "B": "Bryophyta", "C": "Bacillariophyta", "D": "Amoebozoa", "E": "Euglenozoa",
+                "F": "Fungi", "G": "Chlorophyta", "H": "Rhodophyta", "I": "Phaeophyceae", "L": "Marchantiophyta",
+                "M": "Metazoa", "N": "Microsporidia", "O": "Oomycota", "P": "Haptophyceae", "Q": "Raphidophyceae",
+                "R": "Rhizaria", "S": "Synurophyceae", "T": "Tracheophyta", "U": "Eustigmatophyceae", "X": "Apusozoa",
+                "Y": "Parabasalia"}
+    taxa_choice = taxa_dic[taxa_prefix]
     return taxa_choice
 
+
+# First command Trim for SingleLanePerSampleSingleEndFastqDirFmt
+def trim_single(per_sample_sequences: SingleLanePerSampleSingleEndFastqDirFmt,
+                region: str,
+                taxa: str = "F",
+                threads: int = 1) -> SingleLanePerSampleSingleEndFastqDirFmt:
+    results = main(per_sample_sequences=per_sample_sequences, threads=threads, taxa=taxa, region=region)
+    return results
+
+
+# Second command Trim for SingleLanePerSamplePairedEndFastqDirFmt
+def trim_pair(per_sample_sequences: SingleLanePerSamplePairedEndFastqDirFmt,
+              region: str,
+              taxa: str = "F",
+              threads: int = 1) -> SingleLanePerSampleSingleEndFastqDirFmt:
+    results = main(per_sample_sequences=per_sample_sequences, threads=threads, taxa=taxa, region=region)
+    return results
+
+
 # The ITSxpress handling
-def main(per_sample_sequences, threads, taxa, region):
+def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt, threads: int, taxa: str, region: str):
     """The main communtion between the pluin and the ITSxpress program.
 
     Args:
@@ -242,10 +260,8 @@ def main(per_sample_sequences, threads, taxa, region):
         ValueError1: hmmsearch error.
 
     """
-    # Setting the current dir
-    os.chdir(str(per_sample_sequences.path))
     # Finding the artifact type.
-    artifactType = _view_artifact_type()
+    artifact_type = _view_artifact_type(per_sample_sequence=per_sample_sequences)
     # Setting the taxa
     taxa = _taxa_prefix_to_taxa(taxa)
     # Writing the manifest for the output qza
@@ -253,23 +269,24 @@ def main(per_sample_sequences, threads, taxa, region):
     manifest_fn = manifest.open()
     manifest_fn.write('sample-id,filename,direction\n')
     # Getting the sequences from the manifest
-    sequences,singleEnd = _fastq_id_maker(per_sample_sequences, artifactType)
-    sequenceList = set(sequences)
+    sequences, single_end = _fastq_id_maker(per_sample_sequences=per_sample_sequences, artifact_type=artifact_type)
+    sequence_set = set(sequences)
     barcode = 0
     # Creating result dir
     results = SingleLanePerSampleSingleEndFastqDirFmt()
     # Setting root dir
-    ROOT_DIRT = os.path.dirname(os.path.abspath(__file__))
+    root_dir = os.path.dirname(os.path.abspath(__file__))
     # Running the for loop for each sample
-    for sequence in sequenceList:
+    for sequence in sequence_set:
         # writing fastqs and there attributes and checking the files
-        sequenceID,sobj=_set_fastqs_and_check(per_sample_sequences,artifactType,sequence,singleEnd,threads)
+        sequence_id, sobj = _set_fastqs_and_check(per_sample_sequences=per_sample_sequences, artifact_type=artifact_type,
+                                                  sequence=sequence, single_end=single_end, threads=threads)
 
         # Deduplicate
         sobj._deduplicate(threads=threads)
         try:
             # HMMSearch for ITS regions
-            hmmfile = os.path.join(ROOT_DIRT, "ITSx_db", "HMMs", taxa_dict[taxa])
+            hmmfile = os.path.join(root_dir, "ITSx_db", "HMMs", taxa_dict[taxa])
             sobj._search(hmmfile=hmmfile, threads=threads)
         except:
             raise ValueError("hmmsearch was not found, make sure HMMER3 is installed and executible")
@@ -278,40 +295,20 @@ def main(per_sample_sequences, threads, taxa, region):
         its_pos = itsx.ItsPosition(domtable=sobj.dom_file, region=region)
         # Create deduplication object.
         dedup_obj = itsx.Dedup(uc_file=sobj.uc_file, rep_file=sobj.rep_file, seq_file=sobj.seq_file)
-        pathForward = results.sequences.path_maker(sample_id=sequenceID,
-                                                   barcode_id=barcode,
-                                                   lane_number=1,
-                                                   read_number=1)
+        path_forward = results.sequences.path_maker(sample_id=sequence_id,
+                                                    barcode_id=barcode,
+                                                    lane_number=1,
+                                                    read_number=1)
 
-        manifest_fn.write("{},{},forward\n".format(sequenceID,pathForward.name))
+        manifest_fn.write("{},{},forward\n".format(sequence_id, path_forward.name))
         # Create trimmed sequences.
-        dedup_obj.create_trimmed_seqs(str(pathForward), gzipped=True, itspos=its_pos)
+        dedup_obj.create_trimmed_seqs(str(path_forward), gzipped=True, itspos=its_pos)
         # Deleting the temp files.
         itsx.shutil.rmtree(sobj.tempdir)
         # Adding one to the barcode
         barcode += 1
-    #Writing out the results.
+    # Writing out the results.
     manifest_fn.close()
     _write_metadata(results)
     results.manifest.write_data(manifest, FastqManifestFormat)
-    return results
-
-# Separating the functions from the commands
-
-# First command Trim for SingleLanePerSampleSingleEndFastqDirFmt
-def trim_single(per_sample_sequences: SingleLanePerSampleSingleEndFastqDirFmt,
-         region: str,
-         taxa : str="F",
-         threads: int=1)-> SingleLanePerSampleSingleEndFastqDirFmt:
-
-    results = main(per_sample_sequences, threads, taxa, region)
-    return results
-
-# Second command Trim for SingleLanePerSamplePairedEndFastqDirFmt
-def trim_pair(per_sample_sequences: SingleLanePerSamplePairedEndFastqDirFmt,
-               region: str,
-               taxa: str="F",
-               threads: int=1) -> SingleLanePerSampleSingleEndFastqDirFmt:
-
-    results = main(per_sample_sequences, threads, taxa, region)
     return results

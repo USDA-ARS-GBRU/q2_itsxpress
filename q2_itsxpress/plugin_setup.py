@@ -1,17 +1,14 @@
-
+from q2_types.per_sample_sequences import (SequencesWithQuality,
+                                           PairedEndSequencesWithQuality,
+                                           JoinedSequencesWithQuality)
 from q2_types.sample_data import SampleData
+from qiime2.plugin import (Plugin,
+                           Str,
+                           Choices,
+                           Int)
 
-from q2_types.per_sample_sequences import SequencesWithQuality, \
-                                          PairedEndSequencesWithQuality, \
-                                          JoinedSequencesWithQuality
-
-from qiime2.plugin import Plugin,\
-                          Str, \
-                          Choices, \
-                          Int
-
-from q2_itsxpress._itsxpress import trim_single,\
-                                 trim_pair
+from q2_itsxpress._itsxpress import (trim_single,
+                                     trim_pair)
 
 plugin = Plugin(
     name='itsxpress',
@@ -31,14 +28,14 @@ plugin = Plugin(
                       'internally transcribed spacer (ITS) region of FASTQ files.'
 )
 
-taxaList = ['A','B','C','D','E','F','G','H','I','L','M','N','O','P','Q', 'R', 'S', 'T','U']
+taxaList = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U']
 
 plugin.methods.register_function(
     function=trim_single,
     inputs={'per_sample_sequences': SampleData[SequencesWithQuality |
                                                JoinedSequencesWithQuality]},
-    parameters={'region': Str %Choices(['ITS2','ITS1','ALL']),
-                'taxa': Str %Choices(taxaList),
+    parameters={'region': Str % Choices(['ITS2', 'ITS1', 'ALL']),
+                'taxa': Str % Choices(taxaList),
                 'threads': Int},
     outputs=[('trimmed', SampleData[SequencesWithQuality])],
     input_descriptions={'per_sample_sequences': 'The artifact that contains the sequence file(s).'
@@ -81,8 +78,8 @@ plugin.methods.register_function(
 plugin.methods.register_function(
     function=trim_pair,
     inputs={'per_sample_sequences': SampleData[PairedEndSequencesWithQuality]},
-    parameters={'region': Str %Choices(['ITS2','ITS1','ALL']),
-                'taxa': Str %Choices(taxaList),
+    parameters={'region': Str % Choices(['ITS2', 'ITS1', 'ALL']),
+                'taxa': Str % Choices(taxaList),
                 'threads': Int},
     outputs=[('trimmed', SampleData[SequencesWithQuality])],
     input_descriptions={'per_sample_sequences': 'The artifact that contains the sequence file(s). '
