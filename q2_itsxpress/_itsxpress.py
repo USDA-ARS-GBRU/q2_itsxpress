@@ -313,7 +313,7 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
         except (ModuleNotFoundError or
                 FileNotFoundError or
                 NotADirectoryError):
-            
+
             raise ValueError("hmmsearch was not found, make sure HMMER3 is installed and executable")
 
         # Parse HMMseach output.

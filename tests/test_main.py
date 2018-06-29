@@ -58,7 +58,10 @@ def test_fastq_id_maker():
     try:
         itsx._fastq_id_maker(per_sample_sequences=test_data2, artifact_type=artifact_type)
         passed = True
-    except:
+    except (ValueError or
+            NotADirectoryError or
+            FileNotFoundError):
+
         passed = False
     if passed:
         raise AssertionError()
@@ -119,9 +122,8 @@ def test_set_fastqs_and_check():
     passed = False
     try:
         for sequence in sequence_set:
-            itsx._set_fastqs_and_check(per_sample_sequences=test_data2, artifact_type=artifact_type, sequence=sequence,
-                                       single_end=single_end, threads=threads)
-
+            itsx._set_fastqs_and_check(per_sample_sequences=test_data2, artifact_type=artifact_type,
+                                       sequence=sequence, single_end=single_end, threads=threads)
         passed = True
     except:
         passed = False
@@ -137,5 +139,5 @@ def test_main():
     region = "ITS1"
     try:
         itsx.main(per_sample_sequences=test_data, threads=threads, taxa=taxa, region=region)
-    except:
+    except ValueError:
         raise AssertionError()
