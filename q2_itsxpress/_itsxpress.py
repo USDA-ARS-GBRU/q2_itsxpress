@@ -119,7 +119,9 @@ def _set_fastqs_and_check(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
     try:
         itsx._check_fastqs(fastq=fastq, fastq2=fastq2)
         # Parse input types
-        paired_end, interleaved = itsx._is_paired(fastq=fastq, fastq2=fastq2, single_end=single_end)
+        paired_end, interleaved = itsx._is_paired(fastq=fastq,
+                                                  fastq2=fastq2,
+                                                  single_end=single_end)
     except (NotADirectoryError,
             FileNotFoundError,
             ModuleNotFoundError):
@@ -129,17 +131,21 @@ def _set_fastqs_and_check(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
     # Create SeqSample objects and merge if needed.
     try:
         if paired_end and interleaved:
-            sobj = itsx.SeqSamplePairedInterleaved(fastq=fastq, tempdir=dirt)
+            sobj = itsx.SeqSamplePairedInterleaved(fastq=fastq,
+                                                   tempdir=dirt)
             sobj._merge_reads(threads=threads)
             return sequence_id, sobj
 
         elif paired_end and not interleaved:
-            sobj = itsx.SeqSamplePairedNotInterleaved(fastq=fastq, fastq2=fastq2, tempdir=dirt)
+            sobj = itsx.SeqSamplePairedNotInterleaved(fastq=fastq,
+                                                      fastq2=fastq2,
+                                                      tempdir=dirt)
             sobj._merge_reads(threads=threads)
             return sequence_id, sobj
 
         elif not paired_end and not interleaved:
-            sobj = itsx.SeqSampleNotPaired(fastq=fastq, tempdir=dirt)
+            sobj = itsx.SeqSampleNotPaired(fastq=fastq,
+                                           tempdir=dirt)
             return sequence_id, sobj
 
     except (ModuleNotFoundError,
@@ -218,7 +224,9 @@ def _fastq_id_maker(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
         sample_forward.sort()
         sample_reverse.sort()
         output_names.sort()
-        sample_ids = zip(sample_forward, sample_reverse, output_names)
+        sample_ids = zip(sample_forward,
+                         sample_reverse,
+                         output_names)
         if "SampleData[SequencesWithQuality]" in artifact_type:
             single_end = True
     return sample_ids, single_end
@@ -249,7 +257,10 @@ def trim_single(per_sample_sequences: SingleLanePerSampleSingleEndFastqDirFmt,
                 region: str,
                 taxa: str = "F",
                 threads: int = 1) -> SingleLanePerSampleSingleEndFastqDirFmt:
-    results = main(per_sample_sequences=per_sample_sequences, threads=threads, taxa=taxa, region=region)
+    results = main(per_sample_sequences=per_sample_sequences,
+                   threads=threads,
+                   taxa=taxa,
+                   region=region)
     return results
 
 
@@ -258,7 +269,10 @@ def trim_pair(per_sample_sequences: SingleLanePerSamplePairedEndFastqDirFmt,
               region: str,
               taxa: str = "F",
               threads: int = 1) -> SingleLanePerSampleSingleEndFastqDirFmt:
-    results = main(per_sample_sequences=per_sample_sequences, threads=threads, taxa=taxa, region=region)
+    results = main(per_sample_sequences=per_sample_sequences,
+                   threads=threads,
+                   taxa=taxa,
+                   region=region)
     return results
 
 
@@ -297,7 +311,8 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
     manifest_fn = manifest.open()
     manifest_fn.write('sample-id,filename,direction\n')
     # Getting the sequences from the manifest
-    sequences, single_end = _fastq_id_maker(per_sample_sequences=per_sample_sequences, artifact_type=artifact_type)
+    sequences, single_end = _fastq_id_maker(per_sample_sequences=per_sample_sequences,
+                                            artifact_type=artifact_type)
     sequence_set = set(sequences)
     barcode = 0
     # Creating result dir
@@ -309,7 +324,9 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
         # writing fastqs and there attributes and checking the files
         sequence_id, sobj = _set_fastqs_and_check(per_sample_sequences=per_sample_sequences,
                                                   artifact_type=artifact_type,
-                                                  sequence=sequence, single_end=single_end, threads=threads)
+                                                  sequence=sequence,
+                                                  single_end=single_end,
+                                                  threads=threads)
 
         # Deduplicate
         sobj._deduplicate(threads=threads)
@@ -324,9 +341,13 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
             raise ValueError("hmmsearch was not found, make sure HMMER3 is installed and executable")
 
         # Parse HMMseach output.
-        its_pos = itsx.ItsPosition(domtable=sobj.dom_file, region=region)
+        its_pos = itsx.ItsPosition(domtable=sobj.dom_file,
+                                   region=region)
         # Create deduplication object.
-        dedup_obj = itsx.Dedup(uc_file=sobj.uc_file, rep_file=sobj.rep_file, seq_file=sobj.seq_file)
+        dedup_obj = itsx.Dedup(uc_file=sobj.uc_file,
+                               rep_file=sobj.rep_file,
+                               seq_file=sobj.seq_file)
+
         path_forward = results.sequences.path_maker(sample_id=sequence_id,
                                                     barcode_id=barcode,
                                                     lane_number=1,
@@ -334,7 +355,9 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
 
         manifest_fn.write("{},{},forward\n".format(sequence_id, path_forward.name))
         # Create trimmed sequences.
-        dedup_obj.create_trimmed_seqs(str(path_forward), gzipped=True, itspos=its_pos)
+        dedup_obj.create_trimmed_seqs(str(path_forward),
+                                      gzipped=True,
+                                      itspos=its_pos)
         # Deleting the temp files.
         itsx.shutil.rmtree(sobj.tempdir)
         # Adding one to the barcode
@@ -342,5 +365,6 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
     # Writing out the results.
     manifest_fn.close()
     _write_metadata(results=results)
-    results.manifest.write_data(manifest, FastqManifestFormat)
+    results.manifest.write_data(manifest,
+                                FastqManifestFormat)
     return results
