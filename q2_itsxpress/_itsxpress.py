@@ -8,13 +8,17 @@ et al. (2013) published software the software package ITSx to do this.
 ITSxpress is a high-speed implementation of the methods in	ITSx. It can process a typical
 ITS amplicon sample with 100,000 read pairs in about 5 minutes, aproxamatly 100x faster.
 It also trims fastq files rather than just fasta files.
+
 Process:
+
 	* Merges and error corrects reads using bbduk if reade are paired-end
 	* Deduplicates reads using Vmatch to eliminate redundant hmm searches
 	* Searches for conserved regions using the ITSx hmms, useing HMMsearch:
 	  https://cryptogenomicon.org/2011/05/27/hmmscan-vs-hmmsearch-speed-the-numerology/
 	* Parses everyting in python returning (optionally gzipped) fastq files.
+
 Refernce:
+
 	Johan Bengtsson-Palme, Vilmar Veldre, Martin Ryberg, Martin Hartmann, Sara Branco,
 	Zheng Wang, Anna Godhe, Yann Bertrand, Pierre De Wit, Marisol Sanchez,
 	Ingo Ebersberger, Kemal Sanli, Filipe de Souza, Erik Kristiansson, Kessy Abarenkov,
@@ -29,7 +33,7 @@ import tempfile
 
 import yaml
 from itsxpress import main as itsx
-from itsxpress.definitions import (taxa_dict)
+from itsxpress.definitions import taxa_dict
 from q2_types.per_sample_sequences import (SingleLanePerSamplePairedEndFastqDirFmt,
                                            SingleLanePerSampleSingleEndFastqDirFmt,
                                            FastqManifestFormat,
@@ -37,7 +41,7 @@ from q2_types.per_sample_sequences import (SingleLanePerSamplePairedEndFastqDirF
 from q2_types.per_sample_sequences._format import _SingleLanePerSampleFastqDirFmt
 
 
-def _view_artifact_type(per_sample_sequence: _SingleLanePerSampleFastqDirFmt):
+def _view_artifact_type(per_sample_sequence: _SingleLanePerSampleFastqDirFmt) -> str:
     """Opens the metadata file and looks for the 'type'.
 
     Args:
@@ -69,8 +73,12 @@ def _view_artifact_type(per_sample_sequence: _SingleLanePerSampleFastqDirFmt):
         raise ValueError("The metadata file of the qza you entered is missing or the 'type:' in the file is missing.")
 
 
-def _set_fastqs_and_check(per_sample_sequences: _SingleLanePerSampleFastqDirFmt, artifact_type: str,
-                          sequence: tuple, single_end: bool, threads: int):
+def _set_fastqs_and_check(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
+                          artifact_type: str,
+                          sequence: tuple,
+                          single_end: bool,
+                          threads: int) -> (str,
+                                            object):
     """Checks and writes the fastqs as well as if there paired end, interleaved and single end.
 
         Args:
@@ -129,6 +137,7 @@ def _set_fastqs_and_check(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
     except:
         raise ValueError("BBmerge was not found. check that the BBmerge reformat.sh package is executible")
 
+
 def _write_metadata(results: SingleLanePerSampleSingleEndFastqDirFmt):
     """Writes the metadata for the output qza as phred-offset33
 
@@ -143,7 +152,9 @@ def _write_metadata(results: SingleLanePerSampleSingleEndFastqDirFmt):
     results.metadata.write_data(metadata, YamlFormat)
 
 
-def _fastq_id_maker(per_sample_sequences: _SingleLanePerSampleFastqDirFmt, artifact_type: str):
+def _fastq_id_maker(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
+                    artifact_type: str) -> (zip,
+                                            bool):
     """Iterates among the manifest to get the file path/name.
 
     Args:
@@ -201,7 +212,7 @@ def _fastq_id_maker(per_sample_sequences: _SingleLanePerSampleFastqDirFmt, artif
     return sample_ids, single_end
 
 
-def _taxa_prefix_to_taxa(taxa_prefix: str):
+def _taxa_prefix_to_taxa(taxa_prefix: str) -> str:
     """Turns the taxa prefix letter into the taxa
 
         Args:
@@ -239,8 +250,11 @@ def trim_pair(per_sample_sequences: SingleLanePerSamplePairedEndFastqDirFmt,
 
 
 # The ITSxpress handling
-def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt, threads: int, taxa: str, region: str):
-    """The main communtion between the pluin and the ITSxpress program.
+def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
+         threads: int,
+         taxa: str,
+         region: str) -> SingleLanePerSampleSingleEndFastqDirFmt:
+    """The main communication between the plugin and the ITSxpress program.
 
     Args:
 
@@ -279,7 +293,8 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt, threads: int, ta
     # Running the for loop for each sample
     for sequence in sequence_set:
         # writing fastqs and there attributes and checking the files
-        sequence_id, sobj = _set_fastqs_and_check(per_sample_sequences=per_sample_sequences, artifact_type=artifact_type,
+        sequence_id, sobj = _set_fastqs_and_check(per_sample_sequences=per_sample_sequences,
+                                                  artifact_type=artifact_type,
                                                   sequence=sequence, single_end=single_end, threads=threads)
 
         # Deduplicate
@@ -289,7 +304,7 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt, threads: int, ta
             hmmfile = os.path.join(root_dir, "ITSx_db", "HMMs", taxa_dict[taxa])
             sobj._search(hmmfile=hmmfile, threads=threads)
         except:
-            raise ValueError("hmmsearch was not found, make sure HMMER3 is installed and executible")
+            raise ValueError("hmmsearch was not found, make sure HMMER3 is installed and executable")
 
         # Parse HMMseach output.
         its_pos = itsx.ItsPosition(domtable=sobj.dom_file, region=region)
