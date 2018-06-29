@@ -1,4 +1,5 @@
-"""ITSxpress-qiime2: A qiime2 plugin to rapidly trim ITS amplicon sequences from Fastq files
+"""
+ITSxpress-qiime2: A qiime2 plugin to rapidly trim ITS amplicon sequences from Fastq files
 Author: Adam Rivers, USDA Agricultural Reseach Service and Kyle Weber
 The internally transcribed spacer region is a region between highly conserved the small
 subunit (SSU) of rRNA and the large subunit (LSU) of the rRNA. In Eukaryotes it contains
@@ -42,7 +43,8 @@ from q2_types.per_sample_sequences._format import _SingleLanePerSampleFastqDirFm
 
 
 def _view_artifact_type(per_sample_sequence: _SingleLanePerSampleFastqDirFmt) -> str:
-    """Opens the metadata file and looks for the 'type'.
+    """
+    Opens the metadata file and looks for the 'type'.
 
     Args:
 
@@ -81,7 +83,8 @@ def _set_fastqs_and_check(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
                           single_end: bool,
                           threads: int) -> (str,
                                             object):
-    """Checks and writes the fastqs as well as if there paired end, interleaved and single end.
+    """
+    Checks and writes the fastqs as well as if there paired end, interleaved and single end.
 
         Args:
 
@@ -146,7 +149,8 @@ def _set_fastqs_and_check(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
 
 
 def _write_metadata(results: SingleLanePerSampleSingleEndFastqDirFmt):
-    """Writes the metadata for the output qza as phred-offset33
+    """
+    Writes the metadata for the output qza as phred-offset33
 
     Args:
 
@@ -162,7 +166,8 @@ def _write_metadata(results: SingleLanePerSampleSingleEndFastqDirFmt):
 def _fastq_id_maker(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
                     artifact_type: str) -> (zip,
                                             bool):
-    """Iterates among the manifest to get the file path/name.
+    """
+    Iterates among the manifest to get the file path/name.
 
     Args:
 
@@ -220,7 +225,8 @@ def _fastq_id_maker(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
 
 
 def _taxa_prefix_to_taxa(taxa_prefix: str) -> str:
-    """Turns the taxa prefix letter into the taxa
+    """
+    Turns the taxa prefix letter into the taxa
 
         Args:
             taxa_prefix (str): The taxa prefix that will be converted to taxa.
@@ -261,7 +267,8 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
          threads: int,
          taxa: str,
          region: str) -> SingleLanePerSampleSingleEndFastqDirFmt:
-    """The main communication between the plugin and the ITSxpress program.
+    """
+    The main communication between the plugin and the ITSxpress program.
 
     Args:
 
