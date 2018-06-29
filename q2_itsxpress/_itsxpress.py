@@ -69,7 +69,7 @@ def _view_artifact_type(per_sample_sequence: _SingleLanePerSampleFastqDirFmt) ->
                 fn_open.close()
                 return artifact_type
 
-    except (NotADirectoryError or
+    except (NotADirectoryError,
             FileNotFoundError):
 
         raise ValueError("The metadata file of the qza you entered is missing or the 'type:' in the file is missing.")
@@ -117,8 +117,8 @@ def _set_fastqs_and_check(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
         itsx._check_fastqs(fastq=fastq, fastq2=fastq2)
         # Parse input types
         paired_end, interleaved = itsx._is_paired(fastq=fastq, fastq2=fastq2, single_end=single_end)
-    except (NotADirectoryError or
-            FileNotFoundError or
+    except (NotADirectoryError,
+            FileNotFoundError,
             ModuleNotFoundError):
 
         raise ValueError("There is a problem with the fastq file(s) you selected or\n"
@@ -139,7 +139,7 @@ def _set_fastqs_and_check(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
             sobj = itsx.SeqSampleNotPaired(fastq=fastq, tempdir=dirt)
             return sequence_id, sobj
 
-    except (ModuleNotFoundError or
+    except (ModuleNotFoundError,
             FileNotFoundError):
 
         raise ValueError("BBmerge was not found. check that the BBmerge reformat.sh package is executible")
@@ -310,8 +310,8 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
             # HMMSearch for ITS regions
             hmmfile = os.path.join(root_dir, "ITSx_db", "HMMs", taxa_dict[taxa])
             sobj._search(hmmfile=hmmfile, threads=threads)
-        except (ModuleNotFoundError or
-                FileNotFoundError or
+        except (ModuleNotFoundError,
+                FileNotFoundError,
                 NotADirectoryError):
 
             raise ValueError("hmmsearch was not found, make sure HMMER3 is installed and executable")

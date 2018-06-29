@@ -58,8 +58,8 @@ def test_fastq_id_maker():
     try:
         itsx._fastq_id_maker(per_sample_sequences=test_data2, artifact_type=artifact_type)
         passed = True
-    except (ValueError or
-            NotADirectoryError or
+    except (ValueError,
+            NotADirectoryError,
             FileNotFoundError):
 
         passed = False
