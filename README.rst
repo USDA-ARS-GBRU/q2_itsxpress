@@ -76,7 +76,7 @@ To install the ITSxpress plugin for qiime, a few steps are needed.
 
 .. code-block:: bash
 
-	pip install itsxpressqiime2
+	pip install q2-itsxpress
 		
 2. In your qiime2 environment, refresh the plugins.
 	
