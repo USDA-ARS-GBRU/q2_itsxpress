@@ -1,0 +1,28 @@
+{% set version = "1.4" %}
+
+package:
+  name: q2_itsxpress
+  version: {{ version }}
+
+source:
+  url: https://files.pythonhosted.org/packages/c0/af/ba2f350204f4d4d3519b4836f1215ed26cc34804c8e30e0f30cca3fbcb1b/q2_itsxpress-1.4.tar.gz
+  sha256: e32d926f99aea881efab3535908af1f77d0902b00815f4f52f67941f1dce60fd
+
+build:
+  number: 1
+
+
+requirements:
+  host:
+    - itsxpress
+
+  run:
+
+test:
+  imports:
+    - q2_itsxpress
+
+about:
+  home: https://github.com/kweber1/q2_itsxpress
+  summary: 'A qiime2 plugin using ITSxpress to trim the Internally transcribed spacer (ITS) region of FASTQ files'
+

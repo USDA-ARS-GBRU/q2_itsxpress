@@ -12,7 +12,7 @@ from q2_itsxpress._itsxpress import (trim_single,
 
 plugin = Plugin(
     name='itsxpress',
-    version='1.3',
+    version='1.4',
     package='q2_itsxpress',
     website='https://github.com/kweber1/q2_itsxpress             '
             'ITSxpress: https://github.com/USDA-ARS-GBRU/itsxpress',

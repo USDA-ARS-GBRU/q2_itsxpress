@@ -1,15 +1,12 @@
+import gzip
+import operator
 import os
 
-import q2_itsxpress._itsxpress as itsx
-
-import operator
-
-import gzip
-
 from nose.tools import assert_raises
-
 from q2_types.per_sample_sequences import (SingleLanePerSamplePairedEndFastqDirFmt,
                                            SingleLanePerSampleSingleEndFastqDirFmt)
+
+import q2_itsxpress._itsxpress as itsx
 
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -21,7 +18,7 @@ def test_view_artifcat_type():
     if not ("SampleData[PairedEndSequencesWithQuality]" in exp1):
         raise AssertionError()
     test_file2 = os.path.join(TEST_DIR, "test_data", "pairedBrokenMissingData", "50d5f31a-a761-4c04-990c-e7668fe6bf00",
-                             "data")
+                              "data")
     test_data2 = SingleLanePerSamplePairedEndFastqDirFmt(test_file2, "r")
     os.chdir(str(test_data2))
     assert_raises(ValueError, exp2=itsx._view_artifact_type(per_sample_sequence=test_data))
@@ -52,7 +49,6 @@ def test_fastq_id_maker():
     for sequence in exp1_set:
         exp_list.append(str(sequence[0]))
         exp_list.append(str(sequence[1]))
-    print(exp_list)
     if exp_list != ['4774-1-MSITS3_0_L001_R1_001.fastq.gz', '4774-1-MSITS3_1_L001_R2_001.fastq.gz']:
         raise AssertionError()
     if exp2 is not False:
@@ -89,7 +85,8 @@ def test_set_fastqs_and_check():
     fn_test_data2 = (os.path.join(TEST_DIR, "test_data", "seq2.fq.gz"))
     fn_test_data3 = (os.path.join(TEST_DIR, "test_data", "seq3.fq.gz"))
     for sequence in sequence_set:
-        exp1, exp2 = itsx._set_fastqs_and_check(per_sample_sequences=test_data, artifact_type=artifact_type, sequence=sequence, single_end=single_end, threads=threads)
+        exp1, exp2 = itsx._set_fastqs_and_check(per_sample_sequences=test_data, artifact_type=artifact_type,
+                                                sequence=sequence, single_end=single_end, threads=threads)
         if exp1 != '4774-1-MSITS3':
             raise AssertionError()
         fn_output_data = gzip.open(exp2.seq_file, "rt")
@@ -122,7 +119,8 @@ def test_set_fastqs_and_check():
     passed = False
     try:
         for sequence in sequence_set:
-            itsx._set_fastqs_and_check(per_sample_sequences=test_data2, artifact_type=artifact_type, sequence=sequence, single_end=single_end, threads=threads)
+            itsx._set_fastqs_and_check(per_sample_sequences=test_data2, artifact_type=artifact_type, sequence=sequence,
+                                       single_end=single_end, threads=threads)
 
         passed = True
     except:
