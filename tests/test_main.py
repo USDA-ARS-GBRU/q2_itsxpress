@@ -114,8 +114,8 @@ def test_set_fastqs_and_check():
         if seq_filebool is False:
             raise AssertionError()
 
-    test_file2 = os.path.join(TEST_DIR, "test_data", "pairedBrokenWithMANIFEST", "50d5f31a-a761-4c04-990c-e7668fe6bf00",
-                             "data")
+    test_file2 = os.path.join(TEST_DIR, "test_data", "pairedBrokenWithMANIFEST",
+                                "50d5f31a-a761-4c04-990c-e7668fe6bf00", "data")
     test_data2 = SingleLanePerSamplePairedEndFastqDirFmt(test_file2, "r")
     sequences, single_end = itsx._fastq_id_maker(test_data2, artifact_type)
     sequence_set = set(sequences)
