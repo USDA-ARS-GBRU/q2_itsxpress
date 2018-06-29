@@ -27,16 +27,17 @@ Refernce:
 """
 
 import os
-import tempfile
-
+import shutil
 import yaml
-from itsxpress import main as itsx
-from itsxpress.definitions import taxa_dict
+
+
 from q2_types.per_sample_sequences import (SingleLanePerSamplePairedEndFastqDirFmt,
                                            SingleLanePerSampleSingleEndFastqDirFmt,
                                            FastqManifestFormat,
                                            YamlFormat)
 from q2_types.per_sample_sequences._format import _SingleLanePerSampleFastqDirFmt
+from itsxpress import main as itsxpress
+from itsxpress.definitions import taxa_dict, ROOT_DIR
 
 
 def _view_artifact_type(per_sample_sequence: _SingleLanePerSampleFastqDirFmt) -> str:
@@ -48,7 +49,8 @@ def _view_artifact_type(per_sample_sequence: _SingleLanePerSampleFastqDirFmt) ->
         (str): The artifact type in the metadata file.
 
     Raises:
-   	 ValueError: If the metadata file is missing or the 'type' is missing in the metadata file.
+   	    ValueError: If the metadata file is missing or the 'type' is missing in the metadata file.
+
     """
     try:
         per_sample_sequence_str = str(per_sample_sequence.path)
@@ -91,10 +93,8 @@ def _set_fastqs_and_check(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
         Raises:
             ValueError1: BBTools error or fastq format issue.
             ValueError2: BBmerge error.
-	    
+
         """
-    # Setting a temp folder
-    dirt = tempfile.tempdir
     # Setting the fastq files and if singleEnd is used.
     fastq = os.path.join(str(per_sample_sequences.path), str(sequence[0]))
     if "SampleData[PairedEndSequencesWithQuality]" in artifact_type:
@@ -104,11 +104,11 @@ def _set_fastqs_and_check(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
     sequence_id = sequence[2]
     # checking fastqs
     try:
-        itsx._check_fastqs(fastq=fastq, fastq2=fastq2)
+        itsxpress._check_fastqs(fastq=fastq, fastq2=fastq2)
         # Parse input types
-        paired_end, interleaved = itsx._is_paired(fastq=fastq,
-                                                  fastq2=fastq2,
-                                                  single_end=single_end)
+        paired_end, interleaved = itsxpress._is_paired(fastq=fastq,
+                                                       fastq2=fastq2,
+                                                       single_end=single_end)
     except (NotADirectoryError,
             FileNotFoundError,
             ModuleNotFoundError):
@@ -118,21 +118,21 @@ def _set_fastqs_and_check(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
     # Create SeqSample objects and merge if needed.
     try:
         if paired_end and interleaved:
-            sobj = itsx.SeqSamplePairedInterleaved(fastq=fastq,
-                                                   tempdir=dirt)
+            sobj = itsxpress.SeqSamplePairedInterleaved(fastq=fastq,
+                                                        tempdir=None)
             sobj._merge_reads(threads=threads)
             return sequence_id, sobj
 
         elif paired_end and not interleaved:
-            sobj = itsx.SeqSamplePairedNotInterleaved(fastq=fastq,
-                                                      fastq2=fastq2,
-                                                      tempdir=dirt)
+            sobj = itsxpress.SeqSamplePairedNotInterleaved(fastq=fastq,
+                                                           fastq2=fastq2,
+                                                           tempdir=None)
             sobj._merge_reads(threads=threads)
             return sequence_id, sobj
 
         elif not paired_end and not interleaved:
-            sobj = itsx.SeqSampleNotPaired(fastq=fastq,
-                                           tempdir=dirt)
+            sobj = itsxpress.SeqSampleNotPaired(fastq=fastq,
+                                                tempdir=None)
             return sequence_id, sobj
 
     except (ModuleNotFoundError,
@@ -223,7 +223,7 @@ def _taxa_prefix_to_taxa(taxa_prefix: str) -> str:
 
         Returns:
             (str): The Taxa
-	    
+
     """
     taxa_dic = {"A": "Alveolata", "B": "Bryophyta", "C": "Bacillariophyta", "D": "Amoebozoa", "E": "Euglenozoa",
                 "F": "Fungi", "G": "Chlorophyta", "H": "Rhodophyta", "I": "Phaeophyceae", "L": "Marchantiophyta",
@@ -291,14 +291,11 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
     # Getting the sequences from the manifest
     sequences, single_end = _fastq_id_maker(per_sample_sequences=per_sample_sequences,
                                             artifact_type=artifact_type)
-    sequence_set = set(sequences)
     barcode = 0
     # Creating result dir
     results = SingleLanePerSampleSingleEndFastqDirFmt()
-    # Setting root dir
-    root_dir = os.path.dirname(os.path.abspath(__file__))
     # Running the for loop for each sample
-    for sequence in sequence_set:
+    for sequence in sequences:
         # writing fastqs and there attributes and checking the files
         sequence_id, sobj = _set_fastqs_and_check(per_sample_sequences=per_sample_sequences,
                                                   artifact_type=artifact_type,
@@ -310,7 +307,7 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
         sobj._deduplicate(threads=threads)
         try:
             # HMMSearch for ITS regions
-            hmmfile = os.path.join(root_dir, "ITSx_db", "HMMs", taxa_dict[taxa])
+            hmmfile = os.path.join(ROOT_DIR, "ITSx_db", "HMMs", taxa_dict[taxa])
             sobj._search(hmmfile=hmmfile, threads=threads)
         except (ModuleNotFoundError,
                 FileNotFoundError,
@@ -319,12 +316,12 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
             raise ValueError("hmmsearch was not found, make sure HMMER3 is installed and executable")
 
         # Parse HMMseach output.
-        its_pos = itsx.ItsPosition(domtable=sobj.dom_file,
-                                   region=region)
+        its_pos = itsxpress.ItsPosition(domtable=sobj.dom_file,
+                                        region=region)
         # Create deduplication object.
-        dedup_obj = itsx.Dedup(uc_file=sobj.uc_file,
-                               rep_file=sobj.rep_file,
-                               seq_file=sobj.seq_file)
+        dedup_obj = itsxpress.Dedup(uc_file=sobj.uc_file,
+                                    rep_file=sobj.rep_file,
+                                    seq_file=sobj.seq_file)
 
         path_forward = results.sequences.path_maker(sample_id=sequence_id,
                                                     barcode_id=barcode,
@@ -337,7 +334,7 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
                                       gzipped=True,
                                       itspos=its_pos)
         # Deleting the temp files.
-        itsx.shutil.rmtree(sobj.tempdir)
+        shutil.rmtree(sobj.tempdir)
         # Adding one to the barcode
         barcode += 1
     # Writing out the results.
