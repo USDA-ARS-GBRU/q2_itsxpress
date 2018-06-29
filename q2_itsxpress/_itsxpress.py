@@ -309,6 +309,6 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt, threads: int, ta
         barcode += 1
     # Writing out the results.
     manifest_fn.close()
-    _write_metadata(results)
+    _write_metadata(SingleLanePerSampleSingleEndFastqDirFmt=results)
     results.manifest.write_data(manifest, FastqManifestFormat)
     return results
