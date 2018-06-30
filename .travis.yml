@@ -15,8 +15,10 @@ before_install:
  - source activate test-env
 install:
   - conda config --add channels bioconda
-  - conda install hmmer
+  - nosetests test_main.py:test_trim_pair_no_bb
   - conda install bbmap
+  - nosetests test_main.py:test_trim_pair_no_hmmer
+  - conda install hmmer
   - pip install itsxpress
   - pip install -e .
   - qiime dev refresh-cache

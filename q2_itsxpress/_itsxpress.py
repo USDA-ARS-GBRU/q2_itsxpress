@@ -15,7 +15,6 @@ Process:
 	* Searches for conserved regions using the ITSx hmms, useing HMMsearch:
 	  https://cryptogenomicon.org/2011/05/27/hmmscan-vs-hmmsearch-speed-the-numerology/
 	* Parses everyting in python returning (optionally gzipped) fastq files.
-	
 Refernce:
 	Johan Bengtsson-Palme, Vilmar Veldre, Martin Ryberg, Martin Hartmann, Sara Branco,
 	Zheng Wang, Anna Godhe, Yann Bertrand, Pierre De Wit, Marisol Sanchez,
@@ -37,7 +36,6 @@ from q2_types.per_sample_sequences import (SingleLanePerSamplePairedEndFastqDirF
                                            FastqManifestFormat,
                                            YamlFormat)
 from q2_types.per_sample_sequences._format import _SingleLanePerSampleFastqDirFmt
-from yaml import YAMLError, load
 
 
 def _view_artifact_type(per_sample_sequence: _SingleLanePerSampleFastqDirFmt) -> str:
@@ -57,11 +55,11 @@ def _view_artifact_type(per_sample_sequence: _SingleLanePerSampleFastqDirFmt) ->
         head = os.path.split(per_sample_sequence_str)
         path = os.path.join(str(head[0]), "metadata.yaml")
         with open(path, "r") as fn_open:
-            return load(fn_open)["type"]
+            return yaml.safe_load(fn_open)["type"]
 
     except (NotADirectoryError,
             FileNotFoundError,
-            YAMLError):
+            yaml.YAMLError):
 
         raise ValueError("The metadata file of the qza you entered is missing or the 'type:' in the file is missing.")
 
@@ -87,8 +85,7 @@ def _set_fastqs_and_check(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
             (object): Ihe sobj object
 
         Raises:
-            ValueError1: BBTools error or fastq format issue.
-            ValueError2: BBmerge error.
+            ValueError1: BBTools/ error or fastq format issue.
 
         """
     # Setting the fastq files and if singleEnd is used.
@@ -106,35 +103,28 @@ def _set_fastqs_and_check(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
                                                        fastq2=fastq2,
                                                        single_end=single_end)
     except (NotADirectoryError,
-            FileNotFoundError,
-            ModuleNotFoundError):
+            FileNotFoundError):
 
         raise ValueError("There is a problem with the fastq file(s) you selected or\n"
                          "BBtools was not found. check that the BBtools reformat.sh package is executable.")
-    # Create SeqSample objects and merge if needed.
-    try:
-        if paired_end and interleaved:
-            sobj = itsxpress.SeqSamplePairedInterleaved(fastq=fastq,
-                                                        tempdir=None)
-            sobj._merge_reads(threads=threads)
-            return sequence_id, sobj
+        # Create SeqSample objects and merge if needed.
+    if paired_end and interleaved:
+        sobj = itsxpress.SeqSamplePairedInterleaved(fastq=fastq,
+                                                    tempdir=None)
+        sobj._merge_reads(threads=threads)
+        return sequence_id, sobj
 
-        elif paired_end and not interleaved:
-            sobj = itsxpress.SeqSamplePairedNotInterleaved(fastq=fastq,
-                                                           fastq2=fastq2,
-                                                           tempdir=None)
-            sobj._merge_reads(threads=threads)
-            return sequence_id, sobj
+    elif paired_end and not interleaved:
+        sobj = itsxpress.SeqSamplePairedNotInterleaved(fastq=fastq,
+                                                       fastq2=fastq2,
+                                                       tempdir=None)
+        sobj._merge_reads(threads=threads)
+        return sequence_id, sobj
 
-        elif not paired_end and not interleaved:
-            sobj = itsxpress.SeqSampleNotPaired(fastq=fastq,
-                                                tempdir=None)
-            return sequence_id, sobj
-
-    except (ModuleNotFoundError,
-            FileNotFoundError):
-
-        raise ValueError("BBmerge was not found. check that the BBmerge reformat.sh package is executible")
+    elif not paired_end and not interleaved:
+        sobj = itsxpress.SeqSampleNotPaired(fastq=fastq,
+                                            tempdir=None)
+        return sequence_id, sobj
 
 
 def _write_metadata(results: SingleLanePerSampleSingleEndFastqDirFmt):
@@ -261,6 +251,7 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
         ValueError1: hmmsearch error.
 
     """
+    itsxpress._logger_setup("/home/kweber/Desktop/kh.txt")
     # Finding the artifact type.
     artifact_type = _view_artifact_type(per_sample_sequence=per_sample_sequences)
     # Setting the taxa
@@ -315,7 +306,7 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
                                       gzipped=True,
                                       itspos=its_pos)
         # Deleting the temp files.
-        shutil.rmtree(sobj.tempdir)
+        #shutil.rmtree(sobj.tempdir)
         # Adding one to the barcode
         barcode += 1
     # Writing out the results.

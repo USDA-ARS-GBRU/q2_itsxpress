@@ -1,1 +1,2 @@
 import q2_itsxpress._itsxpress
+import q2_itsxpress.plugin_setup
