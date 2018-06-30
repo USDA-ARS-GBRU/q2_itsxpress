@@ -52,7 +52,7 @@ TEST_FILE_SINGLEIN = os.path.join(TEST_DIR,
                                   "singleIn",
                                   "cfd0e65b-05fb-4329-9618-15ecd0aec9b3",
                                   "data")
-TEST_DATA_SINGLEIN = SingleLanePerSamplePairedEndFastqDirFmt(TEST_FILE_SINGLEIN, "r")
+TEST_DATA_SINGLEIN = SingleLanePerSampleSingleEndFastqDirFmt(TEST_FILE_SINGLEIN, "r")
 # Test artifact1
 ARTIFACT_TYPE_P = "SampleData[PairedEndSequencesWithQuality]"
 # Test artifact2
@@ -144,7 +144,7 @@ def test_trim_single():
     taxa = "F"
     region = "ITS2"
 
-    exp1 = _itsxpress.trim_pair(per_sample_sequences=TEST_DATA_SINGLEIN,
+    exp1 = _itsxpress.trim_single(per_sample_sequences=TEST_DATA_SINGLEIN,
                                 threads=threads,
                                 taxa=taxa,
                                 region=region)
