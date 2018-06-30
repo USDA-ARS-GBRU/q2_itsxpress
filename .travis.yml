@@ -20,6 +20,8 @@ install:
   - qiime dev refresh-cache
   - pip install codecov
   - qiime itsxpress
+  - pwd
+  - ls
   - nosetests ~/tests/test_main.py:test_trim_pair_no_bb
   - conda install bbmap
   - nosetests ~/tests/test_main.py:test_trim_pair_no_hmmer
