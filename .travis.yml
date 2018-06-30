@@ -6,6 +6,8 @@ sudo: false
 before_install:
  - pwd
  - ls
+ - pip install -e .
+ - nosetests ~/tests/test_main.py:test_trim_pair_no_bb
  - wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
  - export MINICONDAS="$HOME/miniconda"
  - bash miniconda.sh -b -p $MINICONDAS
