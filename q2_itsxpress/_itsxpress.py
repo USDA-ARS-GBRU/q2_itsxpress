@@ -251,7 +251,6 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
         ValueError1: hmmsearch error.
 
     """
-    itsxpress._logger_setup("/home/kweber/Desktop/kh.txt")
     # Finding the artifact type.
     artifact_type = _view_artifact_type(per_sample_sequence=per_sample_sequences)
     # Setting the taxa
@@ -306,7 +305,7 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
                                       gzipped=True,
                                       itspos=its_pos)
         # Deleting the temp files.
-        #shutil.rmtree(sobj.tempdir)
+        shutil.rmtree(sobj.tempdir)
         # Adding one to the barcode
         barcode += 1
     # Writing out the results.

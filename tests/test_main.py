@@ -114,9 +114,9 @@ def test_set_fastqs_and_check():
                                                 threads=1)
         eq_(exp2[0], "4774-1-MSITS3")
 
-    sequences3, single_end3 = _itsxpress._fastq_id_maker(per_sample_sequences=TEST_DATA_PAF,
+    sequences3= _itsxpress._fastq_id_maker(per_sample_sequences=TEST_DATA_PAF,
                                                          artifact_type=ARTIFACT_TYPE_S)
-    for sequence3 in sequences3:
+    for sequence3 in sequences3[0]:
         exp3 = _itsxpress._set_fastqs_and_check(per_sample_sequences=TEST_DATA,
                                                 artifact_type=ARTIFACT_TYPE_S,
                                                 sequence=sequence3,
