@@ -30,7 +30,7 @@ import shutil
 
 import yaml
 from itsxpress import main as itsxpress
-from itsxpress.definitions import taxa_dict, ROOT_DIR
+from itsxpress.definitions import taxa_dict
 from q2_types.per_sample_sequences import (SingleLanePerSamplePairedEndFastqDirFmt,
                                            SingleLanePerSampleSingleEndFastqDirFmt,
                                            FastqManifestFormat,
@@ -266,6 +266,8 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
     # Creating result dir
     results = SingleLanePerSampleSingleEndFastqDirFmt()
     # Running the for loop for each sample
+    ROOT_DIRT = os.path.dirname(os.path.abspath(__file__))
+
     for sequence in sequences:
         # writing fastqs and there attributes and checking the files
         sequence_id, sobj = _set_fastqs_and_check(per_sample_sequences=per_sample_sequences,
@@ -278,7 +280,7 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
         sobj._deduplicate(threads=threads)
         try:
             # HMMSearch for ITS regions
-            hmmfile = os.path.join(ROOT_DIR, "ITSx_db", "HMMs", taxa_dict[taxa])
+            hmmfile = os.path.join(ROOT_DIRT, "ITSx_db", "HMMs", taxa_dict[taxa])
             sobj._search(hmmfile=hmmfile, threads=threads)
         except (ModuleNotFoundError,
                 FileNotFoundError,
