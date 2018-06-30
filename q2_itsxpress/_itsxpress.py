@@ -28,16 +28,16 @@ Refernce:
 
 import os
 import shutil
+
 import yaml
-
-
+from itsxpress import main as itsxpress
+from itsxpress.definitions import taxa_dict, ROOT_DIR
 from q2_types.per_sample_sequences import (SingleLanePerSamplePairedEndFastqDirFmt,
                                            SingleLanePerSampleSingleEndFastqDirFmt,
                                            FastqManifestFormat,
                                            YamlFormat)
 from q2_types.per_sample_sequences._format import _SingleLanePerSampleFastqDirFmt
-from itsxpress import main as itsxpress
-from itsxpress.definitions import taxa_dict, ROOT_DIR
+from yaml import YAMLError, load
 
 
 def _view_artifact_type(per_sample_sequence: _SingleLanePerSampleFastqDirFmt) -> str:
@@ -49,40 +49,36 @@ def _view_artifact_type(per_sample_sequence: _SingleLanePerSampleFastqDirFmt) ->
         (str): The artifact type in the metadata file.
 
     Raises:
-   	    ValueError: If the metadata file is missing or the 'type' is missing in the metadata file.
+        ValueError: If the metadata file is missing or the 'type' is missing in the metadata file.
 
     """
     try:
         per_sample_sequence_str = str(per_sample_sequence.path)
         head = os.path.split(per_sample_sequence_str)
         path = os.path.join(str(head[0]), "metadata.yaml")
-        fn_open = open(path, "r")
-
-        for line in fn_open:
-            if 'type:' in line:
-                artifact_type = line
-                fn_open.close()
-                return artifact_type
+        with open(path, "r") as fn_open:
+            return load(fn_open)["type"]
 
     except (NotADirectoryError,
-            FileNotFoundError):
+            FileNotFoundError,
+            YAMLError):
 
         raise ValueError("The metadata file of the qza you entered is missing or the 'type:' in the file is missing.")
 
 
 def _set_fastqs_and_check(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
                           artifact_type: str,
-                          sequence: tuple,
+                          sequence: dict,
                           single_end: bool,
                           threads: int) -> (str,
                                             object):
     """Checks and writes the fastqs as well as if there paired end, interleaved and single end.
-    
+
         Args:
             per_sample_sequences (SingleLanePerSampleSingleEndFastqDirFmt): The SingleLanePerSampleSingleEndFastqDirFmt type
             of the input.
             artifact_type (str): The artifact type in the metadata file.
-            sequence (list): The list of sequences and their IDs
+            sequence (dict): The dictionary of sequences and their IDs
             single_end (bool): If the sequences are singled ended or not
             threads (int): The amount of threads to use
 
@@ -96,12 +92,12 @@ def _set_fastqs_and_check(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
 
         """
     # Setting the fastq files and if singleEnd is used.
-    fastq = os.path.join(str(per_sample_sequences.path), str(sequence[0]))
+    fastq = os.path.join(str(per_sample_sequences.path), str(sequence["paths"][0]))
     if "SampleData[PairedEndSequencesWithQuality]" in artifact_type:
-        fastq2 = os.path.join(str(per_sample_sequences.path), str(sequence[1]))
+        fastq2 = os.path.join(str(per_sample_sequences.path), str(sequence["paths"][1]))
     else:
         fastq2 = None
-    sequence_id = sequence[2]
+    sequence_id = sequence["id"]
     # checking fastqs
     try:
         itsxpress._check_fastqs(fastq=fastq, fastq2=fastq2)
@@ -147,7 +143,7 @@ def _write_metadata(results: SingleLanePerSampleSingleEndFastqDirFmt):
     Args:
         results (SingleLanePerSampleSingleEndFastqDirFmt): The SingleLanePerSampleSingleEndFastqDirFmt type
         of the output.
-	
+
     """
 
     metadata = YamlFormat()
@@ -156,7 +152,7 @@ def _write_metadata(results: SingleLanePerSampleSingleEndFastqDirFmt):
 
 
 def _fastq_id_maker(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
-                    artifact_type: str) -> (zip,
+                    artifact_type: str) -> (tuple,
                                             bool):
     """Iterates among the manifest to get the file path/name.
 
@@ -166,53 +162,38 @@ def _fastq_id_maker(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
         artifact_type (str): The artifact type in the metadata file.
 
     Returns:
-        (zip lists): The path/name of the sequences.
+        (tuple): The path/name of the sequences.
         (bool): If single end is true or false
 
     """
 
     path = os.path.join(str(per_sample_sequences.path), "MANIFEST")
-    fn = open(path, "r")
-    sample_forward, sample_reverse, output_names = [], [], []
-    single_end = False
-    for line in fn:
-        parts = line.split(",")
-        if "#" in line:
-            continue
+    sequences = []
+    with open(path, "r") as fn:
+        # {"id": "1", "paths": ["path/to/forward", "path/to/backward"]}
+        single_end = False
+        for line in fn:
+            parts = line.split(",")
 
-        elif "sample-id,filename,direction" in line:
-            continue
+            if "#" in line or "sample-id,filename,direction" in line:
+                continue
 
-        elif "forward" in parts[2]:
+            if not any([sequence['id'] == parts[0] for sequence in sequences]):
+                sequence = {"id": parts[0], "paths": [parts[1]]}
+                sequences.append(sequence)
+                continue
 
-            sample_forward.append(parts[1])
-            output_names.append(parts[0])
+            for sequence in sequences:
+                if sequence['id'] == parts[0] and "SampleData[PairedEndSequencesWithQuality]" in artifact_type:
+                    sequence["paths"].append(parts[1])
 
-        elif "reverse" in parts[2]:
-
-            if "SampleData[PairedEndSequencesWithQuality]" in artifact_type:
-                sample_reverse.append(parts[1])
-
-            else:
-                sample_forward.append(parts[1])
-                sample_reverse.append(None)
-                output_names.append(parts[0])
-
-    if (len(sample_forward) != len(sample_reverse)
-            and ("SampleData[PairedEndSequencesWithQuality]" in artifact_type)):
-
+    if (any([len(sequence['paths']) != 2 for sequence in sequences])
+            and "SampleData[PairedEndSequencesWithQuality]" in artifact_type):
         raise ValueError("The number of forward and reverse samples do not match.")
 
-    else:
-        sample_forward.sort()
-        sample_reverse.sort()
-        output_names.sort()
-        sample_ids = zip(sample_forward,
-                         sample_reverse,
-                         output_names)
-        if "SampleData[SequencesWithQuality]" in artifact_type:
-            single_end = True
-    return sample_ids, single_end
+    if "SampleData[SequencesWithQuality]" in artifact_type:
+        single_end = True
+    return sequences, single_end
 
 
 def _taxa_prefix_to_taxa(taxa_prefix: str) -> str:
