@@ -4,10 +4,6 @@ sudo: false
   
 # command to install dependencies
 before_install:
- - pwd
- - ls
- - pip install -e .
- - nosetests ~/tests/test_main.py:test_trim_pair_no_bb
  - wget -q https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
  - export MINICONDAS="$HOME/miniconda"
  - bash miniconda.sh -b -p $MINICONDAS
@@ -24,10 +20,11 @@ install:
   - qiime dev refresh-cache
   - pip install codecov
   - qiime itsxpress
-  - nosetests test_main.py:test_trim_pair_no_bb
+  - nosetests ~/tests/test_main.py:test_trim_pair_no_bb
   - conda install bbmap
-  - nosetests test_main.py:test_trim_pair_no_hmmer
+  - nosetests ~/tests/test_main.py:test_trim_pair_no_hmmer
   - conda install hmmer
+  - qiime dev refresh-cache
 # command to run tests
 script:
   - nosetests --with-coverage # or py.test for Python versions 3.5 and below
