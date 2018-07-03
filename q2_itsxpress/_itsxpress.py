@@ -1,12 +1,12 @@
 """ITSxpress-qiime2: A qiime2 plugin to rapidly trim ITS amplicon sequences from Fastq files
-Author: Adam Rivers, USDA Agricultural Reseach Service and Kyle Weber
+Author: Adam R. Rivers and Kyle C. Weber, USDA Agricultural Research Service
 The internally transcribed spacer region is a region between highly conserved the small
 subunit (SSU) of rRNA and the large subunit (LSU) of the rRNA. In Eukaryotes it contains
 the 5.8s genes and two variable length spacer regions. In amplicon sequening studies it is
 common practice to trim off the conserved (SSU, 5,8S or LSU) regions. Bengtsson-Palme
 et al. (2013) published software the software package ITSx to do this.
 ITSxpress is a high-speed implementation of the methods in	ITSx. It can process a typical
-ITS amplicon sample with 100,000 read pairs in about 5 minutes, aproxamatly 100x faster.
+ITS amplicon sample with 100,000 read pairs in about 5 minutes, approximately 100x faster.
 It also trims fastq files rather than just fasta files.
 
 Process:
@@ -29,13 +29,13 @@ import os
 import shutil
 
 import yaml
-from itsxpress import main as itsxpress
-from itsxpress.definitions import taxa_dict
 from q2_types.per_sample_sequences import (SingleLanePerSamplePairedEndFastqDirFmt,
                                            SingleLanePerSampleSingleEndFastqDirFmt,
                                            FastqManifestFormat,
                                            YamlFormat)
 from q2_types.per_sample_sequences._format import _SingleLanePerSampleFastqDirFmt
+from itsxpress import main as itsxpress
+from itsxpress.definitions import taxa_dict, ROOT_DIR
 
 
 def _view_artifact_type(per_sample_sequence: _SingleLanePerSampleFastqDirFmt) -> str:
@@ -198,9 +198,8 @@ def _taxa_prefix_to_taxa(taxa_prefix: str) -> str:
     """
     taxa_dic = {"A": "Alveolata", "B": "Bryophyta", "C": "Bacillariophyta", "D": "Amoebozoa", "E": "Euglenozoa",
                 "F": "Fungi", "G": "Chlorophyta", "H": "Rhodophyta", "I": "Phaeophyceae", "L": "Marchantiophyta",
-                "M": "Metazoa", "N": "Microsporidia", "O": "Oomycota", "P": "Haptophyceae", "Q": "Raphidophyceae",
-                "R": "Rhizaria", "S": "Synurophyceae", "T": "Tracheophyta", "U": "Eustigmatophyceae", "X": "Apusozoa",
-                "Y": "Parabasalia"}
+                "M": "Metazoa", "O": "Oomycota", "P": "Haptophyceae", "Q": "Raphidophyceae", "R": "Rhizaria",
+                "S": "Synurophyceae", "T": "Tracheophyta", "U": "Eustigmatophyceae", "ALL": "ALL"}
     taxa_choice = taxa_dic[taxa_prefix]
     return taxa_choice
 
@@ -266,7 +265,6 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
     # Creating result dir
     results = SingleLanePerSampleSingleEndFastqDirFmt()
     # Running the for loop for each sample
-    ROOT_DIRT = os.path.dirname(os.path.abspath(__file__))
 
     for sequence in sequences:
         # writing fastqs and there attributes and checking the files
@@ -280,7 +278,7 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
         sobj._deduplicate(threads=threads)
         try:
             # HMMSearch for ITS regions
-            hmmfile = os.path.join(ROOT_DIRT, "ITSx_db", "HMMs", taxa_dict[taxa])
+            hmmfile = os.path.join(ROOT_DIR, "ITSx_db", "HMMs", taxa_dict[taxa])
             sobj._search(hmmfile=hmmfile, threads=threads)
         except (ModuleNotFoundError,
                 FileNotFoundError,

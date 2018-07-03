@@ -1,28 +1,42 @@
-{% set version = "1.4" %}
+{% set version = "1.4.1" %}
+{% set name = "q2_itsxpress" %}
+{% set file_ext = "tar.gz" %}
+{% set hash_type = "sha256" %}
+{% set hash_value = "f974a0c6e88cde4c064cc1d12e1567d4222df0af651eae748db23fe954d3b1db" %}
 
 package:
-  name: q2_itsxpress
-  version: {{ version }}
+  name: '{{ name|lower }}'
+  version: '{{ version }}'
 
 source:
-  url: https://files.pythonhosted.org/packages/c0/af/ba2f350204f4d4d3519b4836f1215ed26cc34804c8e30e0f30cca3fbcb1b/q2_itsxpress-1.4.tar.gz
-  sha256: e32d926f99aea881efab3535908af1f77d0902b00815f4f52f67941f1dce60fd
+  url: 'https://files.pythonhosted.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ file_ext }}'
+  sha256: '{{ hash_value }}'
 
 build:
-  number: 1
+  number: 0
+  entry_points:
+    - pip install q2-itsxpress
 
 
 requirements:
-  host:
-    - itsxpress
-
+  build:
+    - python
+    - setuptools
   run:
+  - python
+  - itsxpress
 
 test:
   imports:
     - q2_itsxpress
 
 about:
-  home: https://github.com/kweber1/q2_itsxpress
+  home: 'https://github.com/kweber1/q2_itsxpress'
   summary: 'A qiime2 plugin using ITSxpress to trim the Internally transcribed spacer (ITS) region of FASTQ files'
+  license: 'License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication'
+  license_family: 'PUBLIC_DOMAIN'
+  license_file: ''
+
+extra:
+  recipe-maintainers : 'Adam R. Rivers, Kyle C. Weber'
 

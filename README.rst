@@ -14,7 +14,7 @@ Authors
 -------
 * Adam R. Rivers, US Department of Agriculture, Agricultural Research Service
   
-* Kyle Weber
+* Kyle C. Weber, US Department of Agriculture, Agricultural Research Service
 
 Introduction
 ------------

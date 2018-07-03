@@ -12,7 +12,7 @@ from q2_itsxpress._itsxpress import (trim_single,
 
 plugin = Plugin(
     name='itsxpress',
-    version='1.4',
+    version='1.4.1',
     package='q2_itsxpress',
     website='https://github.com/kweber1/q2_itsxpress             '
             'ITSxpress: https://github.com/USDA-ARS-GBRU/itsxpress',
@@ -28,7 +28,7 @@ plugin = Plugin(
                       'internally transcribed spacer (ITS) region of FASTQ files.'
 )
 
-taxaList = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U']
+taxaList = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'L', 'M', 'ALL', 'O', 'P', 'Q', 'R', 'S', 'T', 'U']
 
 plugin.methods.register_function(
     function=trim_single,
@@ -65,14 +65,14 @@ plugin.methods.register_function(
                 '\nI = Phaeophyceae (brown algae)\n'
                 '\nL = Marchantiophyta (liverworts)\n'
                 '\nM = Metazoa\n'
-                '\nN = Microsporidia\n'
                 '\nO = Oomycota\n'
                 '\nP = Haptophyceae (prymnesiophytes)\n'
                 '\nQ = Raphidophyceae\n'
                 '\nR = Rhizaria\n'
                 '\nS = Synurophyceae\n'
                 '\nT = Tracheophyta (higher plants)\n'
-                '\nU = Eustigmatophyceae'
+                '\nU = Eustigmatophyceae\n'
+                '\nALL = All'
 )
 
 plugin.methods.register_function(
@@ -108,13 +108,13 @@ plugin.methods.register_function(
                 '\nI = Phaeophyceae (brown algae)\n'
                 '\nL = Marchantiophyta (liverworts)\n'
                 '\nM = Metazoa\n'
-                '\nN = Microsporidia\n'
                 '\nO = Oomycota\n'
                 '\nP = Haptophyceae (prymnesiophytes)\n'
                 '\nQ = Raphidophyceae\n'
                 '\nR = Rhizaria\n'
                 '\nS = Synurophyceae\n'
                 '\nT = Tracheophyta (higher plants)\n'
-                '\nU = Eustigmatophyceae'
+                '\nU = Eustigmatophyceae\n'
+                '\nALL = All'
 
 )
