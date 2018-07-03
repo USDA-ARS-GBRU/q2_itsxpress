@@ -10,6 +10,10 @@ Q2_ITSxpress: A qiime2 plugin using ITSxpress to rapidly trim the Internally tra
 .. image:: https://api.codacy.com/project/badge/Grade/4d00341b4abc4e04a77cf5ca6674cd3c
   :target: https://www.codacy.com/app/kweber1/q2_itsxpress?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kweber1/q2_itsxpress&amp;utm_campaign=Badge_Grade
   
+.. image:: //readthedocs.org/projects/q2-itsxpress/badge/?version=latest
+   :target: https://q2-itsxpress.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+  
 Authors
 -------
 * Adam R. Rivers, US Department of Agriculture, Agricultural Research Service
