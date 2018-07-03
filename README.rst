@@ -1,14 +1,14 @@
 Q2_ITSxpress: A qiime2 plugin using ITSxpress to rapidly trim the Internally transcribed spacer (ITS) region of FASTQ files
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-.. image:: https://travis-ci.org/kweber1/q2_itsxpress.svg?branch=master
-  :target: https://travis-ci.org/kweber1/q2_itsxpress
+.. image:: https://travis-ci.org/USDA-ARS-GBRU/q2_itsxpress.svg?branch=master
+  :target: https://travis-ci.orgUSDA-ARS-GBRU/q2_itsxpress
   
-.. image:: https://codecov.io/gh/kweber1/q2_itsxpress/branch/master/graph/badge.svg
-  :target: https://codecov.io/gh/kweber1/q2_itsxpress
+.. image:: https://codecov.io/gh/USDA-ARS-GBRU/q2_itsxpress/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/USDA-ARS-GBRU/q2_itsxpress
   
 .. image:: https://api.codacy.com/project/badge/Grade/4d00341b4abc4e04a77cf5ca6674cd3c
-  :target: https://www.codacy.com/app/kweber1/q2_itsxpress?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kweber1/q2_itsxpress&amp;utm_campaign=Badge_Grade
+  :target: https://www.codacy.com/app/USDA-ARS-GBRU/q2_itsxpress?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=USDA-ARS-GBRU/q2_itsxpress&amp;utm_campaign=Badge_Grade
   
 .. image:: //readthedocs.org/projects/q2-itsxpress/badge/?version=latest
    :target: https://q2-itsxpress.readthedocs.io/en/latest/?badge=latest
