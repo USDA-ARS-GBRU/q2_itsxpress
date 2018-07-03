@@ -29,54 +29,24 @@ Installation:
 Requirments/Dependencies
 ________________________
 
-In order to consider installing ITSxpress-qiime2, it is **required to install qiime2.**
+In order to consider installing q2-itsxpress, it is **required to install qiime2.**
 
 Here is the installation page to install qiime at <https://docs.qiime2.org/2018.6/install/>
 
 Once qiime2 has been installed, you can now install the dependices for ITSxpress.
 
 **Make sure you are in your qiime2 environment when installing the dependices and ITSxpress-qiime2.**
-
-1. Add the bioconda channel to qiime2.
-
-.. code-block:: bash
-
-	conda config --add channels bioconda
-			 
-2. Install hmmer.
-
-.. code-block:: bash
-
-	conda install hmmer
-		
-3. Install bbmap.
-
-.. code-block:: bash
-
-	conda install bbmap
 	
-4. Install ITSxpress.
-
-.. code-block:: bash
-
-	conda install itsxpress 
-	
-or
-	
-.. code-block:: bash
-	
-	pip install itsxpress
-		
 ITSxpress-qiime2
 ________________
 
 To install the ITSxpress plugin for qiime, a few steps are needed.
 		
-1. Install the project using pip. Make sure you install it in qiime2.
+1. Install the project using conda. Make sure you install it in the qiime2 environment by first source activating it.
 
 .. code-block:: bash
 
-	pip install q2-itsxpress
+	conda install q2-itsxpress 
 		
 2. In your qiime2 environment, refresh the plugins.
 	
@@ -112,8 +82,8 @@ The main command being:
 +----------------------------------+---------------------------------------------------------------------------------------+
 |       --p-region                 | - The regions ITS2, ITS1, and ALL.                                                    | 
 +----------------------------------+---------------------------------------------------------------------------------------+
-|				   | -	Select the taxonomic group sequenced: A, B, C, D, E, F, G, H, I, L, M, N, O, P,	   |
-+	--p-taxa		   +	Q, R, S, T, U, V, X, Y.								   +
+|				   | -	Select the taxonomic group sequenced: A, B, C, D, E, F, G, H, I, L, M, O, P,	   |
++	--p-taxa		   +	Q, R, S, T, U, V, ALL.								   +
 | 				   |											   |
 +----------------------------------+---------------------------------------------------------------------------------------+
 |       --p-threads 	           | - The amount of threads to use.                                                       | 
@@ -132,8 +102,8 @@ The main command being:
 +----------------------------------+---------------------------------------------------------------------------------------+
 |       --p-region                 | - The regions ITS2, ITS1, and ALL.                                                    | 
 +----------------------------------+---------------------------------------------------------------------------------------+
-|				   | -	Select the taxonomic group sequenced: A, B, C, D, E, F, G, H, I, L, M, N, O, P,	   |
-+	--p-taxa		   +	Q, R, S, T, U, V, X, Y.								   +
+|				   | -	Select the taxonomic group sequenced: A, B, C, D, E, F, G, H, I, L, M, O, P,	   |
++	--p-taxa		   +	Q, R, S, T, U, V, ALL.								   +
 | 				   |											   |
 +----------------------------------+---------------------------------------------------------------------------------------+
 |       --p-threads 	           | - The amount of threads to use.                                                       | 
@@ -153,7 +123,7 @@ ________
 +-+-------------------------------------+
 |D| Amoebozoa				|
 +-+-------------------------------------+
-|E+ Euglenozoa				|
+|E| Euglenozoa				|
 +-+-------------------------------------+
 |F| Fungi				|
 +-+-------------------------------------+
@@ -166,8 +136,6 @@ ________
 |L| Marchantiophyta (liverworts)	|
 +-+-------------------------------------+
 |M| Metazoa				|
-+-+-------------------------------------+
-|N| Microsporidia			|
 +-+-------------------------------------+
 |O| Oomycota				|
 +-+-------------------------------------+
@@ -182,19 +150,17 @@ ________
 |T| Tracheophyta (higher plants)	|
 +-+-------------------------------------+
 |U| Eustigmatophyceae			|
-+-+-------------------------------------+
-|X| Apusozoa				|
-+-+-------------------------------------+
-|Y| Parabasalia				|
-+-+-------------------------------------+
++-+-+-----------------------------------+
+|ALL| All				|
++---+-----------------------------------+
 
 Example
 -------
-Use case: Trimming the ITS1 region from a fungal amplicon sequencing dataset with a PairedSequencesWithQuailty qza using two cpu threads.The example file used is in the Tests folder.
+Use case: Trimming the ITS1 region from a fungal amplicon sequencing dataset with a PairedSequencesWithQuailty qza using two cpu threads. The example file used is in the Tests folder under paired.qza.
 
 .. code:: bash
 
-	qiime itsxpress trim-pair --i-per-sample-sequences ~/in.qza --p-region ITS2 \
+	qiime itsxpress trim-pair --i-per-sample-sequences ~/parired.qza --p-region ITS2 \
 	--p-taxa F --p-threads 2 --o-trimmed ~/Desktop/out.qza
 
 License information
