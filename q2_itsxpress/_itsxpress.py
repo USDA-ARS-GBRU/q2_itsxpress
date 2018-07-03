@@ -35,7 +35,8 @@ from q2_types.per_sample_sequences import (SingleLanePerSamplePairedEndFastqDirF
                                            YamlFormat)
 from q2_types.per_sample_sequences._format import _SingleLanePerSampleFastqDirFmt
 from itsxpress import main as itsxpress
-from itsxpress.definitions import taxa_dict, ROOT_DIR
+from itsxpress.definitions import (taxa_dict, 
+				   ROOT_DIR)
 
 
 def _view_artifact_type(per_sample_sequence: _SingleLanePerSampleFastqDirFmt) -> str:
