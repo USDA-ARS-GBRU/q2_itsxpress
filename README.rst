@@ -2,7 +2,7 @@ Q2_ITSxpress: A qiime2 plugin using ITSxpress to rapidly trim the Internally tra
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 .. image:: https://travis-ci.org/USDA-ARS-GBRU/q2_itsxpress.svg?branch=master
-  :target: https://travis-ci.orgUSDA-ARS-GBRU/q2_itsxpress
+  :target: https://travis-ci.org/USDA-ARS-GBRU/q2_itsxpress
   
 .. image:: https://codecov.io/gh/USDA-ARS-GBRU/q2_itsxpress/branch/master/graph/badge.svg
   :target: https://codecov.io/gh/USDA-ARS-GBRU/q2_itsxpress
