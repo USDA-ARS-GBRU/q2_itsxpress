@@ -29,15 +29,15 @@ Installation:
 Requirments/Dependencies
 ________________________
 
-In order to consider installing q2-itsxpress, it is **required to install qiime2.**
+In order to consider installing Q2-itsxpress, it is **required to install qiime2.**
 
 Here is the installation page to install qiime at <https://docs.qiime2.org/2018.6/install/>
 
-Once qiime2 has been installed, you can now install the dependices for ITSxpress.
+Once qiime2 has been installed, you can now install the dependices for Q2-itsxpress.
 
-**Make sure you are in your qiime2 environment when installing the dependices and ITSxpress-qiime2.**
+**Make sure you are in your qiime2 environment when installing the dependices and Q2-itsxpress.**
 	
-ITSxpress-qiime2
+Q2-itsxpress
 ________________
 
 To install the ITSxpress plugin for qiime, a few steps are needed.
