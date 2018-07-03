@@ -1,21 +1,22 @@
-"""ITSxpress-qiime2: A qiime2 plugin to rapidly trim ITS amplicon sequences from Fastq files
-Author: Adam R. Rivers and Kyle C. Weber, USDA Agricultural Research Service
+#!/usr/bin/env python
+"""ITSxpress: A python module to rapidly trim ITS amplicon sequences from Fastq files.
+Authors: Adam Rivers and Kyle Weber, USDA Agricultural Research Service
 The internally transcribed spacer region is a region between highly conserved the small
 subunit (SSU) of rRNA and the large subunit (LSU) of the rRNA. In Eukaryotes it contains
-the 5.8s genes and two variable length spacer regions. In amplicon sequening studies it is
+the 5.8s genes and two variable length spacer regions. In amplicon sequencing studies it is
 common practice to trim off the conserved (SSU, 5,8S or LSU) regions. Bengtsson-Palme
 et al. (2013) published software the software package ITSx to do this.
-ITSxpress is a high-speed implementation of the methods in	ITSx. It can process a typical
-ITS amplicon sample with 100,000 read pairs in about 5 minutes, approximately 100x faster.
-It also trims fastq files rather than just fasta files.
-
+ITSxpress is a high-speed implementation of the methods in ITSx than also allows FASTQ 
+files to be processed. It is approximately 6-9x faster than ITSx v1.1b. It also trims fastq 
+files Which is essential for Analizing sequences using the newer exact Sequence Variant 
+methods in Qiime2, Dada2, Deblur and Unoise that are replacing OTU clustering. 
 Process:
-	* Merges and error corrects reads using bbduk if reade are paired-end
+	* Merges and error corrects reads using bbduk if reads are paired-end
 	* Deduplicates reads using Vmatch to eliminate redundant hmm searches
-	* Searches for conserved regions using the ITSx hmms, useing HMMsearch:
+	* Searches for conserved regions using the ITSx hmms, using HMMsearch:
 	  https://cryptogenomicon.org/2011/05/27/hmmscan-vs-hmmsearch-speed-the-numerology/
-	* Parses everyting in python returning (optionally gzipped) fastq files.
-Refernce:
+	* Parses everything in python returning (optionally gzipped) fastq files.
+Reference:
 	Johan Bengtsson-Palme, Vilmar Veldre, Martin Ryberg, Martin Hartmann, Sara Branco,
 	Zheng Wang, Anna Godhe, Yann Bertrand, Pierre De Wit, Marisol Sanchez,
 	Ingo Ebersberger, Kemal Sanli, Filipe de Souza, Erik Kristiansson, Kessy Abarenkov,
@@ -24,7 +25,6 @@ Refernce:
 	eukaryotes for use in environmental sequencing. Methods in Ecology and Evolution,
 	4: 914-919, 2013 (DOI: 10.1111/2041-210X.12073)
 """
-
 import os
 import shutil
 
