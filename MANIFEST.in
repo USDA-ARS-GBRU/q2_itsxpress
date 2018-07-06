@@ -1,3 +1,1 @@
-include README.rst
-include tests
-include docs
+recursive-include tests *
