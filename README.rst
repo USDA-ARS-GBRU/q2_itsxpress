@@ -49,7 +49,7 @@ Requirements/Dependencies
 Q2_itsxpress Installation
 -------------------------
 
-1. Activate the Qiime2 Conda environment
+1. Activate the Qiime2 conda environment
 
 .. code-block:: bash
 
@@ -60,6 +60,7 @@ Q2_itsxpress Installation
 .. code-block:: bash
 
   conda config --add channels bioconda
+
 	conda install q2-itsxpress
 
 3. In your Qiime2 environment, refresh the plugins.
@@ -84,6 +85,7 @@ Within Qiime2 you can trim paired end or single end reads either of these comman
 .. code-block:: bash
 
 	qiime itsxpress trim-single
+
   qiime itsxpress trim-paired
 
 1. qiime itsxpress trim-single

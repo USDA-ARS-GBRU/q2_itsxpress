@@ -2,11 +2,11 @@ from setuptools import setup
 
 setup(
     name='q2_itsxpress',
-    version='1.4.1',
+    version='1.4.2',
     packages=['q2_itsxpress'],
     author='Adam R. Rivers, Kyle C. Weber',
-    author_email='adam.rivers@ars.usda.gov, kweber1@ufl.edu',
-    description="itsxpress qiime2 plugin",
+    description="A QIIME2 plugin to trim ITS regions using ITSxpress",
+    long_description=open('README.rst').read(),
     url='https://github.com/kweber1/q2_itsxpress',
     test_suite='nose.collector',
     license="License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
@@ -14,7 +14,7 @@ setup(
                  "Programming Language :: Python :: 3.6",
                  "Programming Language :: Python :: 3.5",
                  "Development Status :: 3 - Alpha"],
-    keywords="Aplicon sequencing fungal ITS qiime",
+    keywords="Aplicon sequencing fungal ITS QIIME2",
     python_requires=">3.5",
     includer_package_data=True,
     install_requires=[
@@ -25,4 +25,3 @@ setup(
     },
     zip_safe=False
 )
-

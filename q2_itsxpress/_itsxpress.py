@@ -1,29 +1,22 @@
 #!/usr/bin/env python
-"""ITSxpress: A python module to rapidly trim ITS amplicon sequences from Fastq files.
+"""A python module to integrate ITSxpress into QIIME for the trimming of amplicon sequences.
+
 Authors: Adam Rivers and Kyle Weber, USDA Agricultural Research Service
-The internally transcribed spacer region is a region between highly conserved the small
-subunit (SSU) of rRNA and the large subunit (LSU) of the rRNA. In Eukaryotes it contains
-the 5.8s genes and two variable length spacer regions. In amplicon sequencing studies it is
+
+The internally transcribed spacer region is a region between the highly conserved small
+subunit (SSU) of rRNA and the large subunit (LSU) of the rRNA. The eukaryotic ITS contains
+the 5.8s gene and two variable length spacer regions. In amplicon sequencing studies it is
 common practice to trim off the conserved (SSU, 5,8S or LSU) regions. Bengtsson-Palme
 et al. (2013) published software the software package ITSx to do this.
-ITSxpress is a high-speed implementation of the methods in ITSx than also allows FASTQ 
-files to be processed. It is approximately 6-9x faster than ITSx v1.1b. It also trims fastq 
-files Which is essential for Analizing sequences using the newer exact Sequence Variant 
-methods in Qiime2, Dada2, Deblur and Unoise that are replacing OTU clustering. 
-Process:
-	* Merges and error corrects reads using bbduk if reads are paired-end
-	* Deduplicates reads using Vmatch to eliminate redundant hmm searches
-	* Searches for conserved regions using the ITSx hmms, using HMMsearch:
-	  https://cryptogenomicon.org/2011/05/27/hmmscan-vs-hmmsearch-speed-the-numerology/
-	* Parses everything in python returning (optionally gzipped) fastq files.
-Reference:
-	Johan Bengtsson-Palme, Vilmar Veldre, Martin Ryberg, Martin Hartmann, Sara Branco,
-	Zheng Wang, Anna Godhe, Yann Bertrand, Pierre De Wit, Marisol Sanchez,
-	Ingo Ebersberger, Kemal Sanli, Filipe de Souza, Erik Kristiansson, Kessy Abarenkov,
-	K. Martin Eriksson, R. Henrik Nilsson. (2013). ITSx: Improved software detection
-	and extraction of ITS1 and ITS2 from ribosomal ITS sequences of fungi and other
-	eukaryotes for use in environmental sequencing. Methods in Ecology and Evolution,
-	4: 914-919, 2013 (DOI: 10.1111/2041-210X.12073)
+
+ITSxpress is a high-speed implementation of the methods in ITSx than also allows FASTQ
+files to be processed. Processing FASTQ files Which is essential for analyzing
+sequences using the newer exact Sequence Variant methods in Qiime2, Dada2, Deblur
+and Unoise that are replacing OTU clustering.
+
+ITSxpress is also available as a stand-alone software package. See
+https://github.com/USDA-ARS-GBRU/itsxpress for details.
+
 """
 import os
 import shutil
@@ -35,7 +28,7 @@ from q2_types.per_sample_sequences import (SingleLanePerSamplePairedEndFastqDirF
                                            YamlFormat)
 from q2_types.per_sample_sequences._format import _SingleLanePerSampleFastqDirFmt
 from itsxpress import main as itsxpress
-from itsxpress.definitions import (taxa_dict, 
+from itsxpress.definitions import (taxa_dict,
 				   ROOT_DIR)
 
 
@@ -83,10 +76,10 @@ def _set_fastqs_and_check(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
 
         Returns:
             (lists): The sequenceIDs
-            (object): Ihe sobj object
+            (object): The sobj object
 
         Raises:
-            ValueError1: BBTools/ error or fastq format issue.
+            ValueError1: BBtools/ error or fastq format issue.
 
         """
     # Setting the fastq files and if singleEnd is used.
@@ -200,7 +193,7 @@ def _taxa_prefix_to_taxa(taxa_prefix: str) -> str:
     taxa_dic = {"A": "Alveolata", "B": "Bryophyta", "C": "Bacillariophyta", "D": "Amoebozoa", "E": "Euglenozoa",
                 "F": "Fungi", "G": "Chlorophyta", "H": "Rhodophyta", "I": "Phaeophyceae", "L": "Marchantiophyta",
                 "M": "Metazoa", "O": "Oomycota", "P": "Haptophyceae", "Q": "Raphidophyceae", "R": "Rhizaria",
-                "S": "Synurophyceae", "T": "Tracheophyta", "U": "Eustigmatophyceae", "ALL": "ALL"}
+                "S": "Synurophyceae", "T": "Tracheophyta", "U": "Eustigmatophyceae", "ALL": "All"}
     taxa_choice = taxa_dic[taxa_prefix]
     return taxa_choice
 
