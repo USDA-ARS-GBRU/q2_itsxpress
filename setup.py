@@ -16,7 +16,7 @@ setup(
                  "Development Status :: 3 - Alpha"],
     keywords="Aplicon sequencing fungal ITS QIIME2",
     python_requires=">3.5",
-    includer_package_data=True,
+    include_package_data=True,
     install_requires=[
         'itsxpress'
     ],
