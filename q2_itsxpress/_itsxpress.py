@@ -29,7 +29,7 @@ from q2_types.per_sample_sequences import (SingleLanePerSamplePairedEndFastqDirF
 from q2_types.per_sample_sequences._format import _SingleLanePerSampleFastqDirFmt
 from itsxpress import main as itsxpress
 from itsxpress.definitions import (taxa_dict,
-				   ROOT_DIR)
+                   ROOT_DIR)
 
 
 def _view_artifact_type(per_sample_sequence: _SingleLanePerSampleFastqDirFmt) -> str:
@@ -202,11 +202,13 @@ def _taxa_prefix_to_taxa(taxa_prefix: str) -> str:
 def trim_single(per_sample_sequences: SingleLanePerSampleSingleEndFastqDirFmt,
                 region: str,
                 taxa: str = "F",
-                threads: int = 1) -> SingleLanePerSampleSingleEndFastqDirFmt:
+                threads: int = 1,
+                slow: bool = False) -> SingleLanePerSampleSingleEndFastqDirFmt:
     results = main(per_sample_sequences=per_sample_sequences,
                    threads=threads,
                    taxa=taxa,
-                   region=region)
+                   region=region,
+                   slow=slow)
     return results
 
 
@@ -214,11 +216,13 @@ def trim_single(per_sample_sequences: SingleLanePerSampleSingleEndFastqDirFmt,
 def trim_pair(per_sample_sequences: SingleLanePerSamplePairedEndFastqDirFmt,
               region: str,
               taxa: str = "F",
-              threads: int = 1) -> SingleLanePerSampleSingleEndFastqDirFmt:
+              threads: int = 1,
+              slow: bool = False) -> SingleLanePerSampleSingleEndFastqDirFmt:
     results = main(per_sample_sequences=per_sample_sequences,
                    threads=threads,
                    taxa=taxa,
-                   region=region)
+                   region=region,
+                   slow=slow)
     return results
 
 
@@ -226,7 +230,8 @@ def trim_pair(per_sample_sequences: SingleLanePerSamplePairedEndFastqDirFmt,
 def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
          threads: int,
          taxa: str,
-         region: str) -> SingleLanePerSampleSingleEndFastqDirFmt:
+         region: str,
+         slow: bool) -> SingleLanePerSampleSingleEndFastqDirFmt:
     """The main communication between the plugin and the ITSxpress program.
 
     Args:
@@ -269,7 +274,10 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
                                                   threads=threads)
 
         # Deduplicate
-        sobj._deduplicate(threads=threads)
+        if slow:
+            sobj._deduplicate(threads=threads)
+        else:
+            sobj._cluster(threads=threads)
         try:
             # HMMSearch for ITS regions
             hmmfile = os.path.join(ROOT_DIR, "ITSx_db", "HMMs", taxa_dict[taxa])
