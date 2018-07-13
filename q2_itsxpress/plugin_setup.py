@@ -6,16 +6,16 @@ from qiime2.plugin import (Plugin,
                            Str,
                            Choices,
                            Int,
-                           Bool,
                            Float,
                            Range)
 
 from q2_itsxpress._itsxpress import (trim_single,
-                                     trim_pair)
+                                     trim_pair,
+                                     default_cluster_id)
 
 plugin = Plugin(
     name='itsxpress',
-    version='1.6.1',
+    version='1.6.0',
     package='q2_itsxpress',
     website='https://github.com/kweber1/q2_itsxpress             '
             'ITSxpress: https://github.com/USDA-ARS-GBRU/itsxpress',
@@ -40,8 +40,7 @@ plugin.methods.register_function(
     parameters={'region': Str % Choices(['ITS2', 'ITS1', 'ALL']),
                 'taxa': Str % Choices(taxaList),
                 'threads': Int,
-                'slow': Bool,
-                'cluster_id': Float % Range(0.97, 1.0, inclusive_end=True)},
+                'cluster_id': Float % Range(0.97, 1.0, inclusive_start=True, inclusive_end=True)},
     outputs=[('trimmed', SampleData[SequencesWithQuality])],
     input_descriptions={'per_sample_sequences': 'The artifact that contains the sequence file(s).'
                                                 ' Either Joined Paired or just a single fastq.'
@@ -50,8 +49,7 @@ plugin.methods.register_function(
         'region': ('\nThe regions ITS2, ITS1, and ALL that can be selected from.'),
         'taxa': ('\nThe selected taxonomic group sequenced that can be selected from.'),
         'threads': ('\nThe number of processor threads to use in the run.'),
-        'slow': ('\nIf True, dereplication will be used instead of clustering at high identity, default is False'),
-        'cluster_id': ('\n The clustering float vaule that will be used if clustering is set to True.')
+        'cluster_id': ('\nThe percent identity for clustering reads, set to 1 for exact dereplication.')
     },
     output_descriptions={'trimmed': 'The trimmed sequences from ITSxpress.'},
     name='TrimSingle',
@@ -88,8 +86,7 @@ plugin.methods.register_function(
     parameters={'region': Str % Choices(['ITS2', 'ITS1', 'ALL']),
                 'taxa': Str % Choices(taxaList),
                 'threads': Int,
-                'slow': Bool,
-                'cluster_id': Float % Range(0.97, 1.0, inclusive_end=True)},
+                'cluster_id': Float % Range(0.97, 1.0, inclusive_start=True, inclusive_end=True)},
     outputs=[('trimmed', SampleData[SequencesWithQuality])],
     input_descriptions={'per_sample_sequences': 'The artifact that contains the sequence file(s). '
                                                 'Only Paired can be used. '
@@ -98,8 +95,7 @@ plugin.methods.register_function(
         'region': ('\nThe regions ITS2, ITS1, and ALL that can be selected from.'),
         'taxa': ('\nThe selected taxonomic group sequenced that can be selected from.'),
         'threads': ('\nThe number of processor threads to use in the run.'),
-        'slow': ('\nIf True, dereplication will be used instead of clustering at high identity, default is False'),
-        'cluster_id': ('\n The clustering float vaule that will be used if clustering is set to True.')
+        'cluster_id': ('\nThe percent identity for clustering reads, set to 1 for exact dereplication.')
     },
     output_descriptions={'trimmed': 'The resulting trimmed sequences from ITSxpress'},
     name='TrimPaired',

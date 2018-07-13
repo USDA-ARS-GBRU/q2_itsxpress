@@ -107,6 +107,8 @@ Within Qiime2 you can trim paired end or single end reads either of these comman
 +----------------------------------+---------------------------------------------------------------------------------------+
 |       --o-trimmed                | - The resulting trimmed sequences from ITSxpress in a qza format.                     |
 +----------------------------------+---------------------------------------------------------------------------------------+
+|      --cluster-id                | - The percent identity for clustering reads, set to 1 for exact dereplication.        |
++----------------------------------+---------------------------------------------------------------------------------------+
 
 2. qiime itsxpress trim-pair
 
@@ -126,6 +128,8 @@ Within Qiime2 you can trim paired end or single end reads either of these comman
 |       --p-threads 	           | - The amount of threads to use.                                                       |
 +----------------------------------+---------------------------------------------------------------------------------------+
 |       --o-trimmed                | - The resulting trimmed sequences from ITSxpress in a qza format.                     |
++----------------------------------+---------------------------------------------------------------------------------------+
+|      --cluster-id                | - The percent identity for clustering reads, set to 1 for exact dereplication.        |
 +----------------------------------+---------------------------------------------------------------------------------------+
 
 Taxa Key

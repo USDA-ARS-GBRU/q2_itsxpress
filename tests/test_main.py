@@ -152,6 +152,20 @@ def test_trim_single():
     exp3 = getsizeof(TEST_DATA_SINGLEOUT)
     eq_(exp2, exp3)
 
+def test_trim_single_no_cluster():
+    threads = 1
+    taxa = "F"
+    region = "ITS2"
+    cluster_id = 1
+
+    exp1 = _itsxpress.trim_single(per_sample_sequences=TEST_DATA_SINGLEIN,
+                                threads=threads,
+                                taxa=taxa,
+                                region=region,
+                                cluster_id=cluster_id)
+    exp2 = getsizeof(exp1)
+    exp3 = getsizeof(TEST_DATA_SINGLEOUT)
+    eq_(exp2, exp3)
 
 def test_trim_pair_no_hmmer():
     threads = 1
