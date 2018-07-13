@@ -41,7 +41,7 @@ plugin.methods.register_function(
                 'taxa': Str % Choices(taxaList),
                 'threads': Int,
                 'slow': Bool,
-                'cluster_id': Float % Range(0.97, 1.0)},
+                'cluster_id': Float % Range(0.97, 1.0, inclusive_end=True)},
     outputs=[('trimmed', SampleData[SequencesWithQuality])],
     input_descriptions={'per_sample_sequences': 'The artifact that contains the sequence file(s).'
                                                 ' Either Joined Paired or just a single fastq.'
@@ -89,7 +89,7 @@ plugin.methods.register_function(
                 'taxa': Str % Choices(taxaList),
                 'threads': Int,
                 'slow': Bool,
-                'cluster_id': Float % Range(0.97, 1.0)},
+                'cluster_id': Float % Range(0.97, 1.0, inclusive_end=True)},
     outputs=[('trimmed', SampleData[SequencesWithQuality])],
     input_descriptions={'per_sample_sequences': 'The artifact that contains the sequence file(s). '
                                                 'Only Paired can be used. '
