@@ -203,12 +203,14 @@ def trim_single(per_sample_sequences: SingleLanePerSampleSingleEndFastqDirFmt,
                 region: str,
                 taxa: str = "F",
                 threads: int = 1,
-                slow: bool = False) -> SingleLanePerSampleSingleEndFastqDirFmt:
+                slow: bool = False,
+                cluster_id: float = 1.0) -> SingleLanePerSampleSingleEndFastqDirFmt:
     results = main(per_sample_sequences=per_sample_sequences,
                    threads=threads,
                    taxa=taxa,
                    region=region,
-                   slow=slow)
+                   slow=slow,
+                   cluster_id=cluster_id)
     return results
 
 
@@ -217,12 +219,14 @@ def trim_pair(per_sample_sequences: SingleLanePerSamplePairedEndFastqDirFmt,
               region: str,
               taxa: str = "F",
               threads: int = 1,
-              slow: bool = False) -> SingleLanePerSampleSingleEndFastqDirFmt:
+              slow: bool = False,
+              cluster_id: float = 1.0) -> SingleLanePerSampleSingleEndFastqDirFmt:
     results = main(per_sample_sequences=per_sample_sequences,
                    threads=threads,
                    taxa=taxa,
                    region=region,
-                   slow=slow)
+                   slow=slow,
+                   cluster_id=cluster_id)
     return results
 
 
@@ -231,7 +235,8 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
          threads: int,
          taxa: str,
          region: str,
-         slow: bool) -> SingleLanePerSampleSingleEndFastqDirFmt:
+         slow: bool,
+         cluster_id: float) -> SingleLanePerSampleSingleEndFastqDirFmt:
     """The main communication between the plugin and the ITSxpress program.
 
     Args:
@@ -240,6 +245,8 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
         threads (int) : The number of threads to use.
         taxa (str): The taxa to be used for the search.
         region (str) : The region to be used for the search.
+        slow (bool): If True, dereplication will be used instead of clustering at high identity, default is False.
+        cluster_id (float): The clustering float vaule that will be used if clustering is set to True.
 
     Returns:
         (SingleLanePerSampleSingleEndFastqDirFmt): The SingleLanePerSampleSingleEndFastqDirFmt type
@@ -249,6 +256,9 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
         ValueError1: hmmsearch error.
 
     """
+    #Seeing if cluter_id is equal to 1
+    if ((cluster_id**2)**(1/2))-1 <= 0.0001:
+        cluster_id = 1
     # Finding the artifact type.
     artifact_type = _view_artifact_type(per_sample_sequence=per_sample_sequences)
     # Setting the taxa
@@ -277,7 +287,7 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
         if slow:
             sobj._deduplicate(threads=threads)
         else:
-            sobj._cluster(threads=threads)
+            sobj._cluster(threads=threads, cluster_id=cluster_id)
         try:
             # HMMSearch for ITS regions
             hmmfile = os.path.join(ROOT_DIR, "ITSx_db", "HMMs", taxa_dict[taxa])
