@@ -32,7 +32,7 @@ from itsxpress import main as itsxpress
 from itsxpress.definitions import (taxa_dict,
                    ROOT_DIR)
 
-default_cluster_id=0.987
+default_cluster_id=0.995
 
 def _view_artifact_type(per_sample_sequence: _SingleLanePerSampleFastqDirFmt) -> str:
     """Opens the metadata file and looks for the 'type'.
