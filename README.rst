@@ -9,8 +9,8 @@ Q2_ITSxpress: A Qiime2 plugin to rapidly trim the Internally transcribed spacer 
 .. image:: https://api.codacy.com/project/badge/Grade/4d00341b4abc4e04a77cf5ca6674cd3c
   :target: https://www.codacy.com/app/USDA-ARS-GBRU/q2_itsxpress?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=USDA-ARS-GBRU/q2_itsxpress&amp;utm_campaign=Badge_Grade
 
-.. image:: https://zenodo.org/badge/133996928.svg
-  :target: https://zenodo.org/badge/latestdoi/133996928
+.. image:: https://zenodo.org/badge/138209572.svg
+   :target: https://zenodo.org/badge/latestdoi/138209572
 
 
 Authors
