@@ -21,11 +21,11 @@ plugin = Plugin(
             'ITSxpress: https://github.com/USDA-ARS-GBRU/itsxpress',
     description='ITSxpress is designed to support the calling of exact sequence variants'
                 'rather than OTUs. This newer method of sequence error-correction requires'
-                'quality score data from each sequence, so each input sequence must be trimmed.'
-                'ITSXpress makes this possible by taking FASTQ data, de-replicating the'
-                'sequences then identifying the start and stop sites using HMMSearch.'
-                'Results are parsed and the trimmed files are returned.'
-                'The ITS 1, ITS2 or the entire ITS region including the 5.8s rRNA gene can be selected.'
+                'quality score data from each sequence, so each input sequence must be trimmed. '
+                'ITSXpress makes this possible by taking FASTQ data, de-replicating the '
+                'sequences then identifying the start and stop sites using HMMSearch. '
+                'Results are parsed and the trimmed files are returned. '
+                'The ITS 1, ITS2 or the entire ITS region including the 5.8s rRNA gene can be selected. '
                 'ITSxpress uses the hmm model from ITSx so results are comprable.',
     short_description='Plugin for using ITSxpress to rapidly trim the\n'
                       'internally transcribed spacer (ITS) region of FASTQ files.'
