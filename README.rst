@@ -193,11 +193,8 @@ License information
 -------------------
 
 This software is a work of the United States Department of Agriculture,
-Agricultural Research Service. 17 U.S.C. 	Section 105 states that "Copyright
-protection under this title is not available for any work of the United States
-Government". While I anticipate that this work will be released under a CC0
-public domain attribution, only the USDA 	ARS Office of Technology transfer has
-the authority to make that determination.
+Agricultural Research Service and is released under a Creative Commons CC0
+public domain attribution.
 
 .. _ITSxpress: https://github.com/USDA-ARS-GBRU/itsxpress
 .. _ITSx: http://microbiology.se/software/itsx/
