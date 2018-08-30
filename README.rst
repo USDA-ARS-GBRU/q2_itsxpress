@@ -59,20 +59,20 @@ Q2_itsxpress Installation
 
 .. code-block:: bash
 
-  conda install -c bioconda bioconda itsxpress
+  conda install -c bioconda itsxpress
   pip install q2-itsxpress
 
 3. In your Qiime2 environment, refresh the plugins.
 
 .. code-block:: bash
 
-	qiime dev refresh-cache
+  qiime dev refresh-cache
 
 4. Check to see if the ITSxpress plugin is installed. You should see an output similar to the image below.
 
 .. code-block:: bash
 
-	qiime itsxpress
+  qiime itsxpress
 
 .. image:: https://i.gyazo.com/2216236a43c75a92174185b4d81a2eb5.png
 
@@ -83,7 +83,7 @@ Within Qiime2 you can trim paired end or single end reads either of these comman
 
 .. code-block:: bash
 
-	qiime itsxpress trim-single
+  qiime itsxpress trim-single
 
   qiime itsxpress trim-paired
 
@@ -185,8 +185,8 @@ The example file used is in the Tests folder under paired.qza.
 
 .. code:: bash
 
-	qiime itsxpress trim-pair --i-per-sample-sequences ~/parired.qza --p-region
-	ITS2 \ --p-taxa F --p-threads 2 --o-trimmed ~/Desktop/out.qza
+  qiime itsxpress trim-pair --i-per-sample-sequences ~/parired.qza --p-region ITS2 \
+  --p-taxa F --p-threads 2 --o-trimmed ~/Desktop/out.qza
 
 License information
 -------------------
