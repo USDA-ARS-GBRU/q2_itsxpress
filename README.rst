@@ -59,9 +59,8 @@ Q2_itsxpress Installation
 
 .. code-block:: bash
 
-  conda config --add channels bioconda
-
-	conda install q2-itsxpress
+  conda install -c bioconda bioconda itsxpress
+  pip install q2-itsxpress
 
 3. In your Qiime2 environment, refresh the plugins.
 
