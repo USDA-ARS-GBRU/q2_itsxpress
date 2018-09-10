@@ -59,21 +59,20 @@ Q2_itsxpress Installation
 
 .. code-block:: bash
 
-  conda config --add channels bioconda
-
-	conda install q2-itsxpress
+  conda install -c bioconda itsxpress
+  pip install q2-itsxpress
 
 3. In your Qiime2 environment, refresh the plugins.
 
 .. code-block:: bash
 
-	qiime dev refresh-cache
+  qiime dev refresh-cache
 
 4. Check to see if the ITSxpress plugin is installed. You should see an output similar to the image below.
 
 .. code-block:: bash
 
-	qiime itsxpress
+  qiime itsxpress
 
 .. image:: https://i.gyazo.com/2216236a43c75a92174185b4d81a2eb5.png
 
@@ -84,7 +83,7 @@ Within Qiime2 you can trim paired end or single end reads either of these comman
 
 .. code-block:: bash
 
-	qiime itsxpress trim-single
+  qiime itsxpress trim-single
 
   qiime itsxpress trim-paired
 
@@ -186,18 +185,15 @@ The example file used is in the Tests folder under paired.qza.
 
 .. code:: bash
 
-	qiime itsxpress trim-pair --i-per-sample-sequences ~/parired.qza --p-region
-	ITS2 \ --p-taxa F --p-threads 2 --o-trimmed ~/Desktop/out.qza
+  qiime itsxpress trim-pair --i-per-sample-sequences ~/parired.qza --p-region ITS2 \
+  --p-taxa F --p-threads 2 --o-trimmed ~/Desktop/out.qza
 
 License information
 -------------------
 
 This software is a work of the United States Department of Agriculture,
-Agricultural Research Service. 17 U.S.C. 	Section 105 states that "Copyright
-protection under this title is not available for any work of the United States
-Government". While I anticipate that this work will be released under a CC0
-public domain attribution, only the USDA 	ARS Office of Technology transfer has
-the authority to make that determination.
+Agricultural Research Service and is released under a Creative Commons CC0
+public domain attribution.
 
 .. _ITSxpress: https://github.com/USDA-ARS-GBRU/itsxpress
 .. _ITSx: http://microbiology.se/software/itsx/

@@ -177,7 +177,7 @@ def _fastq_id_maker(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
             and "SampleData[PairedEndSequencesWithQuality]" in artifact_type):
         raise ValueError("The number of forward and reverse samples do not match.")
 
-    if "SampleData[SequencesWithQuality]" in artifact_type:
+    if (("SampleData[SequencesWithQuality]" in artifact_type) or ("SampleData[JoinedSequencesWithQuality]" in artifact_type)):
         single_end = True
     return sequences, single_end
 
