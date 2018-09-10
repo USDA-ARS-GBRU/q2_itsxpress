@@ -7,7 +7,8 @@ from qiime2.plugin import (Plugin,
                            Choices,
                            Int,
                            Float,
-                           Range)
+                           Range,
+                           Citations)
 
 from q2_itsxpress._itsxpress import (trim_single,
                                      trim_pair,
@@ -28,7 +29,8 @@ plugin = Plugin(
                 'The ITS 1, ITS2 or the entire ITS region including the 5.8s rRNA gene can be selected. '
                 'ITSxpress uses the hmm model from ITSx so results are comprable.',
     short_description='Plugin for using ITSxpress to rapidly trim the\n'
-                      'internally transcribed spacer (ITS) region of FASTQ files.'
+                      'internally transcribed spacer (ITS) region of FASTQ files.',
+    citations=Citations.load('citations.bib', package='q2_itsxpress')
 )
 
 taxaList = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'L', 'M', 'ALL', 'O', 'P', 'Q', 'R', 'S', 'T', 'U']
