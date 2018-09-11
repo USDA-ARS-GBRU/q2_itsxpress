@@ -27,7 +27,7 @@ plugin = Plugin(
                 'sequences then identifying the start and stop sites using HMMSearch. '
                 'Results are parsed and the trimmed files are returned. '
                 'The ITS 1, ITS2 or the entire ITS region including the 5.8s rRNA gene can be selected. '
-                'ITSxpress uses the hmm model from ITSx so results are comprable.',
+                'ITSxpress uses the hmm model from ITSx so results are comparable.',
     short_description='Plugin for using ITSxpress to rapidly trim the\n'
                       'internally transcribed spacer (ITS) region of FASTQ files.',
     citations=Citations.load('citations.bib', package='q2_itsxpress')
@@ -37,8 +37,7 @@ taxaList = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'L', 'M', 'ALL', 'O', '
 
 plugin.methods.register_function(
     function=trim_single,
-    inputs={'per_sample_sequences': SampleData[SequencesWithQuality |
-                                               JoinedSequencesWithQuality]},
+    inputs={'per_sample_sequences': SampleData[SequencesWithQuality]},
     parameters={'region': Str % Choices(['ITS2', 'ITS1', 'ALL']),
                 'taxa': Str % Choices(taxaList),
                 'threads': Int,
@@ -88,8 +87,9 @@ plugin.methods.register_function(
     parameters={'region': Str % Choices(['ITS2', 'ITS1', 'ALL']),
                 'taxa': Str % Choices(taxaList),
                 'threads': Int,
+                'paired' : Bool,
                 'cluster_id': Float % Range(0.97, 1.0, inclusive_start=True, inclusive_end=True)},
-    outputs=[('trimmed', SampleData[SequencesWithQuality])],
+    outputs=[('trimmed', SampleData[JoinedSequencesWithQuality | PairedEndSequencesWithQuality])],
     input_descriptions={'per_sample_sequences': 'The artifact that contains the sequence file(s). '
                                                 'Only Paired can be used. '
                                                 'Two files sequences in the qza data folder'},
@@ -97,6 +97,7 @@ plugin.methods.register_function(
         'region': ('\nThe regions ITS2, ITS1, and ALL that can be selected from.'),
         'taxa': ('\nThe selected taxonomic group sequenced that can be selected from.'),
         'threads': ('\nThe number of processor threads to use in the run.'),
+        'paired': ('\nReads be returned as trimmed, unmerged read pairs')
         'cluster_id': ('\nThe percent identity for clustering reads, set to 1 for exact dereplication.')
     },
     output_descriptions={'trimmed': 'The resulting trimmed sequences from ITSxpress'},
