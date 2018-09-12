@@ -8,7 +8,7 @@ setup(
     author_email='adam.rivers@ars.usda.gov, kweber1@ufl.edu',
     description="A QIIME2 plugin to trim ITS regions using ITSxpress",
     long_description=open('README.rst').read(),
-    url='https://github.com/usda-ars-gbru/2_itsxpress',
+    url='https://github.com/usda-ars-gbru/q2_itsxpress',
     test_suite='nose.collector',
     license="License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
     classifiers=["Topic :: Scientific/Engineering :: Bio-Informatics",

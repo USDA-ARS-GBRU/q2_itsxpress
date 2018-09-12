@@ -15,23 +15,18 @@
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
-from recommonmark.parser import CommonMarkParser
 
-source_parsers = {
-    'md': CommonMarkParser,
-}
-source_suffix = ['.rst', '.md']
 
 # -- Project information -----------------------------------------------------
 
-project = 'q2-itsxpress'
-copyright = '2018, Adam R. Rivers, Kyle C. Weber'
-author = 'Adam R. Rivers, Kyle C. Weber'
+project = 'Q2-ITSxpress'
+copyright = '2018, Kyle C. Weber, Adam R. Rivers'
+author = 'Kyle C. Weber, Adam R. Rivers'
 
 # The short X.Y version
-version = '1.4'
+version = ''
 # The full version, including alpha/beta/rc tags
-release = '1.4.1'
+release = '1.7.0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -44,11 +39,16 @@ release = '1.4.1'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.doctest',
+    'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
-    'sphinx.ext.imgmath',
+    'sphinx.ext.mathjax',
+    'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
+    'sphinx.ext.napoleon'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -68,15 +68,15 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = 'Python'
+language = None
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-# This pattern also affects html_static_path and html_extra_path .
+# This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = None
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -84,7 +84,7 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -111,7 +111,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'q2-itsxpressdoc'
+htmlhelp_basename = 'Q2-ITSxpressdoc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -138,8 +138,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'q2-itsxpress.tex', 'q2-itsxpress Documentation',
-     'Adam R. Rivers, Kyle C. Weber', 'manual'),
+    (master_doc, 'Q2-ITSxpress.tex', 'Q2-ITSxpress Documentation',
+     'Kyle C. Weber, Adam R. Rivers', 'manual'),
 ]
 
 
@@ -148,7 +148,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'q2-itsxpress', 'q2-itsxpress Documentation',
+    (master_doc, 'q2-itsxpress', 'Q2-ITSxpress Documentation',
      [author], 1)
 ]
 
@@ -159,8 +159,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'q2-itsxpress', 'q2-itsxpress Documentation',
-     author, 'q2-itsxpress', 'One line description of project.',
+    (master_doc, 'Q2-ITSxpress', 'Q2-ITSxpress Documentation',
+     author, 'Q2-ITSxpress', 'One line description of project.',
      'Miscellaneous'),
 ]
 
@@ -168,10 +168,7 @@ texinfo_documents = [
 # -- Options for Epub output -------------------------------------------------
 
 # Bibliographic Dublin Core info.
-#epub_title = project
-#epub_author = author
-#epub_publisher = author
-#epub_copyright = copyright
+epub_title = project
 
 # The unique identifier of the text. This can be a ISBN number
 # or the project homepage.
@@ -183,10 +180,15 @@ texinfo_documents = [
 # epub_uid = ''
 
 # A list of files that should not be packed into the epub file.
-#epub_exclude_files = ['search.html']
+epub_exclude_files = ['search.html']
 
 
 # -- Extension configuration -------------------------------------------------
+
+# -- Options for intersphinx extension ---------------------------------------
+
+# Example configuration for intersphinx: refer to the Python standard library.
+intersphinx_mapping = {'https://docs.python.org/': None}
 
 # -- Options for todo extension ----------------------------------------------
 
