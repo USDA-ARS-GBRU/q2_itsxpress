@@ -219,24 +219,35 @@ def trim_pair(per_sample_sequences: SingleLanePerSamplePairedEndFastqDirFmt,
               region: str,
               taxa: str = "F",
               threads: int = 1,
-              paired: bool = True,
               cluster_id: float = default_cluster_id) -> SingleLanePerSampleSingleEndFastqDirFmt:
     results = main(per_sample_sequences=per_sample_sequences,
                    threads=threads,
                    taxa=taxa,
                    region=region,
-                   paired=paired,
+                   paired=False,
                    cluster_id=cluster_id)
     return results
 
-
+# Second command Trim for SingleLanePerSamplePairedEndFastqDirFmt
+def trim_pair_output_unmerged(per_sample_sequences: SingleLanePerSamplePairedEndFastqDirFmt,
+              region: str,
+              taxa: str = "F",
+              threads: int = 1,
+              cluster_id: float = default_cluster_id) -> SingleLanePerSamplePairedEndFastqDirFmt:
+    results = main(per_sample_sequences=per_sample_sequences,
+                   threads=threads,
+                   taxa=taxa,
+                   region=region,
+                   paired=True,
+                   cluster_id=cluster_id)
+    return results
 # The ITSxpress handling
 def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
          threads: int,
          taxa: str,
          region: str,
          paired: bool,
-         cluster_id: float) -> SingleLanePerSampleSingleEndFastqDirFmt:
+         cluster_id: float):
     """The main communication between the plugin and the ITSxpress program.
 
     Args:
@@ -269,7 +280,10 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
                                             artifact_type=artifact_type)
     barcode = 0
     # Creating result dir
-    results = SingleLanePerSampleSingleEndFastqDirFmt()
+    if paired:
+        results = SingleLanePerSamplePairedEndFastqDirFmt()
+    else:
+        results = SingleLanePerSampleSingleEndFastqDirFmt()
     # Running the for loop for each sample
 
     for sequence in sequences:
@@ -317,7 +331,7 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
         manifest_fn.write("{},{},forward\n".format(sequence_id, path_forward.name))
         # Create trimmed sequences.
         if paired:
-            dedup_obj.create_paired_trimmed_seqs(str(path_firward),
+            dedup_obj.create_paired_trimmed_seqs(str(path_forward),
                                                  str(path_reverse),
                                                  gzipped=True,
                                                  itspos=its_pos)

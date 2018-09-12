@@ -12,6 +12,7 @@ from qiime2.plugin import (Plugin,
 
 from q2_itsxpress._itsxpress import (trim_single,
                                      trim_pair,
+                                     trim_pair_output_unmerged,
                                      default_cluster_id)
 
 plugin = Plugin(
@@ -87,9 +88,8 @@ plugin.methods.register_function(
     parameters={'region': Str % Choices(['ITS2', 'ITS1', 'ALL']),
                 'taxa': Str % Choices(taxaList),
                 'threads': Int,
-                'paired' : Bool,
                 'cluster_id': Float % Range(0.97, 1.0, inclusive_start=True, inclusive_end=True)},
-    outputs=[('trimmed', SampleData[JoinedSequencesWithQuality | PairedEndSequencesWithQuality])],
+    outputs=[('trimmed', SampleData[JoinedSequencesWithQuality])],
     input_descriptions={'per_sample_sequences': 'The artifact that contains the sequence file(s). '
                                                 'Only Paired can be used. '
                                                 'Two files sequences in the qza data folder'},
@@ -97,15 +97,62 @@ plugin.methods.register_function(
         'region': ('\nThe regions ITS2, ITS1, and ALL that can be selected from.'),
         'taxa': ('\nThe selected taxonomic group sequenced that can be selected from.'),
         'threads': ('\nThe number of processor threads to use in the run.'),
-        'paired': ('\nReads be returned as trimmed, unmerged read pairs')
         'cluster_id': ('\nThe percent identity for clustering reads, set to 1 for exact dereplication.')
     },
     output_descriptions={'trimmed': 'The resulting trimmed sequences from ITSxpress'},
     name='TrimPaired',
-    description='ITSxpress trimPair is used for the qza type with\n'
-                'PairedEndSquencesWithQuality. This means the qza\n'
-                'must be in the SingleLanePerSamplePairedEndFastqDirFmt\n'
+    description='ITSxpress trimPair takes the qza type \n'
+                'PairedEndSquencesWithQuality. The qza\n'
+                'format must be the SingleLanePerSamplePairedEndFastqDirFmt\n'
                 'and only contain two fastq files.\n'
+                'The function returns merged, trimmed reads for use by Deblur\n'
+                '\nThe taxa list and variable for it:\n'
+                '\nA = Alveolata\n'
+                '\nB = Bryophyta\n'
+                '\nC = Bacillariophyta\n'
+                '\nD = Amoebozoa\n'
+                '\nE = Euglenozoa\n'
+                '\nF = Fungi\n'
+                '\nG = Chlorophyta (green algae)\n'
+                '\nH = Rhodophyta (red algae)\n'
+                '\nI = Phaeophyceae (brown algae)\n'
+                '\nL = Marchantiophyta (liverworts)\n'
+                '\nM = Metazoa\n'
+                '\nO = Oomycota\n'
+                '\nP = Haptophyceae (prymnesiophytes)\n'
+                '\nQ = Raphidophyceae\n'
+                '\nR = Rhizaria\n'
+                '\nS = Synurophyceae\n'
+                '\nT = Tracheophyta (higher plants)\n'
+                '\nU = Eustigmatophyceae\n'
+                '\nALL = All'
+
+)
+
+plugin.methods.register_function(
+    function=trim_pair_output_unmerged,
+    inputs={'per_sample_sequences': SampleData[PairedEndSequencesWithQuality]},
+    parameters={'region': Str % Choices(['ITS2', 'ITS1', 'ALL']),
+                'taxa': Str % Choices(taxaList),
+                'threads': Int,
+                'cluster_id': Float % Range(0.97, 1.0, inclusive_start=True, inclusive_end=True)},
+    outputs=[('trimmed', SampleData[PairedEndSequencesWithQuality])],
+    input_descriptions={'per_sample_sequences': 'The artifact that contains the sequence file(s). '
+                                                'Only Paired can be used. '
+                                                'Two files sequences in the qza data folder'},
+    parameter_descriptions={
+        'region': ('\nThe regions ITS2, ITS1, and ALL that can be selected from.'),
+        'taxa': ('\nThe selected taxonomic group sequenced that can be selected from.'),
+        'threads': ('\nThe number of processor threads to use in the run.'),
+        'cluster_id': ('\nThe percent identity for clustering reads, set to 1 for exact dereplication.')
+    },
+    output_descriptions={'trimmed': 'The resulting trimmed sequences from ITSxpress'},
+    name='TrimPairedUnmerged',
+    description='ITSxpress trimPairUnmerged takes the qza type \n'
+                'PairedEndSquencesWithQuality. The qza\n'
+                'format must be the SingleLanePerSamplePairedEndFastqDirFmt\n'
+                'and only contain two fastq files.\n'
+                'The function returns unmerged, trimmed reads for use by Dada2.\n'
                 '\nThe taxa list and variable for it:\n'
                 '\nA = Alveolata\n'
                 '\nB = Bryophyta\n'
