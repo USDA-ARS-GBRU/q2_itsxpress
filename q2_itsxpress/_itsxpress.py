@@ -66,7 +66,7 @@ def _set_fastqs_and_check(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
                           single_end: bool,
                           threads: int) -> (str,
                                             object):
-    """Checks and writes the fastqs as well as if there paired end, interleaved and single end.
+    """Checks and writes the fastqs as well as if they are paired end, interleaved and single end.
 
         Args:
             per_sample_sequences (SingleLanePerSampleSingleEndFastqDirFmt): The SingleLanePerSampleSingleEndFastqDirFmt type
@@ -81,7 +81,7 @@ def _set_fastqs_and_check(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
             (object): The sobj object
 
         Raises:
-            ValueError1: BBtools/ error or fastq format issue.
+            ValueError1: for FASTQ format issue.
 
         """
     # Setting the fastq files and if singleEnd is used.
@@ -101,8 +101,7 @@ def _set_fastqs_and_check(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
     except (NotADirectoryError,
             FileNotFoundError):
 
-        raise ValueError("There is a problem with the fastq file(s) you selected or\n"
-                         "BBtools was not found. check that the BBtools reformat.sh package is executable.")
+        raise ValueError("There is a problem with the fastq file(s) you selected")
         # Create SeqSample objects and merge if needed.
     if paired_end and interleaved:
         sobj = itsxpress.SeqSamplePairedInterleaved(fastq=fastq,
@@ -210,6 +209,7 @@ def trim_single(per_sample_sequences: SingleLanePerSampleSingleEndFastqDirFmt,
                    threads=threads,
                    taxa=taxa,
                    region=region,
+                   paired=False,
                    cluster_id=cluster_id)
     return results
 
@@ -224,16 +224,30 @@ def trim_pair(per_sample_sequences: SingleLanePerSamplePairedEndFastqDirFmt,
                    threads=threads,
                    taxa=taxa,
                    region=region,
+                   paired=False,
                    cluster_id=cluster_id)
     return results
 
-
+# Second command Trim for SingleLanePerSamplePairedEndFastqDirFmt
+def trim_pair_output_unmerged(per_sample_sequences: SingleLanePerSamplePairedEndFastqDirFmt,
+              region: str,
+              taxa: str = "F",
+              threads: int = 1,
+              cluster_id: float = default_cluster_id) -> SingleLanePerSamplePairedEndFastqDirFmt:
+    results = main(per_sample_sequences=per_sample_sequences,
+                   threads=threads,
+                   taxa=taxa,
+                   region=region,
+                   paired=True,
+                   cluster_id=cluster_id)
+    return results
 # The ITSxpress handling
 def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
          threads: int,
          taxa: str,
          region: str,
-         cluster_id: float) -> SingleLanePerSampleSingleEndFastqDirFmt:
+         paired: bool,
+         cluster_id: float):
     """The main communication between the plugin and the ITSxpress program.
 
     Args:
@@ -266,7 +280,10 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
                                             artifact_type=artifact_type)
     barcode = 0
     # Creating result dir
-    results = SingleLanePerSampleSingleEndFastqDirFmt()
+    if paired:
+        results = SingleLanePerSamplePairedEndFastqDirFmt()
+    else:
+        results = SingleLanePerSampleSingleEndFastqDirFmt()
     # Running the for loop for each sample
 
     for sequence in sequences:
@@ -298,16 +315,28 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
         # Create deduplication object.
         dedup_obj = itsxpress.Dedup(uc_file=sobj.uc_file,
                                     rep_file=sobj.rep_file,
-                                    seq_file=sobj.seq_file)
+                                    seq_file=sobj.seq_file,
+                                    fastq=sobj.r1,
+                                    fastq2=sobj.fastq2)
 
         path_forward = results.sequences.path_maker(sample_id=sequence_id,
                                                     barcode_id=barcode,
                                                     lane_number=1,
                                                     read_number=1)
+        path_reverse = results.sequences.path_maker(sample_id=sequence_id,
+                                                    barcode_id=barcode,
+                                                    lane_number=1,
+                                                    read_number=2)
 
         manifest_fn.write("{},{},forward\n".format(sequence_id, path_forward.name))
         # Create trimmed sequences.
-        dedup_obj.create_trimmed_seqs(str(path_forward),
+        if paired:
+            dedup_obj.create_paired_trimmed_seqs(str(path_forward),
+                                                 str(path_reverse),
+                                                 gzipped=True,
+                                                 itspos=its_pos)
+        else:
+            dedup_obj.create_trimmed_seqs(str(path_forward),
                                       gzipped=True,
                                       itspos=its_pos)
         # Deleting the temp files.

@@ -4,7 +4,6 @@
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
-SPHINXPROJ    = q2-itsxpress
 SOURCEDIR     = source
 BUILDDIR      = build
 
