@@ -17,18 +17,19 @@ from q2_itsxpress._itsxpress import (trim_single,
 
 plugin = Plugin(
     name='itsxpress',
-    version='1.6.5',
+    version='1.7.0',
     package='q2_itsxpress',
-    website='https://github.com/kweber1/q2_itsxpress             '
+    website='https://github.com/USDA-ARS-GBRU/q2_itsxpress             '
             'ITSxpress: https://github.com/USDA-ARS-GBRU/itsxpress',
-    description='ITSxpress is designed to support the calling of exact sequence variants'
-                'rather than OTUs. This newer method of sequence error-correction requires'
+    description='ITSxpress trims amplicon reads down to the just their ITS region. '
+                'ITSxpress is designed to support the calling of exact sequence variants '
+                'rather than OTUs. This newer method of sequence error-correction requires '
                 'quality score data from each sequence, so each input sequence must be trimmed. '
-                'ITSXpress makes this possible by taking FASTQ data, de-replicating the '
+                'ITSxpress makes this possible by taking FASTQ data, de-replicating the '
                 'sequences then identifying the start and stop sites using HMMSearch. '
                 'Results are parsed and the trimmed files are returned. '
                 'The ITS 1, ITS2 or the entire ITS region including the 5.8s rRNA gene can be selected. '
-                'ITSxpress uses the hmm model from ITSx so results are comparable.',
+                'ITSxpress uses the hmm models from ITSx so results are comparable.',
     short_description='Plugin for using ITSxpress to rapidly trim the\n'
                       'internally transcribed spacer (ITS) region of FASTQ files.',
     citations=Citations.load('citations.bib', package='q2_itsxpress')
@@ -54,7 +55,7 @@ plugin.methods.register_function(
         'cluster_id': ('\nThe percent identity for clustering reads, set to 1 for exact dereplication.')
     },
     output_descriptions={'trimmed': 'The trimmed sequences from ITSxpress.'},
-    name='TrimSingle',
+    name='Trim single-end reads',
     description='ITSxpress trimSingle is used for qza types with\n'
                 'SquencesWithQuality or JoinedSequencesWithQuality.'
                 ' This means the qza must be in the\n'
@@ -100,7 +101,7 @@ plugin.methods.register_function(
         'cluster_id': ('\nThe percent identity for clustering reads, set to 1 for exact dereplication.')
     },
     output_descriptions={'trimmed': 'The resulting trimmed sequences from ITSxpress'},
-    name='TrimPaired',
+    name='Trim paired-end reads, output merged reads for use with Deblur',
     description='ITSxpress trimPair takes the qza type \n'
                 'PairedEndSquencesWithQuality. The qza\n'
                 'format must be the SingleLanePerSamplePairedEndFastqDirFmt\n'
@@ -147,7 +148,7 @@ plugin.methods.register_function(
         'cluster_id': ('\nThe percent identity for clustering reads, set to 1 for exact dereplication.')
     },
     output_descriptions={'trimmed': 'The resulting trimmed sequences from ITSxpress'},
-    name='TrimPairedUnmerged',
+    name='Trim paired-end reads, output unmerged reads for use with Dada2',
     description='ITSxpress trimPairUnmerged takes the qza type \n'
                 'PairedEndSquencesWithQuality. The qza\n'
                 'format must be the SingleLanePerSamplePairedEndFastqDirFmt\n'

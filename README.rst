@@ -18,6 +18,14 @@ Authors
 * Adam R. Rivers, US Department of Agriculture, Agricultural Research Service
 * Kyle C. Weber, US Department of Agriculture, Agricultural Research Service
 
+Citation
+--------
+Rivers AR, Weber KC, Gardner TG et al. ITSxpress: Software to rapidly trim
+internally transcribed spacer sequences with quality scores for marker gene
+analysis. F1000Research 2018, 7:1418. doi: `10.12688/f1000research.15704.1`_
+
+.. _`10.12688/f1000research.15704.1`: https://doi.org/10.12688/f1000research.15704.1
+
 Introduction
 ------------
 
@@ -33,9 +41,9 @@ Qiime2.  Q2_ITSxpress is the Qiime2 plugin version of the stand alone command
 line utility ITSxpress_. Q2_ITSxpress is designed to support the calling of
 exact sequence variants rather than OTUs. This newer method of sequence
 error-correction requires quality score data from each sequence, so each input
-sequence must be trimmed. ITSXpress makes this possible by taking FASTQ data,
+sequence must be trimmed. ITSxpress makes this possible by taking FASTQ data,
 de-replicating the sequences then identifying the start and stop sites using
-HMMSearch. Results are parsed and the trimmed files are returned. The ITS 1,
+HMMSearch. Results are parsed and the trimmed files are returned. The ITS1,
 ITS2 or the entire ITS region including the 5.8s rRNA gene can be selected.
 ITSxpress uses the hmm models from ITSx so results are nearly identical.
 
@@ -44,7 +52,7 @@ Requirements/Dependencies
 -------------------------
 
 * Qiime2 is required to run Q2-itsxpress (for stand alone software see ITSxpress_)
-* To install Qiime2 follow these instructions: https://docs.qiime2.org/2018.6/install/
+* To install Qiime2 follow these instructions: https://docs.qiime2.org/2018.8/install/
 
 Q2_itsxpress Installation
 -------------------------
@@ -53,7 +61,7 @@ Q2_itsxpress Installation
 
 .. code-block:: bash
 
-  source activate qiime2-2018.6
+  source activate qiime2-2018.8
 
 2. Install Q2_itsxpress using BioConda_. Be sure to install Q2_itsxpres in the Qiime2 environment.
 
@@ -74,20 +82,29 @@ Q2_itsxpress Installation
 
   qiime itsxpress
 
-.. image:: https://i.gyazo.com/2216236a43c75a92174185b4d81a2eb5.png
+.. image:: ../../screenshot.png
 
 Usage
 -----
 
-Within Qiime2 you can trim paired end or single end reads either of these commands
+Within Qiime2 you can trim paired-end or single-end reads using these commands
 
 .. code-block:: bash
 
+  qiime itsxpress trim-pair
+
+  qiime itsxpress trim-pair-output-unmerged
+
   qiime itsxpress trim-single
 
-  qiime itsxpress trim-paired
-
 1. qiime itsxpress trim-single
+
+  This command takes single-end data and returns trimmed reads. The sequence may
+  have been merged previously or have been generated from a long read technology
+  like PacBio. Merged and long reads trimmed by this function can be used by
+  Deblur but only long reads (not merged reads) trimmed by this function should
+  be passed to Dada2. Its statistical model for estimating error rates was not
+  designed for pre-merged reads.
 
 +----------------------------------+---------------------------------------------------------------------------------------+
 |    Command-requirement           | Description                                                                           |
@@ -109,7 +126,39 @@ Within Qiime2 you can trim paired end or single end reads either of these comman
 |      --cluster-id                | - The percent identity for clustering reads, set to 1 for exact dereplication.        |
 +----------------------------------+---------------------------------------------------------------------------------------+
 
+
 2. qiime itsxpress trim-pair
+
+  This command takes paired-end data and returns merged, trimmed reads. The
+  merged reads trimmed by this function can be used by Deblur but not
+  Dada2. Its statistical model for estimating error rates was not
+  designed for pre-merged reads, instead use `qiime itsxpress trim-pair-output-unmerged`.
+
++----------------------------------+---------------------------------------------------------------------------------------+
+|    Command-requirement           | Description                                                                           |
++----------------------------------+---------------------------------------------------------------------------------------+
+|   --i-per-sample-sequences       | - The artifact that contains the sequence file(s).                                    |
++ 			           + - Either Joined Paired or just a single fastq.                                        +
+|                                  | - One file sequence in the qza data folder.                                           |
++----------------------------------+---------------------------------------------------------------------------------------+
+|       --p-region                 | - The regions ITS2, ITS1, and ALL.                                                    |
++----------------------------------+---------------------------------------------------------------------------------------+
+|				   | -	Select the taxonomic group sequenced: A, B, C, D, E, F, G, H, I, L, M, O, P,	   |
++	--p-taxa		   +	Q, R, S, T, U, V, ALL.								   +
+| 				   |											   |
++----------------------------------+---------------------------------------------------------------------------------------+
+|       --p-threads 	           | - The amount of threads to use.                                                       |
++----------------------------------+---------------------------------------------------------------------------------------+
+|       --o-trimmed                | - The resulting trimmed sequences from ITSxpress in a qza format.                     |
++----------------------------------+---------------------------------------------------------------------------------------+
+|      --cluster-id                | - The percent identity for clustering reads, set to 1 for exact dereplication.        |
++----------------------------------+---------------------------------------------------------------------------------------+
+
+3. qiime itsxpress trim-pair-output-unmerged
+
+  This command takes paired-end data and returns unmerged, trimmed reads. The
+  merged reads trimmed by this function can be used by Dada2 but not Deblur.
+  For Deblur use `qiime itsxpress trim-pair`.
 
 +----------------------------------+---------------------------------------------------------------------------------------+
 |    Command-requirement           | Description                                                                           |
