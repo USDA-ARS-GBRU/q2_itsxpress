@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='q2_itsxpress',
-    version='1.7.1',
+    version='1.7.2',
     packages=['q2_itsxpress'],
     author='Adam R. Rivers, Kyle C. Weber',
     author_email='adam.rivers@ars.usda.gov, kweber1@ufl.edu',

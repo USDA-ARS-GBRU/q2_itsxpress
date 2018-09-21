@@ -1,1 +1,2 @@
 recursive-include tests *
+include q2_itsxpress/citations.bib
