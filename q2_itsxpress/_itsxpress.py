@@ -139,7 +139,7 @@ def _write_metadata(results: SingleLanePerSampleSingleEndFastqDirFmt):
 def _fastq_id_maker(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
                     artifact_type: str) -> (tuple,
                                             bool):
-    """Iterates among the manifest to get the file path/name.
+    """Iterates through the manifest to get the file path/name.
 
     Args:
         per_sample_sequences (SingleLanePerSampleSingleEndFastqDirFmt): The SingleLanePerSampleSingleEndFastqDirFmt type
