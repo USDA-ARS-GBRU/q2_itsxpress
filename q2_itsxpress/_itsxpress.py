@@ -287,58 +287,62 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
     # Running the for loop for each sample
 
     for sequence in sequences:
-        # writing fastqs and there attributes and checking the files
-        sequence_id, sobj = _set_fastqs_and_check(per_sample_sequences=per_sample_sequences,
-                                                  artifact_type=artifact_type,
-                                                  sequence=sequence,
-                                                  single_end=single_end,
-                                                  threads=threads)
-
-        # Deduplicate
-        if math.isclose(cluster_id, 1,rel_tol=1e-05):
-            sobj.deduplicate(threads=threads)
-        else:
-            sobj.cluster(threads=threads, cluster_id=cluster_id)
         try:
-            # HMMSearch for ITS regions
-            hmmfile = os.path.join(ROOT_DIR, "ITSx_db", "HMMs", taxa_dict[taxa])
-            sobj._search(hmmfile=hmmfile, threads=threads)
-        except (ModuleNotFoundError,
-                FileNotFoundError,
-                NotADirectoryError):
+            # writing fastqs and there attributes and checking the files
+            sequence_id, sobj = _set_fastqs_and_check(per_sample_sequences=per_sample_sequences,
+                                                      artifact_type=artifact_type,
+                                                      sequence=sequence,
+                                                      single_end=single_end,
+                                                      threads=threads)
 
-            raise ValueError("hmmsearch was not found, make sure HMMER3 is installed and executable")
+            # Deduplicate
+            if math.isclose(cluster_id, 1,rel_tol=1e-05):
+                sobj.deduplicate(threads=threads)
+            else:
+                sobj.cluster(threads=threads, cluster_id=cluster_id)
+            try:
+                # HMMSearch for ITS regions
+                hmmfile = os.path.join(ROOT_DIR, "ITSx_db", "HMMs", taxa_dict[taxa])
+                sobj._search(hmmfile=hmmfile, threads=threads)
+            except (ModuleNotFoundError,
+                    FileNotFoundError,
+                    NotADirectoryError):
 
-        # Parse HMMseach output.
-        its_pos = itsxpress.ItsPosition(domtable=sobj.dom_file,
-                                        region=region)
-        # Create deduplication object.
-        dedup_obj = itsxpress.Dedup(uc_file=sobj.uc_file,
-                                    rep_file=sobj.rep_file,
-                                    seq_file=sobj.seq_file,
-                                    fastq=sobj.r1,
-                                    fastq2=sobj.fastq2)
+                raise ValueError("hmmsearch was not found, make sure HMMER3 is installed and executable")
 
-        path_forward = results.sequences.path_maker(sample_id=sequence_id,
-                                                    barcode_id=barcode,
-                                                    lane_number=1,
-                                                    read_number=1)
-        path_reverse = results.sequences.path_maker(sample_id=sequence_id,
-                                                    barcode_id=barcode,
-                                                    lane_number=1,
-                                                    read_number=2)
+            # Parse HMMseach output.
+            its_pos = itsxpress.ItsPosition(domtable=sobj.dom_file,
+                                            region=region)
+            # Create deduplication object.
+            dedup_obj = itsxpress.Dedup(uc_file=sobj.uc_file,
+                                        rep_file=sobj.rep_file,
+                                        seq_file=sobj.seq_file,
+                                        fastq=sobj.r1,
+                                        fastq2=sobj.fastq2)
 
-        manifest_fn.write("{},{},forward\n".format(sequence_id, path_forward.name))
-        # Create trimmed sequences.
-        if paired:
-            dedup_obj.create_paired_trimmed_seqs(str(path_forward),
-                                                 str(path_reverse),
-                                                 gzipped=True,
-                                                 itspos=its_pos)
-        else:
-            dedup_obj.create_trimmed_seqs(str(path_forward),
-                                      gzipped=True,
-                                      itspos=its_pos)
+            path_forward = results.sequences.path_maker(sample_id=sequence_id,
+                                                        barcode_id=barcode,
+                                                        lane_number=1,
+                                                        read_number=1)
+            path_reverse = results.sequences.path_maker(sample_id=sequence_id,
+                                                        barcode_id=barcode,
+                                                        lane_number=1,
+                                                        read_number=2)
+
+            manifest_fn.write("{},{},forward\n".format(sequence_id, path_forward.name))
+            # Create trimmed sequences.
+            if paired:
+                dedup_obj.create_paired_trimmed_seqs(str(path_forward),
+                                                     str(path_reverse),
+                                                     gzipped=True,
+                                                     itspos=its_pos)
+            else:
+                dedup_obj.create_trimmed_seqs(str(path_forward),
+                                          gzipped=True,
+                                          itspos=its_pos)
+        except:
+            raise Error("Sample {} could not be processed, continuing with the next sample.".format(sequence_id))
+            continue
         # Deleting the temp files.
         shutil.rmtree(sobj.tempdir)
         # Adding one to the barcode
