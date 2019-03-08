@@ -19,7 +19,9 @@ setup(
     python_requires=">3.5",
     include_package_data=True,
     install_requires=[
-        'itsxpress>=1.7.0'
+        'itsxpress>=1.7.0',
+        'qiime2',
+        'pandas',
     ],
     entry_points={
         'qiime2.plugins': ['q2_itsxpress=q2_itsxpress.plugin_setup:plugin']

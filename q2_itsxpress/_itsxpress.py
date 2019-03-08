@@ -19,78 +19,42 @@ https://github.com/USDA-ARS-GBRU/itsxpress for details.
 
 """
 import os
+import pathlib
 import shutil
 import math
 
-import yaml
+import pandas as pd
 from q2_types.per_sample_sequences import (SingleLanePerSamplePairedEndFastqDirFmt,
                                            SingleLanePerSampleSingleEndFastqDirFmt,
-                                           FastqManifestFormat,
-                                           YamlFormat)
-from q2_types.per_sample_sequences._format import _SingleLanePerSampleFastqDirFmt
+                                           CasavaOneEightSingleLanePerSampleDirFmt)
 from itsxpress import main as itsxpress
 from itsxpress.definitions import (taxa_dict,
                    ROOT_DIR)
 
 default_cluster_id=0.995
 
-def _view_artifact_type(per_sample_sequence: _SingleLanePerSampleFastqDirFmt) -> str:
-    """Opens the metadata file and looks for the 'type'.
-    Args:
-        qzaPath: The path of the qza
 
-    Returns:
-        (str): The artifact type in the metadata file.
-
-    Raises:
-        ValueError: If the metadata file is missing or the 'type' is missing in the metadata file.
-
-    """
-    try:
-        per_sample_sequence_str = str(per_sample_sequence.path)
-        head = os.path.split(per_sample_sequence_str)
-        path = os.path.join(str(head[0]), "metadata.yaml")
-        with open(path, "r") as fn_open:
-            return yaml.safe_load(fn_open)["type"]
-
-    except (NotADirectoryError,
-            FileNotFoundError,
-            yaml.YAMLError):
-
-        raise ValueError("The metadata file of the qza you entered is missing or the 'type:' in the file is missing.")
-
-
-def _set_fastqs_and_check(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
-                          artifact_type: str,
-                          sequence: dict,
+def _set_fastqs_and_check(fastq: str,
+                          fastq2: str,
+                          sample_id: str,
                           single_end: bool,
-                          threads: int) -> (str,
-                                            object):
+                          threads: int) -> object:
     """Checks and writes the fastqs as well as if they are paired end, interleaved and single end.
 
         Args:
-            per_sample_sequences (SingleLanePerSampleSingleEndFastqDirFmt): The SingleLanePerSampleSingleEndFastqDirFmt type
-            of the input.
-            artifact_type (str): The artifact type in the metadata file.
-            sequence (dict): The dictionary of sequences and their IDs
+            fastq (str): The path to the forward reads file.
+            fastq2 (str): The path to the reverse reads file.
+            sample_id (str): The Sample ID.
             single_end (bool): If the sequences are singled ended or not
             threads (int): The amount of threads to use
 
         Returns:
-            (lists): The sequenceIDs
             (object): The sobj object
 
         Raises:
             ValueError1: for FASTQ format issue.
 
         """
-    # Setting the fastq files and if singleEnd is used.
-    fastq = os.path.join(str(per_sample_sequences.path), str(sequence["paths"][0]))
-    if "SampleData[PairedEndSequencesWithQuality]" in artifact_type:
-        fastq2 = os.path.join(str(per_sample_sequences.path), str(sequence["paths"][1]))
-    else:
-        fastq2 = None
-    sequence_id = sequence["id"]
     # checking fastqs
     try:
         itsxpress._check_fastqs(fastq=fastq, fastq2=fastq2)
@@ -107,78 +71,19 @@ def _set_fastqs_and_check(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
         sobj = itsxpress.SeqSamplePairedInterleaved(fastq=fastq,
                                                     tempdir=None)
         sobj._merge_reads(threads=threads)
-        return sequence_id, sobj
+        return sobj
 
     elif paired_end and not interleaved:
         sobj = itsxpress.SeqSamplePairedNotInterleaved(fastq=fastq,
                                                        fastq2=fastq2,
                                                        tempdir=None)
         sobj._merge_reads(threads=threads)
-        return sequence_id, sobj
+        return sobj
 
     elif not paired_end and not interleaved:
         sobj = itsxpress.SeqSampleNotPaired(fastq=fastq,
                                             tempdir=None)
-        return sequence_id, sobj
-
-
-def _write_metadata(results: SingleLanePerSampleSingleEndFastqDirFmt):
-    """Writes the metadata for the output qza as phred-offset33
-
-    Args:
-        results (SingleLanePerSampleSingleEndFastqDirFmt): The SingleLanePerSampleSingleEndFastqDirFmt type
-        of the output.
-
-    """
-
-    metadata = YamlFormat()
-    metadata.path.write_text(yaml.dump({'phred-offset': 33}))
-    results.metadata.write_data(metadata, YamlFormat)
-
-
-def _fastq_id_maker(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
-                    artifact_type: str) -> (tuple,
-                                            bool):
-    """Iterates among the manifest to get the file path/name.
-
-    Args:
-        per_sample_sequences (SingleLanePerSampleSingleEndFastqDirFmt): The SingleLanePerSampleSingleEndFastqDirFmt type
-        of the input.
-        artifact_type (str): The artifact type in the metadata file.
-
-    Returns:
-        (tuple): The path/name of the sequences.
-        (bool): If single end is true or false
-
-    """
-
-    path = os.path.join(str(per_sample_sequences.path), "MANIFEST")
-    sequences = []
-    with open(path, "r") as fn:
-        # {"id": "1", "paths": ["path/to/forward", "path/to/backward"]}
-        single_end = False
-        for line in fn:
-            parts = line.split(",")
-
-            if "#" in line or "sample-id,filename,direction" in line:
-                continue
-
-            if not any([sequence['id'] == parts[0] for sequence in sequences]):
-                sequence = {"id": parts[0], "paths": [parts[1]]}
-                sequences.append(sequence)
-                continue
-
-            for sequence in sequences:
-                if sequence['id'] == parts[0] and "SampleData[PairedEndSequencesWithQuality]" in artifact_type:
-                    sequence["paths"].append(parts[1])
-
-    if (any([len(sequence['paths']) != 2 for sequence in sequences])
-            and "SampleData[PairedEndSequencesWithQuality]" in artifact_type):
-        raise ValueError("The number of forward and reverse samples do not match.")
-
-    if (("SampleData[SequencesWithQuality]" in artifact_type) or ("SampleData[JoinedSequencesWithQuality]" in artifact_type)):
-        single_end = True
-    return sequences, single_end
+        return sobj
 
 
 def _taxa_prefix_to_taxa(taxa_prefix: str) -> str:
@@ -204,12 +109,13 @@ def trim_single(per_sample_sequences: SingleLanePerSampleSingleEndFastqDirFmt,
                 region: str,
                 taxa: str = "F",
                 threads: int = 1,
-                cluster_id: float = default_cluster_id) -> SingleLanePerSampleSingleEndFastqDirFmt:
+                cluster_id: float = default_cluster_id) -> CasavaOneEightSingleLanePerSampleDirFmt:
     results = main(per_sample_sequences=per_sample_sequences,
                    threads=threads,
                    taxa=taxa,
                    region=region,
-                   paired=False,
+                   paired_in=False,
+                   paired_out=False,
                    cluster_id=cluster_id)
     return results
 
@@ -219,12 +125,13 @@ def trim_pair(per_sample_sequences: SingleLanePerSamplePairedEndFastqDirFmt,
               region: str,
               taxa: str = "F",
               threads: int = 1,
-              cluster_id: float = default_cluster_id) -> SingleLanePerSampleSingleEndFastqDirFmt:
+              cluster_id: float = default_cluster_id) -> CasavaOneEightSingleLanePerSampleDirFmt:
     results = main(per_sample_sequences=per_sample_sequences,
                    threads=threads,
                    taxa=taxa,
                    region=region,
-                   paired=False,
+                   paired_in=True,
+                   paired_out=False,
                    cluster_id=cluster_id)
     return results
 
@@ -233,67 +140,57 @@ def trim_pair_output_unmerged(per_sample_sequences: SingleLanePerSamplePairedEnd
               region: str,
               taxa: str = "F",
               threads: int = 1,
-              cluster_id: float = default_cluster_id) -> SingleLanePerSamplePairedEndFastqDirFmt:
+              cluster_id: float = default_cluster_id) -> CasavaOneEightSingleLanePerSampleDirFmt:
     results = main(per_sample_sequences=per_sample_sequences,
                    threads=threads,
                    taxa=taxa,
                    region=region,
-                   paired=True,
+                   paired_in=True,
+                   paired_out=True,
                    cluster_id=cluster_id)
     return results
 # The ITSxpress handling
-def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
+def main(per_sample_sequences,
          threads: int,
          taxa: str,
          region: str,
-         paired: bool,
-         cluster_id: float):
+         paired_in: bool,
+         paired_out: bool,
+         cluster_id: float) -> CasavaOneEightSingleLanePerSampleDirFmt:
     """The main communication between the plugin and the ITSxpress program.
 
     Args:
-        per_sample_sequences (SingleLanePerSampleSingleEndFastqDirFmt): The SingleLanePerSampleSingleEndFastqDirFmt type
-        of the input.
+        per_sample_sequences (SingleLanePerSampleSingleEndFastqDirFmt or SingleLanePerSamplePairedEndFastqDirFmt):
+        the input sequences.
         threads (int) : The number of threads to use.
         taxa (str): The taxa to be used for the search.
         region (str) : The region to be used for the search.
+        paired_in (bool): Declares if input files are paired.
+        paired_out (bool): Declares if output files should be paired.
         cluster_id (float):The percent identity for clustering reads, set to 1 for exact dereplication.
 
     Returns:
-        (SingleLanePerSampleSingleEndFastqDirFmt): The SingleLanePerSampleSingleEndFastqDirFmt type
-        of the output.
+        (CasavaOneEightSingleLanePerSampleDirFmt): A catch-all output type for
+        both single and paired-end reads.
 
     Raises:
         ValueError1: hmmsearch error.
 
     """
-    #Seeing if cluter_id is equal to 1
-    # Finding the artifact type.
-    artifact_type = _view_artifact_type(per_sample_sequence=per_sample_sequences)
     # Setting the taxa
     taxa = _taxa_prefix_to_taxa(taxa)
-    # Writing the manifest for the output qza
-    manifest = FastqManifestFormat()
-    manifest_fn = manifest.open()
-    manifest_fn.write('sample-id,filename,direction\n')
-    # Getting the sequences from the manifest
-    sequences, single_end = _fastq_id_maker(per_sample_sequences=per_sample_sequences,
-                                            artifact_type=artifact_type)
-    barcode = 0
+    samples = per_sample_sequences.manifest.view(pd.DataFrame)
     # Creating result dir
-    if paired:
-        results = SingleLanePerSamplePairedEndFastqDirFmt()
-    else:
-        results = SingleLanePerSampleSingleEndFastqDirFmt()
+    results = CasavaOneEightSingleLanePerSampleDirFmt()
     # Running the for loop for each sample
-
-    for sequence in sequences:
-        # writing fastqs and there attributes and checking the files
-        sequence_id, sobj = _set_fastqs_and_check(per_sample_sequences=per_sample_sequences,
-                                                  artifact_type=artifact_type,
-                                                  sequence=sequence,
-                                                  single_end=single_end,
-                                                  threads=threads)
-
+    for sample in samples.itertuples():
+        # writing fastqs and their attributes and checking the files
+        sobj = _set_fastqs_and_check(
+            fastq=sample.forward,
+            fastq2=sample.reverse if paired_in else None,
+            sample_id=sample.Index,
+            single_end=paired_out,
+            threads=threads)
         # Deduplicate
         if math.isclose(cluster_id, 1,rel_tol=1e-05):
             sobj.deduplicate(threads=threads)
@@ -319,33 +216,24 @@ def main(per_sample_sequences: _SingleLanePerSampleFastqDirFmt,
                                     fastq=sobj.r1,
                                     fastq2=sobj.fastq2)
 
-        path_forward = results.sequences.path_maker(sample_id=sequence_id,
-                                                    barcode_id=barcode,
-                                                    lane_number=1,
-                                                    read_number=1)
-        path_reverse = results.sequences.path_maker(sample_id=sequence_id,
-                                                    barcode_id=barcode,
-                                                    lane_number=1,
-                                                    read_number=2)
+        # Copy the original filename, that way we preserve all filename fields.
+        out_path_fwd = os.path.join(str(results),
+                                    pathlib.Path(sample.forward).name)
 
-        manifest_fn.write("{},{},forward\n".format(sequence_id, path_forward.name))
         # Create trimmed sequences.
-        if paired:
-            dedup_obj.create_paired_trimmed_seqs(str(path_forward),
-                                                 str(path_reverse),
+        if paired_out:
+            # Copy the original filename, that way we preserve all filename fields.
+            out_path_rev = os.path.join(str(results),
+                                        pathlib.Path(sample.reverse).name)
+            dedup_obj.create_paired_trimmed_seqs(out_path_fwd,
+                                                 out_path_rev,
                                                  gzipped=True,
                                                  itspos=its_pos)
         else:
-            dedup_obj.create_trimmed_seqs(str(path_forward),
+            dedup_obj.create_trimmed_seqs(out_path_fwd,
                                       gzipped=True,
                                       itspos=its_pos)
         # Deleting the temp files.
         shutil.rmtree(sobj.tempdir)
-        # Adding one to the barcode
-        barcode += 1
     # Writing out the results.
-    manifest_fn.close()
-    _write_metadata(results=results)
-    results.manifest.write_data(manifest,
-                                FastqManifestFormat)
     return results

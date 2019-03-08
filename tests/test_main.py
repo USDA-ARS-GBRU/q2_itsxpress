@@ -1,11 +1,17 @@
 import os
+import unittest
 from sys import getsizeof
 
 from nose.tools import eq_, raises
 from q2_types.per_sample_sequences import (SingleLanePerSampleSingleEndFastqDirFmt,
-                                           SingleLanePerSamplePairedEndFastqDirFmt)
+                                           SingleLanePerSamplePairedEndFastqDirFmt,
+                                           FastqManifestFormat)
 
 import q2_itsxpress._itsxpress as _itsxpress
+
+import qiime2
+from qiime2.util import redirected_stdio
+import pandas as pd
 
 # The test data dir
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -59,98 +65,57 @@ ARTIFACT_TYPE_P = "SampleData[PairedEndSequencesWithQuality]"
 ARTIFACT_TYPE_S = "SampleData[SequencesWithQuality]"
 
 
-def test_view_artifcat_type():
-    exp1 = _itsxpress._view_artifact_type(per_sample_sequence=TEST_DATA)
-    eq_("SampleData[PairedEndSequencesWithQuality]", exp1)
-    raises(ValueError, lambda: _itsxpress._view_artifact_type(per_sample_sequence=TEST_DATA_PBMD))
-
-
-def test_write_metadata():
-    results = SingleLanePerSampleSingleEndFastqDirFmt()
-    _itsxpress._write_metadata(results)
-    path = results.path
-    metadata = os.path.join(str(path), "metadata.yml")
-    with open(metadata, "rt") as fn:
-        eq_("{phred-offset: 33}", fn.readline().replace("\n", ""))
-
-
-def test_fastq_id_maker():
-    exp1, exp2 = _itsxpress._fastq_id_maker(per_sample_sequences=TEST_DATA,
-                                            artifact_type=ARTIFACT_TYPE_P)
-    for sequence in exp1:
-        eq_(sequence["paths"][0], '4774-1-MSITS3_0_L001_R1_001.fastq.gz')
-        eq_(sequence["paths"][1], '4774-1-MSITS3_1_L001_R2_001.fastq.gz')
-        eq_(exp2, False)
-    raises(ValueError, lambda: _itsxpress._fastq_id_maker(per_sample_sequences=TEST_DATA_PAF,
-                                                          artifact_type=ARTIFACT_TYPE_P))
-    exp3 = _itsxpress._fastq_id_maker(per_sample_sequences=TEST_DATA,
-                                      artifact_type=ARTIFACT_TYPE_S)
-    eq_(exp3[1], True)
-
-
 def test_taxa_prefix_to_taxa():
     exp1 = _itsxpress._taxa_prefix_to_taxa(taxa_prefix="A")
     eq_(exp1, "Alveolata")
 
 
-def test_set_fastqs_and_check():
-    sequences, single_end = _itsxpress._fastq_id_maker(per_sample_sequences=TEST_DATA,
-                                                       artifact_type=ARTIFACT_TYPE_P)
-    for sequence in sequences:
-        exp1 = _itsxpress._set_fastqs_and_check(per_sample_sequences=TEST_DATA,
-                                                artifact_type=ARTIFACT_TYPE_P,
-                                                sequence=sequence,
-                                                single_end=single_end,
-                                                threads=1)
-        eq_(exp1[0], "4774-1-MSITS3")
+class SetFastqsAndCheckTests(unittest.TestCase):
+    def test_single(self):
+        samples = TEST_DATA_SINGLEIN.manifest.view(pd.DataFrame)
+        for sample in samples.itertuples():
+            obs = _itsxpress._set_fastqs_and_check(fastq=sample.forward,
+                                                   fastq2=None,
+                                                   sample_id=sample.Index,
+                                                   single_end=True,
+                                                   threads=1)
+            self.assertTrue("4774-1-MSITS3" in obs.fastq)
 
-    sequences2, single_end2 = _itsxpress._fastq_id_maker(per_sample_sequences=TEST_DATA_PAF,
-                                                         artifact_type=ARTIFACT_TYPE_S)
-    for sequence2 in sequences2:
-        exp2 = _itsxpress._set_fastqs_and_check(per_sample_sequences=TEST_DATA,
-                                                artifact_type=ARTIFACT_TYPE_S,
-                                                sequence=sequence2,
-                                                single_end=single_end2,
-                                                threads=1)
-        eq_(exp2[0], "4774-1-MSITS3")
+    def test_paired(self):
+        samples = TEST_DATA.manifest.view(pd.DataFrame)
+        for sample in samples.itertuples():
+            obs = _itsxpress._set_fastqs_and_check(fastq=sample.forward,
+                                                   fastq2=sample.reverse,
+                                                   sample_id=sample.Index,
+                                                   single_end=True,
+                                                   threads=1)
+            self.assertTrue("4774-1-MSITS3" in obs.fastq)
 
-    sequences3= _itsxpress._fastq_id_maker(per_sample_sequences=TEST_DATA_PAF,
-                                           artifact_type=ARTIFACT_TYPE_S)
-    for sequence3 in sequences3[0]:
-        exp3 = _itsxpress._set_fastqs_and_check(per_sample_sequences=TEST_DATA,
-                                                artifact_type=ARTIFACT_TYPE_S,
-                                                sequence=sequence3,
-                                                single_end=True,
-                                                threads=1)
-        eq_(exp3[0], "4774-1-MSITS3")
+    def test_paired_unmerged(self):
+        samples = TEST_DATA.manifest.view(pd.DataFrame)
+        for sample in samples.itertuples():
+            obs = _itsxpress._set_fastqs_and_check(fastq=sample.forward,
+                                                   fastq2=sample.reverse,
+                                                   sample_id=sample.Index,
+                                                   single_end=False,
+                                                   threads=1)
+            self.assertTrue("4774-1-MSITS3" in obs.fastq)
+            self.assertTrue("4774-1-MSITS3" in obs.fastq2)
 
+    def test_trim_pair_no_bb(self):
+        samples = TEST_DATA.manifest.view(pd.DataFrame)
+        for sample in samples:
+            raises(ValueError, lambda: _itsxpress._set_fastqs_and_check(fastq=sample.forward,
+                                                                        fastq2=sample.reverse,
+                                                                        sample_id=sample.Index,
+                                                                        single_end=False,
+                                                                        threads=1))
+            raises(ValueError, lambda: _itsxpress._set_fastqs_and_check(fastq=sample.forward,
+                                                                        fastq2=sample.reverse,
+                                                                        sample_id=sample.Index,
+                                                                        single_end=True,
+                                                                        threads=1))
 
-def test_trim_pair():
-    threads = 1
-    taxa = "F"
-    region = "ITS2"
-
-    exp1 = _itsxpress.trim_pair(per_sample_sequences=TEST_DATA,
-                                threads=threads,
-                                taxa=taxa,
-                                region=region)
-    exp2 = getsizeof(exp1)
-    exp3 = getsizeof(TEST_DATA_OUT)
-    eq_(exp2, exp3)
-
-
-def test_trim_single():
-    threads = 1
-    taxa = "F"
-    region = "ITS2"
-
-    exp1 = _itsxpress.trim_single(per_sample_sequences=TEST_DATA_SINGLEIN,
-                                threads=threads,
-                                taxa=taxa,
-                                region=region)
-    exp2 = getsizeof(exp1)
-    exp3 = getsizeof(TEST_DATA_SINGLEOUT)
-    eq_(exp2, exp3)
 
 def test_trim_single_no_cluster():
     threads = 1
@@ -177,18 +142,64 @@ def test_trim_pair_no_hmmer():
                                                     taxa=taxa,
                                                     region=region))
 
+class TrimTests(unittest.TestCase):
+    def setUp(self):
+        self.plugin = qiime2.sdk.PluginManager().plugins['itsxpress']
+        self.trim_single_fn = self.plugin.methods['trim_single']
+        self.trim_paired_fn = self.plugin.methods['trim_pair']
+        self.trim_paired_unmerged_fn = \
+            self.plugin.methods['trim_pair_output_unmerged']
 
-def test_trim_pair_no_bb():
-    sequences, single_end = _itsxpress._fastq_id_maker(per_sample_sequences=TEST_DATA,
-                                                       artifact_type=ARTIFACT_TYPE_P)
-    for sequence in sequences:
-        raises(ValueError, lambda: _itsxpress._set_fastqs_and_check(per_sample_sequences=TEST_DATA,
-                                                                    artifact_type=ARTIFACT_TYPE_P,
-                                                                    sequence=sequence,
-                                                                    single_end=single_end,
-                                                                    threads=1))
-        raises(ValueError, lambda: _itsxpress._set_fastqs_and_check(per_sample_sequences=TEST_DATA,
-                                                                    artifact_type=ARTIFACT_TYPE_S,
-                                                                    sequence=sequence,
-                                                                    single_end=single_end,
-                                                                    threads=1))
+        self.se_seqs = qiime2.Artifact.import_data(
+            'SampleData[SequencesWithQuality]',
+            TEST_FILE_SINGLEIN,
+            'SingleLanePerSampleSingleEndFastqDirFmt')
+        self.pe_seqs = qiime2.Artifact.import_data(
+            'SampleData[PairedEndSequencesWithQuality]',
+            TEST_FILE,
+            'SingleLanePerSamplePairedEndFastqDirFmt')
+
+    def test_trim_single_success(self):
+        with redirected_stdio(stderr=os.devnull):
+            obs_artifact, = self.trim_single_fn(self.se_seqs, 'ITS2')
+        self.assertEqual(str(obs_artifact.type),
+                         'SampleData[SequencesWithQuality]')
+
+        obs_dir = obs_artifact.view(SingleLanePerSampleSingleEndFastqDirFmt)
+        self.assertEqual(getsizeof(obs_dir), getsizeof(TEST_DATA_SINGLEOUT))
+
+        obs = obs_artifact.view(SingleLanePerSampleSingleEndFastqDirFmt)
+        obs_manifest = list(obs.manifest.view(FastqManifestFormat).open())
+        exp_manifest = [
+            'sample-id,filename,direction\n',
+            '4774-1-MSITS3,4774-1-MSITS3_0_L001_R1_001.fastq.gz,forward\n']
+        self.assertEqual(obs_manifest, exp_manifest)
+
+    def test_trim_pair_success(self):
+        with redirected_stdio(stderr=os.devnull):
+            obs_artifact, = self.trim_paired_fn(self.pe_seqs, 'ITS2')
+        self.assertEqual(str(obs_artifact.type),
+                         'SampleData[JoinedSequencesWithQuality]')
+
+        obs_dir = obs_artifact.view(SingleLanePerSampleSingleEndFastqDirFmt)
+        self.assertEqual(getsizeof(obs_dir), getsizeof(TEST_DATA_OUT))
+
+        obs = obs_artifact.view(SingleLanePerSampleSingleEndFastqDirFmt)
+        obs_manifest = list(obs.manifest.view(FastqManifestFormat).open())
+        exp_manifest = [
+            'sample-id,filename,direction\n',
+            '4774-1-MSITS3,4774-1-MSITS3_0_L001_R1_001.fastq.gz,forward\n']
+        self.assertEqual(obs_manifest, exp_manifest)
+
+    def test_trim_pair_output_unmerged_success(self):
+        with redirected_stdio(stderr=os.devnull):
+            obs_artifact, = self.trim_paired_unmerged_fn(self.pe_seqs, 'ITS2')
+        self.assertEqual(str(obs_artifact.type),
+                         'SampleData[PairedEndSequencesWithQuality]')
+        obs = obs_artifact.view(SingleLanePerSamplePairedEndFastqDirFmt)
+        obs_manifest = list(obs.manifest.view(FastqManifestFormat).open())
+        exp_manifest = [
+            'sample-id,filename,direction\n',
+            '4774-1-MSITS3,4774-1-MSITS3_0_L001_R1_001.fastq.gz,forward\n',
+            '4774-1-MSITS3,4774-1-MSITS3_1_L001_R2_001.fastq.gz,reverse\n']
+        self.assertEqual(obs_manifest, exp_manifest)
