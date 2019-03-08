@@ -1,4 +1,4 @@
-{% set version = "1.4.1" %}
+{% set version = "1.7.3" %}
 {% set name = "q2_itsxpress" %}
 {% set file_ext = "tar.gz" %}
 {% set hash_type = "sha256" %}
