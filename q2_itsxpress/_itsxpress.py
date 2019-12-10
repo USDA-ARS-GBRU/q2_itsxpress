@@ -38,6 +38,7 @@ def _set_fastqs_and_check(fastq: str,
                           fastq2: str,
                           sample_id: str,
                           single_end: bool,
+                          reversed_primers: bool,
                           threads: int) -> object:
     """Checks and writes the fastqs as well as if they are paired end, interleaved and single end.
 
@@ -69,14 +70,16 @@ def _set_fastqs_and_check(fastq: str,
         # Create SeqSample objects and merge if needed.
     if paired_end and interleaved:
         sobj = itsxpress.SeqSamplePairedInterleaved(fastq=fastq,
-                                                    tempdir=None)
+                                                    tempdir=None,
+                                                    reversed_primers=reversed_primers)
         sobj._merge_reads(threads=threads)
         return sobj
 
     elif paired_end and not interleaved:
         sobj = itsxpress.SeqSamplePairedNotInterleaved(fastq=fastq,
                                                        fastq2=fastq2,
-                                                       tempdir=None)
+                                                       tempdir=None,
+                                                       reversed_primers=reversed_primers)
         sobj._merge_reads(threads=threads)
         return sobj
 
@@ -116,6 +119,7 @@ def trim_single(per_sample_sequences: SingleLanePerSampleSingleEndFastqDirFmt,
                    region=region,
                    paired_in=False,
                    paired_out=False,
+                   reversed_primers=False,
                    cluster_id=cluster_id)
     return results
 
@@ -125,6 +129,7 @@ def trim_pair(per_sample_sequences: SingleLanePerSamplePairedEndFastqDirFmt,
               region: str,
               taxa: str = "F",
               threads: int = 1,
+              reversed_primers: bool = False,
               cluster_id: float = default_cluster_id) -> CasavaOneEightSingleLanePerSampleDirFmt:
     results = main(per_sample_sequences=per_sample_sequences,
                    threads=threads,
@@ -132,6 +137,7 @@ def trim_pair(per_sample_sequences: SingleLanePerSamplePairedEndFastqDirFmt,
                    region=region,
                    paired_in=True,
                    paired_out=False,
+                   reversed_primers=reversed_primers,
                    cluster_id=cluster_id)
     return results
 
@@ -140,6 +146,7 @@ def trim_pair_output_unmerged(per_sample_sequences: SingleLanePerSamplePairedEnd
               region: str,
               taxa: str = "F",
               threads: int = 1,
+              reversed_primers: bool = False,
               cluster_id: float = default_cluster_id) -> CasavaOneEightSingleLanePerSampleDirFmt:
     results = main(per_sample_sequences=per_sample_sequences,
                    threads=threads,
@@ -147,6 +154,7 @@ def trim_pair_output_unmerged(per_sample_sequences: SingleLanePerSamplePairedEnd
                    region=region,
                    paired_in=True,
                    paired_out=True,
+                   reversed_primers=reversed_primers,
                    cluster_id=cluster_id)
     return results
 # The ITSxpress handling
@@ -156,6 +164,7 @@ def main(per_sample_sequences,
          region: str,
          paired_in: bool,
          paired_out: bool,
+         reversed_primers: bool,
          cluster_id: float) -> CasavaOneEightSingleLanePerSampleDirFmt:
     """The main communication between the plugin and the ITSxpress program.
 
@@ -190,6 +199,7 @@ def main(per_sample_sequences,
             fastq2=sample.reverse if paired_in else None,
             sample_id=sample.Index,
             single_end=paired_out,
+            reversed_primers=reversed_primers,
             threads=threads)
         # Deduplicate
         if math.isclose(cluster_id, 1,rel_tol=1e-05):

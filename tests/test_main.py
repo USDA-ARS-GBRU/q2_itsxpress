@@ -78,6 +78,7 @@ class SetFastqsAndCheckTests(unittest.TestCase):
                                                    fastq2=None,
                                                    sample_id=sample.Index,
                                                    single_end=True,
+                                                   reversed_primers=False,
                                                    threads=1)
             self.assertTrue("4774-1-MSITS3" in obs.fastq)
 
@@ -88,6 +89,7 @@ class SetFastqsAndCheckTests(unittest.TestCase):
                                                    fastq2=sample.reverse,
                                                    sample_id=sample.Index,
                                                    single_end=True,
+                                                   reversed_primers=False,
                                                    threads=1)
             self.assertTrue("4774-1-MSITS3" in obs.fastq)
 
@@ -98,6 +100,7 @@ class SetFastqsAndCheckTests(unittest.TestCase):
                                                    fastq2=sample.reverse,
                                                    sample_id=sample.Index,
                                                    single_end=False,
+                                                   reversed_primers=False,
                                                    threads=1)
             self.assertTrue("4774-1-MSITS3" in obs.fastq)
             self.assertTrue("4774-1-MSITS3" in obs.fastq2)
@@ -109,11 +112,13 @@ class SetFastqsAndCheckTests(unittest.TestCase):
                                                                         fastq2=sample.reverse,
                                                                         sample_id=sample.Index,
                                                                         single_end=False,
+                                                                        reversed_primers=False,
                                                                         threads=1))
             raises(ValueError, lambda: _itsxpress._set_fastqs_and_check(fastq=sample.forward,
                                                                         fastq2=sample.reverse,
                                                                         sample_id=sample.Index,
                                                                         single_end=True,
+                                                                        reversed_primers=False,
                                                                         threads=1))
 
 

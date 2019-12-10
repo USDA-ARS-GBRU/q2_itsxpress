@@ -8,6 +8,7 @@ from qiime2.plugin import (Plugin,
                            Int,
                            Float,
                            Range,
+                           Bool,
                            Citations)
 
 from q2_itsxpress._itsxpress import (trim_single,
@@ -17,19 +18,20 @@ from q2_itsxpress._itsxpress import (trim_single,
 
 plugin = Plugin(
     name='itsxpress',
-    version='1.7.4',
+    version='1.8.0',
     package='q2_itsxpress',
     website='https://github.com/USDA-ARS-GBRU/q2_itsxpress             '
             'ITSxpress: https://github.com/USDA-ARS-GBRU/itsxpress',
-    description='ITSxpress trims amplicon reads down to the just their ITS region. '
+    description='ITSxpress trims amplicon reads down to their ITS region. '
                 'ITSxpress is designed to support the calling of exact sequence variants '
                 'rather than OTUs. This newer method of sequence error-correction requires '
                 'quality score data from each sequence, so each input sequence must be trimmed. '
                 'ITSxpress makes this possible by taking FASTQ data, de-replicating the '
                 'sequences then identifying the start and stop sites using HMMSearch. '
                 'Results are parsed and the trimmed files are returned. '
-                'The ITS 1, ITS2 or the entire ITS region including the 5.8s rRNA gene can be selected. '
-                'ITSxpress uses the hmm models from ITSx so results are comparable.',
+                'The ITS 1, ITS2 or the entire ITS region including the 5.8s rRNA'
+                'gene can be selected. ALL requires very long reads so it is not routinely'
+                'used with Illumina data. ITSxpress uses the hmm models from ITSx so results are comparable.',
     short_description='Plugin for using ITSxpress to rapidly trim the\n'
                       'internally transcribed spacer (ITS) region of FASTQ files.',
     citations=Citations.load('citations.bib', package='q2_itsxpress')
@@ -89,6 +91,7 @@ plugin.methods.register_function(
     parameters={'region': Str % Choices(['ITS2', 'ITS1', 'ALL']),
                 'taxa': Str % Choices(taxaList),
                 'threads': Int,
+                'reversed_primers': Bool,
                 'cluster_id': Float % Range(0.97, 1.0, inclusive_start=True, inclusive_end=True)},
     outputs=[('trimmed', SampleData[JoinedSequencesWithQuality])],
     input_descriptions={'per_sample_sequences': 'The artifact that contains the sequence file(s). '
@@ -98,7 +101,8 @@ plugin.methods.register_function(
         'region': ('\nThe regions ITS2, ITS1, and ALL that can be selected from.'),
         'taxa': ('\nThe selected taxonomic group sequenced that can be selected from.'),
         'threads': ('\nThe number of processor threads to use in the run.'),
-        'cluster_id': ('\nThe percent identity for clustering reads, set to 1 for exact dereplication.')
+        'cluster_id': ('\nThe percent identity for clustering reads, set to 1 for exact dereplication.'),
+        'reversed_primers': ('\n Primers are in reverse orientation as in Taylor et al. 2016, DOI:10.1128/AEM.02576-16.')
     },
     output_descriptions={'trimmed': 'The resulting trimmed sequences from ITSxpress'},
     name='Trim paired-end reads, output merged reads for use with Deblur',
@@ -136,6 +140,7 @@ plugin.methods.register_function(
     parameters={'region': Str % Choices(['ITS2', 'ITS1', 'ALL']),
                 'taxa': Str % Choices(taxaList),
                 'threads': Int,
+                'reversed_primers': Bool,
                 'cluster_id': Float % Range(0.97, 1.0, inclusive_start=True, inclusive_end=True)},
     outputs=[('trimmed', SampleData[PairedEndSequencesWithQuality])],
     input_descriptions={'per_sample_sequences': 'The artifact that contains the sequence file(s). '
@@ -145,7 +150,8 @@ plugin.methods.register_function(
         'region': ('\nThe regions ITS2, ITS1, and ALL that can be selected from.'),
         'taxa': ('\nThe selected taxonomic group sequenced that can be selected from.'),
         'threads': ('\nThe number of processor threads to use in the run.'),
-        'cluster_id': ('\nThe percent identity for clustering reads, set to 1 for exact dereplication.')
+        'cluster_id': ('\nThe percent identity for clustering reads, set to 1 for exact dereplication.'),
+        'reversed_primers': ('\n Primers are in reverse orientation as in Taylor et al. 2016, DOI:10.1128/AEM.02576-16.')
     },
     output_descriptions={'trimmed': 'The resulting trimmed sequences from ITSxpress'},
     name='Trim paired-end reads, output unmerged reads for use with Dada2',
