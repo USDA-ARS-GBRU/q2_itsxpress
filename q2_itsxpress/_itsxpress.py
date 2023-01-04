@@ -40,7 +40,7 @@ def _set_fastqs_and_check(fastq: str,
                           single_end: bool,
                           reversed_primers: bool,
                           threads: int) -> object:
-    """Checks and writes the fastqs as well as if they are paired end, interleaved and single end.
+    """Checks and writes the fastqs as well as if they are paired end and single end.
 
         Args:
             fastq (str): The path to the forward reads file.
@@ -60,7 +60,7 @@ def _set_fastqs_and_check(fastq: str,
     try:
         itsxpress._check_fastqs(fastq=fastq, fastq2=fastq2)
         # Parse input types
-        paired_end, interleaved = itsxpress._is_paired(fastq=fastq,
+        paired_end = itsxpress._is_paired(fastq=fastq,
                                                        fastq2=fastq2,
                                                        single_end=single_end)
     except (NotADirectoryError,
@@ -68,14 +68,9 @@ def _set_fastqs_and_check(fastq: str,
 
         raise ValueError("There is a problem with the fastq file(s) you selected")
         # Create SeqSample objects and merge if needed.
-    if paired_end and interleaved:
-        sobj = itsxpress.SeqSamplePairedInterleaved(fastq=fastq,
-                                                    tempdir=None,
-                                                    reversed_primers=reversed_primers)
-        sobj._merge_reads(threads=threads)
-        return sobj
 
-    elif paired_end and not interleaved:
+
+    if paired_end:
         sobj = itsxpress.SeqSamplePairedNotInterleaved(fastq=fastq,
                                                        fastq2=fastq2,
                                                        tempdir=None,
@@ -83,7 +78,7 @@ def _set_fastqs_and_check(fastq: str,
         sobj._merge_reads(threads=threads)
         return sobj
 
-    elif not paired_end and not interleaved:
+    elif not paired_end:
         sobj = itsxpress.SeqSampleNotPaired(fastq=fastq,
                                             tempdir=None)
         return sobj

@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='q2_itsxpress',
-    version='1.8.0',
+    version='1.8.1',
     packages=['q2_itsxpress'],
     author='Adam R. Rivers, Kyle C. Weber',
     author_email='adam.rivers@ars.usda.gov, kweber1@ufl.edu',
@@ -19,8 +19,8 @@ setup(
     python_requires=">3.5",
     include_package_data=True,
     install_requires=[
-        'itsxpress>=1.8.0',
-        'qiime2',
+        'itsxpress==1.8.1',
+        'qiime2==2022.8.1',
         'pandas',
     ],
     entry_points={
