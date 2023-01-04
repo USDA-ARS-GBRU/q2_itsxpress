@@ -52,7 +52,7 @@ Requirements/Dependencies
 -------------------------
 
 * Qiime2 is required to run Q2-itsxpress (for stand alone software see ITSxpress_)
-* To install Qiime2 follow these instructions: https://docs.qiime2.org/2019.10/install/
+* To install Qiime2 follow these instructions: https://docs.qiime2.org/2022.8/install/
 
 Q2_itsxpress Installation
 -------------------------
@@ -61,13 +61,13 @@ Q2_itsxpress Installation
 
 .. code-block:: bash
 
-  source activate qiime2-2019.10
+  source activate qiime2-2022.8
 
 2. Install Q2_itsxpress using BioConda_. Be sure to install Q2_itsxpres in the Qiime2 environment.
 
 .. code-block:: bash
 
-  conda install -c bioconda itsxpress
+  conda install -c bioconda itsxpress==1.8.1
   pip install q2-itsxpress
 
 3. In your Qiime2 environment, refresh the plugins.
