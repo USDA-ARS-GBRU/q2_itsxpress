@@ -58,13 +58,13 @@ Requirements/Dependencies
 
 * Qiime2 is required to run Q2-itsxpress (for stand alone software see ITSxpress_)
 * To install Qiime2 follow these instructions: https://docs.qiime2.org/2022.8/install/
-* This end of life version 1 of ITSxpress/q2_itsxpress is ONLY tested on Qiime2 version 2022.8. So make sure to follow the 
-* link above.
+* This end of life version 1 of ITSxpress/q2_itsxpress is **ONLY** tested on Qiime2 version 2022.8. So make sure to follow the link above.
 
 Q2_itsxpress Installation
 -------------------------
 0. Example on how to install and create new Qiime2-2022.8 environment.
 .. code-block:: bash
+
   wget https://data.qiime2.org/distro/core/qiime2-2022.8-py38-osx-conda.yml
   conda env create -n qiime2-2022.8 --file qiime2-2022.8-py38-osx-conda.yml
 
