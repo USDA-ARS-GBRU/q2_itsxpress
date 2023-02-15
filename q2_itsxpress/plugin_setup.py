@@ -17,7 +17,7 @@ from q2_itsxpress._itsxpress import (trim_single,
                                      default_cluster_id)
 
 plugin = Plugin(
-    name='itsxpress',
+    name='q2_itsxpress',
     version='1.8.1',
     package='q2_itsxpress',
     website='https://github.com/USDA-ARS-GBRU/q2_itsxpress             '

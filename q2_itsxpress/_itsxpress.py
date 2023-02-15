@@ -3,7 +3,7 @@
 
 Authors: Adam Rivers, Kyle Weber, Sveinn V. Einarsson USDA Agricultural Research Service
 
-#####This is the end of life version 1 of ITSxpress. Please check Github page below to access version 2 of ITSxpress#####
+#####This is the end of life version 1 of the qiime2 plugin for ITSxpress. Please check Github page below to access version 2 of ITSxpress#####
 
 The internally transcribed spacer region is a region between the highly conserved small
 subunit (SSU) of rRNA and the large subunit (LSU) of the rRNA. The eukaryotic ITS contains
