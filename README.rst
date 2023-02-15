@@ -13,9 +13,14 @@ Q2_ITSxpress: A Qiime2 plugin to rapidly trim the Internally transcribed spacer 
    :target: https://zenodo.org/badge/latestdoi/138209572
 
 
-#####This is the end of life version 1 of q2_itsxpress and the command line version of ITSxpress.
+
+#####
+
+**This is the end of life version 1 of q2_itsxpress and the command line version of ITSxpress.
 The new version 2 of ITSxpress, has the Qiime2 plugin built in with command line version of ITSxpress. See 
-master branch of this repository.#####
+master branch of this repository.**
+
+#####
 
 Authors
 -------
@@ -63,6 +68,7 @@ Requirements/Dependencies
 Q2_itsxpress Installation
 -------------------------
 0. Example on how to install and create new Qiime2-2022.8 environment.
+
 .. code-block:: bash
 
   wget https://data.qiime2.org/distro/core/qiime2-2022.8-py38-osx-conda.yml
