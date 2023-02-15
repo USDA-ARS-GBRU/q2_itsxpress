@@ -4,12 +4,12 @@ setup(
     name='q2_itsxpress',
     version='1.8.1',
     packages=['q2_itsxpress'],
-    author='Adam R. Rivers, Kyle C. Weber',
-    author_email='adam.rivers@ars.usda.gov, kweber1@ufl.edu',
+    author='Adam R. Rivers, Kyle C. Weber, Sveinn V. Einarsson',
+    author_email='adam.rivers@ars.usda.gov, kweber1@ufl.edu, seinarsson@ufl.edu',
     description="A QIIME2 plugin to trim ITS regions using ITSxpress",
     long_description=open('README.rst').read(),
     url='https://github.com/usda-ars-gbru/q2_itsxpress',
-    test_suite='nose.collector',
+    test_suite='pytest',
     license="License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
     classifiers=["Topic :: Scientific/Engineering :: Bio-Informatics",
                  "Programming Language :: Python :: 3.6",
@@ -19,8 +19,8 @@ setup(
     python_requires=">3.5",
     include_package_data=True,
     install_requires=[
-        'itsxpress==1.8.1',
-        'qiime2==2022.8.1',
+        'qiime'
+        'itsxpress'
         'pandas',
     ],
     entry_points={

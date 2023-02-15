@@ -22,7 +22,9 @@ plugin = Plugin(
     package='q2_itsxpress',
     website='https://github.com/USDA-ARS-GBRU/q2_itsxpress             '
             'ITSxpress: https://github.com/USDA-ARS-GBRU/itsxpress',
-    description='ITSxpress trims amplicon reads down to their ITS region. '
+    description='#####This is the end of life version 1 of ITSxpress. Please check Github for version 2'
+                'of ITSxpress.#####'
+                'ITSxpress trims amplicon reads down to their ITS region. '
                 'ITSxpress is designed to support the calling of exact sequence variants '
                 'rather than OTUs. This newer method of sequence error-correction requires '
                 'quality score data from each sequence, so each input sequence must be trimmed. '

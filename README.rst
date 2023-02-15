@@ -13,10 +13,15 @@ Q2_ITSxpress: A Qiime2 plugin to rapidly trim the Internally transcribed spacer 
    :target: https://zenodo.org/badge/latestdoi/138209572
 
 
+#####This is the end of life version 1 of q2_itsxpress and the command line version of ITSxpress.
+The new version 2 of ITSxpress, has the Qiime2 plugin built in with command line version of ITSxpress. See 
+master branch of this repository.#####
+
 Authors
 -------
 * Adam R. Rivers, US Department of Agriculture, Agricultural Research Service
 * Kyle C. Weber, US Department of Agriculture, Agricultural Research Service
+* Sveinn V. Einarsson, US Department of Agriculture, Agricultural Research Service
 
 Citation
 --------
@@ -53,9 +58,15 @@ Requirements/Dependencies
 
 * Qiime2 is required to run Q2-itsxpress (for stand alone software see ITSxpress_)
 * To install Qiime2 follow these instructions: https://docs.qiime2.org/2022.8/install/
+* This end of life version 1 of ITSxpress/q2_itsxpress is ONLY tested on Qiime2 version 2022.8. So make sure to follow the 
+* link above.
 
 Q2_itsxpress Installation
 -------------------------
+0. Example on how to install and create new Qiime2-2022.8 environment.
+.. code-block:: bash
+  wget https://data.qiime2.org/distro/core/qiime2-2022.8-py38-osx-conda.yml
+  conda env create -n qiime2-2022.8 --file qiime2-2022.8-py38-osx-conda.yml
 
 1. Activate the Qiime2 conda environment
 
@@ -63,7 +74,7 @@ Q2_itsxpress Installation
 
   source activate qiime2-2022.8
 
-2. Install Q2_itsxpress using BioConda_. Be sure to install Q2_itsxpres in the Qiime2 environment.
+2. Install Q2_itsxpress using BioConda_. Be sure to install q2_itsxpress in the Qiime2 environment.
 
 .. code-block:: bash
 
