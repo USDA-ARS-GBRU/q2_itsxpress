@@ -1,0 +1,40 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry]
+name = "q2_itsxpress"
+version = "1.8.1"
+description = "A QIIME2 plugin to trim ITS regions using ITSxpress"
+authors = [
+    "Adam R. Rivers <adam.rivers@usda.gov>",
+    "Sveinn V. Einarsson <seinarsson@ufl.edu>"]
+maintainers = [
+    "Adam R. Rivers <adam.rivers@usda.gov>",
+    "Sveinn V. Einarsson <seinarsson@ufl.edu>"]
+license = "License :: CC0 1.0 Universal CC0 1.0 Public Domain Dedication"
+readme = "README.rst"
+keywords = ["Qiime2", "plugin", "Amplicon", "sequencing", "fungal", "ITS"]
+requires-python = ">=3.5"
+repository = "http://github.com/usda-ars-gbru/q2_itsxpress"
+
+classifiers = [
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.5",
+    "Development Status :: 3 - Alpha"
+]
+
+[tool.poetry.dependencies]
+qiime = "*"
+itsxpress = ">=1.8.1"
+pandas = "*"
+
+[tool.poetry.optional-dependencies]
+test = [
+    "pytest"
+]
+
+[tool.poetry.scripts]
+qiime2.plugins="q2_itsxpress=q2_itsxpress.plugin_setup:plugin"
