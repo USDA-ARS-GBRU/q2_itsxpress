@@ -28,7 +28,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 qiime = "*"
-itsxpress = ">=1.8.1"
+itsxpress = "^1.8.1"
 pandas = "*"
 
 [tool.poetry.optional-dependencies]

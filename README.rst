@@ -63,28 +63,31 @@ Requirements/Dependencies
 
 * Qiime2 is required to run Q2-itsxpress (for stand alone software see ITSxpress_)
 * To install Qiime2 follow these instructions: https://docs.qiime2.org/2022.8/install/
-* This end of life version 1 of q2_itsxpress and ITSxpress is **ONLY** tested on Qiime2 version 2022.8. So make sure to follow the link above.
+* This end of life version 1 of q2_itsxpress and ITSxpress is **ONLY** compatible with Qiime2 version 2022.8. So make sure to follow the link above.
 
-Q2_itsxpress plugin Installation
+* We are using mamba because it resolves dependencies better and faster, but conda can be substituted.
+	- Information on installing mamba or micromamba (either highly recommended) can be found here: `mamba installation guide`_
+
+Q2-itsxpress plugin installation
 -------------------------
 0. Example on how to install and create new Qiime2-2022.8 environment.
 
 .. code-block:: bash
 
   wget https://data.qiime2.org/distro/core/qiime2-2022.8-py38-osx-conda.yml
-  conda env create -n qiime2-2022.8 --file qiime2-2022.8-py38-osx-conda.yml
+  mamba env create -n qiime2-2022.8 --file qiime2-2022.8-py38-osx-conda.yml
 
 1. Activate the Qiime2 conda environment
 
 .. code-block:: bash
 
-  source activate qiime2-2022.8
+  mamba activate qiime2-2022.8
 
-2. Install Q2_itsxpress using BioConda_. Be sure to install q2_itsxpress in the Qiime2 environment using the following commands.
+2. Install Q2_itsxpress using BioConda_. Be sure to install itsxpress and q2_itsxpress in the Qiime2 environment using the following commands.
 
 .. code-block:: bash
 
-  conda install -c bioconda itsxpress==1.8.1
+  mamba install -c bioconda itsxpress==1.8.1
   pip install q2-itsxpress
 
 3. In your Qiime2 environment, refresh the plugins.
