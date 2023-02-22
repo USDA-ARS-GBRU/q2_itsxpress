@@ -46,8 +46,8 @@ length spacer regions. In amplicon sequencing studies it is common practice to
 trim off the conserved (SSU, 5,8S or LSU) regions. Bengtsson-Palme et al. (2013)
 published a software package ITSx_ to do this.
 
-Q2_ITSxpress extends this work by rapidly trimming FASTQ sequences within
-Qiime2.  Q2_ITSxpress is the Qiime2 plugin version of the stand alone command
+Q2-ITSxpress extends this work by rapidly trimming FASTQ sequences within
+Qiime2.  Q2-ITSxpress is the Qiime2 plugin version of the stand alone command
 line utility ITSxpress_. Q2_ITSxpress is designed to support the calling of
 exact sequence variants rather than OTUs. This newer method of sequence
 error-correction requires quality score data from each sequence, so each input
@@ -67,6 +67,8 @@ Requirements/Dependencies
 
 * We are using mamba because it resolves dependencies better and faster, but conda can be substituted.
 	- Information on installing mamba or micromamba (either highly recommended) can be found here: `mamba installation guide`_
+
+.. _`mamba installation guide`: https://mamba.readthedocs.io/en/latest/installation.html
 
 Q2-itsxpress plugin installation
 -------------------------
