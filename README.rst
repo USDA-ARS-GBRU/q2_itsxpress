@@ -63,9 +63,9 @@ Requirements/Dependencies
 
 * Qiime2 is required to run Q2-itsxpress (for stand alone software see ITSxpress_)
 * To install Qiime2 follow these instructions: https://docs.qiime2.org/2022.8/install/
-* This end of life version 1 of q2_itsxpress and ITSxpress is **ONLY** compatible with Qiime2 version 2022.8. So make sure to follow the link above.
+* This end of life version 1 of q2-itsxpress and ITSxpress is **ONLY** compatible with Qiime2 version 2022.8. So make sure to follow the link above.
 
-* We are using mamba because it resolves dependencies better and faster, but conda can be substituted.
+* We are using mamba because it resolves packages better and faster, but conda can be substituted.
 	- Information on installing mamba or micromamba (either highly recommended) can be found here: `mamba installation guide`_
 
 .. _`mamba installation guide`: https://mamba.readthedocs.io/en/latest/installation.html
