@@ -71,7 +71,7 @@ Requirements/Dependencies
 .. _`mamba installation guide`: https://mamba.readthedocs.io/en/latest/installation.html
 
 Q2-itsxpress plugin installation
--------------------------
+--------------------------------
 1. Example on how to install and create new Qiime2-2022.8 environment.
 
 .. code-block:: bash
