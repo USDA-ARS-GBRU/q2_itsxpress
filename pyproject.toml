@@ -20,7 +20,7 @@ requires-python = ">=3.5"
 
 dependencies = [
 "qiime2",
-"itsxpress >=1.8.0",
+"itsxpress >=1.8.1",
 "pandas",
 ]
 
