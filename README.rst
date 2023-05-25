@@ -1,14 +1,14 @@
 Q2_ITSxpress: A Qiime2 plugin to rapidly trim the Internally transcribed spacer (ITS) region of FASTQ files
 ===========================================================================================================
-.. image:: https://travis-ci.org/USDA-ARS-GBRU/q2_itsxpress.svg?branch=master
-  :target: https://travis-ci.org/USDA-ARS-GBRU/q2_itsxpress
 
-.. image:: https://codecov.io/gh/USDA-ARS-GBRU/q2_itsxpress/branch/master/graph/badge.svg
-  :target: https://codecov.io/gh/USDA-ARS-GBRU/q2_itsxpress
-
-.. image:: https://api.codacy.com/project/badge/Grade/4d00341b4abc4e04a77cf5ca6674cd3c
-  :target: https://www.codacy.com/app/USDA-ARS-GBRU/q2_itsxpress?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=USDA-ARS-GBRU/q2_itsxpress&amp;utm_campaign=Badge_Grade
-
+.. image:: https://github.com/USDA-ARS-GBRU/q2_itsxpress/actions/workflows/python-package-conda.yml/badge.svg
+   :target: https://github.com/USDA-ARS-GBRU/q2_itsxpress/actions/workflows/python-package-conda.yml
+   :alt: Build Status
+   
+.. image:: https://img.shields.io/github/v/release/USDA-ARS-GBRU/q2_itsxpress?style=social
+   :target: https://github.com/USDA-ARS-GBRU/q2_itsxpress/releases/latest
+   :alt: GitHub release (latest by date)
+   
 .. image:: https://zenodo.org/badge/138209572.svg
    :target: https://zenodo.org/badge/latestdoi/138209572
 
