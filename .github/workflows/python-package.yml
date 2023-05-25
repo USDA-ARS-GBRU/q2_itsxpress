@@ -46,8 +46,7 @@ jobs:
       run: |
         source activate qiime2-2022.8
         conda install -y -c bioconda bbmap==38.69
-        git clone -b 1.8.1-EOL https://github.com/USDA-ARS-GBRU/itsxpress.git ./itsxpfolder/
-        pip install ./itsxpfolder/itsxpress/.
+        pip install itsxpress==1.8.1
         conda install biopython
         pip install pyzstd
         pip install pytest
