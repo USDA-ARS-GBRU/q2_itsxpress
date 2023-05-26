@@ -18,7 +18,7 @@ Q2_ITSxpress: A Qiime2 plugin to rapidly trim the Internally transcribed spacer 
 
 **This is the end of life version 1 of q2_itsxpress and the command line version of ITSxpress.
 The new version 2 of ITSxpress, has the Qiime2 plugin built in with command line version of ITSxpress. See 
-master branch of `ITSxpress`_ .**
+1.8.1-EOL branch of ITSxpress_ .**
 
 #####
 
