@@ -21,7 +21,11 @@ The new version 2 of ITSxpress, has the Qiime2 plugin built in with command line
 1.8.1-EOL branch of ITSxpress.**
 
 #####
-ITSxpress_
+
+See ITSxpress 1.8.1-EOL branch here: ITSxpress-1.8.1-EOL_
+
+.. _`ITSxpress-1.8.1-EOL`: https://github.com/USDA-ARS-GBRU/itsxpress/tree/1.8.1-EOL
+
 
 Authors
 -------
