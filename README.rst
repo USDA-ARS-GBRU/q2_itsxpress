@@ -1,8 +1,8 @@
 Q2_ITSxpress: A Qiime2 plugin to rapidly trim the Internally transcribed spacer (ITS) region of FASTQ files
 ===========================================================================================================
 
-.. image:: https://github.com/USDA-ARS-GBRU/q2_itsxpress/actions/workflows/python-package-conda.yml/badge.svg
-   :target: https://github.com/USDA-ARS-GBRU/q2_itsxpress/actions/workflows/python-package-conda.yml
+.. image:: https://github.com/USDA-ARS-GBRU/q2_itsxpress/actions/workflows/python-package.yml/badge.svg
+   :target: https://github.com/USDA-ARS-GBRU/q2_itsxpress/actions/workflows/python-package.yml
    :alt: Build Status
    
 .. image:: https://img.shields.io/github/v/release/USDA-ARS-GBRU/q2_itsxpress?style=social

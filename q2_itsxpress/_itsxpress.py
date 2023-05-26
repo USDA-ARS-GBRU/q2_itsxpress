@@ -62,7 +62,7 @@ def _set_fastqs_and_check(fastq: str,
     try:
         itsxpress._check_fastqs(fastq=fastq, fastq2=fastq2)
         # Parse input types
-        paired_end = itsxpress._is_paired(fastq=fastq,
+        paired_end, interleaved = itsxpress._is_paired(fastq=fastq,
                                                        fastq2=fastq2,
                                                        single_end=single_end)
     except (NotADirectoryError,
