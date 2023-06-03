@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 """A python module to integrate ITSxpress into QIIME for the trimming of amplicon sequences.
 
-Authors: Adam Rivers and Kyle Weber, USDA Agricultural Research Service
+Authors: Adam Rivers, Kyle Weber, Sveinn V. Einarsson USDA Agricultural Research Service
+
+#####This is the end of life version 1 of the qiime2 plugin for ITSxpress. Please check Github page below to access version 2 of ITSxpress#####
 
 The internally transcribed spacer region is a region between the highly conserved small
 subunit (SSU) of rRNA and the large subunit (LSU) of the rRNA. The eukaryotic ITS contains
@@ -40,7 +42,7 @@ def _set_fastqs_and_check(fastq: str,
                           single_end: bool,
                           reversed_primers: bool,
                           threads: int) -> object:
-    """Checks and writes the fastqs as well as if they are paired end, interleaved and single end.
+    """Checks and writes the fastqs as well as if they are paired end and single end.
 
         Args:
             fastq (str): The path to the forward reads file.
@@ -68,14 +70,9 @@ def _set_fastqs_and_check(fastq: str,
 
         raise ValueError("There is a problem with the fastq file(s) you selected")
         # Create SeqSample objects and merge if needed.
-    if paired_end and interleaved:
-        sobj = itsxpress.SeqSamplePairedInterleaved(fastq=fastq,
-                                                    tempdir=None,
-                                                    reversed_primers=reversed_primers)
-        sobj._merge_reads(threads=threads)
-        return sobj
 
-    elif paired_end and not interleaved:
+
+    if paired_end:
         sobj = itsxpress.SeqSamplePairedNotInterleaved(fastq=fastq,
                                                        fastq2=fastq2,
                                                        tempdir=None,
@@ -83,7 +80,7 @@ def _set_fastqs_and_check(fastq: str,
         sobj._merge_reads(threads=threads)
         return sobj
 
-    elif not paired_end and not interleaved:
+    elif not paired_end:
         sobj = itsxpress.SeqSampleNotPaired(fastq=fastq,
                                             tempdir=None)
         return sobj
@@ -198,7 +195,7 @@ def main(per_sample_sequences,
             fastq=sample.forward,
             fastq2=sample.reverse if paired_in else None,
             sample_id=sample.Index,
-            single_end=paired_out,
+            single_end=False if paired_in else True,
             reversed_primers=reversed_primers,
             threads=threads)
         # Deduplicate

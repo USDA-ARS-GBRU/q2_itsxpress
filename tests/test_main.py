@@ -137,6 +137,7 @@ def test_trim_single_no_cluster():
     exp3 = getsizeof(TEST_DATA_SINGLEOUT)
     eq_(exp2, exp3)
 
+
 def test_trim_pair_no_hmmer():
     threads = 1
     taxa = "F"
@@ -149,7 +150,7 @@ def test_trim_pair_no_hmmer():
 
 class TrimTests(unittest.TestCase):
     def setUp(self):
-        self.plugin = qiime2.sdk.PluginManager().plugins['itsxpress']
+        self.plugin = qiime2.sdk.PluginManager().plugins['q2_itsxpress']
         self.trim_single_fn = self.plugin.methods['trim_single']
         self.trim_paired_fn = self.plugin.methods['trim_pair']
         self.trim_paired_unmerged_fn = \
