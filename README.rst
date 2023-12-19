@@ -16,14 +16,15 @@ Q2_ITSxpress: A Qiime2 plugin to rapidly trim the Internally transcribed spacer 
 
 #####
 
-**This is the end of life version 1 of q2_itsxpress and the command line version of ITSxpress. See 
-1.8.1-EOL branch of ITSxpress. The new version 2 of ITSxpress, has the Qiime2 plugin built in with command line version of ITSxpress. **
+**This is the end of life q2_itsxpress v1.x.x and the command line version of ITSxpress (ITSxpress v1.x.x). 
+ITSxpress Version 2 includes the QIIME 2 plugin as a single Python package.  Installation from PYPI is no longer 
+supported. Please install ITSxpress v2 from Bioconda, Github or use the Docker container image.**
 
 #####
 
-See ITSxpress 1.8.1-EOL branch here: ITSxpress-1.8.1-EOL_
+Please use ITSxpress version 2: ITSxpress-v2_
 
-.. _`ITSxpress-1.8.1-EOL`: https://github.com/USDA-ARS-GBRU/itsxpress/tree/1.8.1-EOL
+.. _`ITSxpress-v2`: https://github.com/USDA-ARS-GBRU/itsxpress/tree/main
 
 
 Authors
